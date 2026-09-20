@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import { assumptionRouter } from "./routes/assumptions.routes.js";
+import { comparisonRouter } from "./routes/compare.routes.js";
 import { cropRouter } from "./routes/crop.routes.js";
 import { farmRouter } from "./routes/farms.routes.js";
 import { scenarioRouter } from "./routes/scenarios.routes.js";
@@ -16,6 +17,7 @@ export function createApp() {
   app.use("/api", healthRouter);
   app.use("/api", cropRouter);
   app.use("/api", assumptionRouter);
+  app.use("/api", comparisonRouter);
   app.use("/api", farmRouter);
   app.use("/api", scenarioRouter);
   app.use("/api", simulateRouter);
