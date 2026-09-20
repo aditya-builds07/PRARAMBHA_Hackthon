@@ -95,3 +95,55 @@ export function deleteScenario(scenarios = [], id) {
   if (!Array.isArray(scenarios)) return [];
   return scenarios.filter((s) => s?.id !== id);
 }
+
+/**
+ * Clones a scenario with a new ID and updated timestamp.
+ * Preserves the original modelVersion and assumptionVersion ties.
+ * @param {Array<Object>} scenarios
+ * @param {string} id
+ * @param {string} [cloneSuffix]
+ * @returns {Array<Object>}
+ */
+export function cloneScenario(scenarios = [], id, cloneSuffix = "(Copy)") {
+  if (!Array.isArray(scenarios)) return [];
+  const target = scenarios.find((s) => s?.id === id);
+  if (!target) return scenarios;
+
+  const clone = {
+    ...target,
+    id: `sc-clone-${Date.now().toString(36)}`,
+    name: `${target.name} ${cloneSuffix}`,
+    createdAt: new Date().toISOString(),
+    // Strictly preserve original engine version provenance
+    modelVersion: target.modelVersion,
+    assumptionVersion: target.assumptionVersion || "2026.1",
+  };
+
+  return [clone, ...scenarios];
+}
+
+/**
+ * Sorts scenarios according to selected sort criteria.
+ * @param {Array<Object>} scenarios
+ * @param {"newest" | "oldest" | "profit_high" | "risk_low"} sortBy
+ * @returns {Array<Object>}
+ */
+export function sortScenarios(scenarios = [], sortBy = "newest") {
+  if (!Array.isArray(scenarios)) return [];
+  const list = [...scenarios];
+
+  switch (sortBy) {
+    case "oldest":
+      return list.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+    case "profit_high":
+      return list.sort(
+        (a, b) => (b.results?.economics?.profit ?? 0) - (a.results?.economics?.profit ?? 0)
+      );
+    case "risk_low":
+      return list.sort((a, b) => (a.results?.risk?.overall ?? 0) - (b.results?.risk?.overall ?? 0));
+    case "newest":
+    default:
+      return list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  }
+}
+

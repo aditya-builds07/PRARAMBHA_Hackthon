@@ -10,6 +10,7 @@ export default function HistoryCard({
   isSelectedForCompare = false,
   onOpen,
   onRename,
+  onClone,
   onDelete,
   onToggleCompare,
 }) {
@@ -50,8 +51,11 @@ export default function HistoryCard({
                 })
               : "Saved Plan"}
           </span>
-          <span className="text-[10px] font-mono text-slate-500 bg-white border border-slate-200 px-1.5 py-0.5 rounded">
-            {scenario.modelVersion || "v2.0"}
+          <span
+            className="text-[10px] font-mono text-slate-500 bg-white border border-slate-200 px-1.5 py-0.5 rounded"
+            title={`Model Engine: ${scenario.modelVersion || "v2.0"} | Assumptions: ${scenario.assumptionVersion || "2026.1"}`}
+          >
+            {scenario.modelVersion || "v2.0"} • {scenario.assumptionVersion || "2026.1"}
           </span>
         </div>
 
@@ -146,6 +150,13 @@ export default function HistoryCard({
             className="px-2 py-1 rounded text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 transition-colors"
           >
             Rename
+          </button>
+          <button
+            type="button"
+            onClick={() => onClone && onClone(scenario.id)}
+            className="px-2 py-1 rounded text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 transition-colors"
+          >
+            Clone
           </button>
         </div>
 

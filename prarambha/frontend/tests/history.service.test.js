@@ -6,6 +6,8 @@ import {
   validateCompareSelection,
   renameScenario,
   deleteScenario,
+  cloneScenario,
+  sortScenarios,
 } from "../src/services/history.service.js";
 import { MOCK_SCENARIOS } from "../src/services/mockData.js";
 
@@ -112,6 +114,76 @@ describe("History Service — Unit Tests", () => {
       const original = [{ id: "sc-001" }];
       const updated = deleteScenario(original, "non-existent-id");
       assert.equal(updated.length, 1);
+    });
+  });
+
+  describe("cloneScenario", () => {
+    it("creates an immutable copy with a new ID and appends (Copy)", () => {
+      const original = [
+        {
+          id: "sc-001",
+          name: "Wheat Baseline",
+          modelVersion: "v2.0-deterministic",
+          assumptionVersion: "2026.1",
+        },
+      ];
+      const clonedList = cloneScenario(original, "sc-001");
+      assert.equal(clonedList.length, 2);
+      assert.notEqual(clonedList[0].id, "sc-001");
+      assert.ok(clonedList[0].name.includes("(Copy)"));
+      // Section 16 Requirement: Historical results must remain tied to original model/assumption version
+      assert.equal(clonedList[0].modelVersion, "v2.0-deterministic");
+      assert.equal(clonedList[0].assumptionVersion, "2026.1");
+    });
+
+    it("handles non-existent scenario ID gracefully without changing list", () => {
+      const original = [{ id: "sc-001" }];
+      const list = cloneScenario(original, "sc-999");
+      assert.equal(list.length, 1);
+    });
+  });
+
+  describe("sortScenarios", () => {
+    const testList = [
+      {
+        id: "sc-A",
+        createdAt: "2026-09-01T10:00:00Z",
+        results: { economics: { profit: 20000 }, risk: { overall: 50 } },
+      },
+      {
+        id: "sc-B",
+        createdAt: "2026-09-15T10:00:00Z",
+        results: { economics: { profit: 50000 }, risk: { overall: 20 } },
+      },
+      {
+        id: "sc-C",
+        createdAt: "2026-09-10T10:00:00Z",
+        results: { economics: { profit: 10000 }, risk: { overall: 80 } },
+      },
+    ];
+
+    it("sorts by newest first (descending timestamp)", () => {
+      const sorted = sortScenarios(testList, "newest");
+      assert.equal(sorted[0].id, "sc-B"); // Sept 15
+      assert.equal(sorted[2].id, "sc-A"); // Sept 01
+    });
+
+    it("sorts by oldest first (ascending timestamp)", () => {
+      const sorted = sortScenarios(testList, "oldest");
+      assert.equal(sorted[0].id, "sc-A"); // Sept 01
+      assert.equal(sorted[2].id, "sc-B"); // Sept 15
+    });
+
+    it("sorts by highest profit first", () => {
+      const sorted = sortScenarios(testList, "profit_high");
+      assert.equal(sorted[0].id, "sc-B"); // 50000
+      assert.equal(sorted[2].id, "sc-C"); // 10000
+    });
+
+    it("sorts by lowest risk first", () => {
+      const sorted = sortScenarios(testList, "risk_low");
+      assert.equal(sorted[0].id, "sc-B"); // Risk 20
+      assert.equal(sorted[2].id, "sc-C"); // Risk 80
     });
   });
 });
