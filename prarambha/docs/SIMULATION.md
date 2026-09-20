@@ -453,6 +453,91 @@ Return Errors    Simulation Engine (simulation.engine.js -> calculateSimulation)
 - `INVALID_ENUM`: String value outside supported enum set
 - `INVALID_DATE`: Unparseable or invalid calendar date string
 
+---
+
+## 11. Recommendation Service (`recommendation.service.js`)
+
+The Recommendation Service converts deterministic simulation outputs into actionable, traceable expert advisory recommendations.
+
+> **Architectural Position**: The Recommendation Service operates strictly downstream of the Simulation Engine. It consumes verified simulation outputs (`water`, `yield`, `economics`, `risk`, `decision`) and translates them into structured expert recommendations.
+
+### 11.1 Architectural Flow
+
+```text
+Scenario Input
+      │
+      ▼
+Simulation Input Validator (simulation.validator.js)
+      │
+      ▼
+Simulation Engine (simulation.engine.js)
+      │
+      ▼
+Simulation Output Result
+      │
+      ▼
+Recommendation Service (recommendation.service.js -> generateRecommendations)
+      │
+      ▼
+Structured Traceable Recommendations
+```
+
+### 11.2 Key Non-Responsibilities (No Recalculation Rule)
+To preserve consistency across the application, the Recommendation Service does NOT recalculate:
+- Crop yield or potential yield
+- Gross revenue, baseline production cost, or net profit
+- Return on Investment (ROI)
+- Required or drawn water volumes
+- Component risk scores or overall risk level
+- Priority weights or decision scores
+
+Recomputing these metrics would create split-brain logic and risk disagreement between simulation screens and advisory recommendations.
+
+### 11.3 Output Contract Structure
+`generateRecommendations(simulationResult, scenarioInput)` returns:
+```json
+{
+  "recommendations": [
+    {
+      "id": "rec-rule-water-critical",
+      "ruleId": "RULE_WATER_AVAILABILITY_CRITICAL",
+      "category": "water",
+      "priority": "high",
+      "title": "Severe Water Deficit Detected",
+      "message": "Water availability is at 40%, causing a 60% yield penalty.",
+      "reason": "Water availability falls below the critical 50% sustainability threshold for this crop.",
+      "metric": "waterAvailabilityPercent",
+      "currentValue": 40,
+      "threshold": 50,
+      "action": "Consider shifting to drought-resilient crops (e.g. soybean/maize) or adopting micro-irrigation (drip/sprinkler)."
+    }
+  ]
+}
+```
+
+### 11.4 Rule Categories & Triggers
+
+| Category | Priority | Rule ID | Trigger Condition | Recommended Action |
+| :--- | :--- | :--- | :--- | :--- |
+| **Water** | `high` | `RULE_WATER_AVAILABILITY_CRITICAL` | `waterAvailabilityPercent < 50` | Shift to low-water crops or micro-irrigation |
+| **Water** | `medium` | `RULE_WATER_AVAILABILITY_MODERATE` | `50 <= waterAvailabilityPercent < 80` | Implement soil mulching & scheduled deficit irrigation |
+| **Water** | `medium` | `RULE_WATER_PRODUCTIVITY_LOW` | `waterProductivityKgPerM3 < 0.50` | Upgrade from flood to drip/sprinkler systems |
+| **Weather** | `high` | `RULE_WEATHER_POOR` | `weather === 'poor'` \|\| `weatherRisk >= 80` | Procure crop insurance & adjust sowing timing |
+| **Weather** | `medium` | `RULE_WEATHER_NORMAL_STRESS` | `weather === 'normal'` && `overallRisk > 50` | Track local agrometeorological advisories |
+| **Planting** | `high` | `RULE_PLANTING_DELAY_HIGH` | `delayDays >= 15` \|\| `plantingRisk >= 50` | Use short-duration seeds or direct seeding |
+| **Planting** | `medium` | `RULE_PLANTING_DELAY_MODERATE` | `1 <= delayDays < 15` | Apply seed treatment & basal fertilizer |
+| **Financial** | `high` | `RULE_FINANCIAL_NEGATIVE_PROFIT` | `profit < 0` \|\| `financialRisk === 100` | Reduce input multiplier or switch crop |
+| **Financial** | `medium` | `RULE_FINANCIAL_LOW_ROI` | `profit >= 0` && `roi < 15` && `cost > 0` | Optimize fertilizer/labor overhead costs |
+| **Input Cost** | `medium` | `RULE_INPUT_COST_ELEVATED` | `inputCostMultiplier > 1.2` | Bulk purchase inputs or use integrated pest management |
+| **Irrigation** | `medium` | `RULE_IRRIGATION_FLOOD_HIGH_COST` | `irrigation === 'flood'` && `waterAvail < 80` | Transition to drip/sprinkler to prevent evaporation losses |
+| **Decision** | `high` | `RULE_PROFILE_HIGH_RISK_MISMATCH` | `priorityProfile === 'max_profit'` && `overallRisk > 60` | Switch profile to `'balanced'` or `'play_safe'` |
+| **Decision** | `low` | `RULE_PROFILE_PLAY_SAFE_OPPORTUNITY` | `priorityProfile === 'play_safe'` && `overallRisk < 30` && `roi > 30` | Consider shifting to `'balanced'` or `'max_profit'` |
+
+### 11.5 Deterministic Ordering & Deduplication
+- **Deduplication**: Suppresses duplicate recommendations triggered by equivalent conditions.
+- **Priority Ranking**: Recommendations are sorted strictly by `priority` (`high` > `medium` > `low`), then by `category` sequence (`water` -> `weather` -> `planting` -> `financial` -> `input_cost` -> `irrigation` -> `decision_profile`), then by `ruleId`.
+
+
 
 
 
