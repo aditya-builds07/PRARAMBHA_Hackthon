@@ -47,7 +47,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     setLoading(true);
 
     try {
-      // Create user record
+      // Create user record with password
       const newFarmer = {
         farmer_id: farmerId.trim().toUpperCase(),
         full_name: fullName.trim(),
@@ -57,14 +57,18 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
         district: district.trim(),
         total_land_acres: parseFloat(landAcres) || 5.0,
         preferred_language: preferredLang,
+        password: password.trim(),
         role: "farmer",
         created_at: new Date().toISOString(),
       };
 
       // Persist in local storage for offline-first support
       const existingAccounts = JSON.parse(localStorage.getItem("km_registered_accounts") || "[]");
-      existingAccounts.push(newFarmer);
-      localStorage.setItem("km_registered_accounts", JSON.stringify(existingAccounts));
+      const filtered = existingAccounts.filter(
+        (a) => a.farmer_id.toUpperCase() !== newFarmer.farmer_id && (!a.email || a.email.toLowerCase() !== newFarmer.email.toLowerCase())
+      );
+      filtered.push(newFarmer);
+      localStorage.setItem("km_registered_accounts", JSON.stringify(filtered));
 
       // Authenticate session
       const mockToken = "km_auth_reg_" + Date.now();

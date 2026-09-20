@@ -22,45 +22,64 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
     setLoading(true);
 
     try {
-      // Simulate authenticating the Farmer ID and password
-      // Resolve registered farmer account details
+      const input = userId.trim();
+      const enteredPassword = password.trim();
+
+      // Check registered accounts list
       const registered = JSON.parse(localStorage.getItem("km_registered_accounts") || "[]");
       const matched = registered.find(
-        (a) => a.farmer_id.toLowerCase() === userId.trim().toLowerCase() ||
-               (a.email && a.email.toLowerCase() === userId.trim().toLowerCase())
+        (a) =>
+          a.farmer_id?.toLowerCase() === input.toLowerCase() ||
+          (a.email && a.email.toLowerCase() === input.toLowerCase()) ||
+          (a.phone && a.phone.replace(/\D/g, "") === input.replace(/\D/g, "")) ||
+          (a.full_name && a.full_name.toLowerCase() === input.toLowerCase())
       );
 
-      const farmerName = matched
-        ? matched.full_name
-        : (userId.toUpperCase() === "MH-PUN-042" ? "Shivaji Patil" : (userId.toUpperCase().includes("OFFICER") ? "Dr. Rajesh Kulkarni (Agri Officer)" : `Farmer ${userId.trim()}`));
+      // Verify password if matched user has registered password
+      if (matched && matched.password) {
+        if (matched.password !== enteredPassword) {
+          throw new Error("Incorrect password. Please enter the password you registered with.");
+        }
+      } else if (input.toUpperCase() === "MH-PUN-042" && enteredPassword !== "farmer2026") {
+        throw new Error("Incorrect password for Shivaji Patil account. Default is: farmer2026");
+      } else if (input.toUpperCase().includes("OFFICER") && enteredPassword !== "officer2026") {
+        throw new Error("Incorrect password for Agri Officer account. Default is: officer2026");
+      }
 
-      const farmerDistrict = matched?.district || "Pune";
-      const farmerLand = matched?.total_land_acres || 5.0;
+      // Generate active session token
+      const mockToken = "km_auth_" + Date.now();
 
-      localStorage.setItem("user_id", userId.trim().toUpperCase());
-      localStorage.setItem("farmer_id", userId.trim().toUpperCase());
-      localStorage.setItem("user_name", farmerName);
-      localStorage.setItem("farmer_district", farmerDistrict);
-      localStorage.setItem("farmer_land_acres", String(farmerLand));
+      // Resolve profile information
+      const finalFarmerId = matched?.farmer_id || input.toUpperCase();
+      const finalFarmerName = matched?.full_name || (input.toUpperCase() === "MH-PUN-042" ? "Shivaji Patil" : (input.toUpperCase().includes("OFFICER") ? "Dr. Rajesh Kulkarni (Agri Officer)" : `Farmer ${input}`));
+      const finalDistrict = matched?.district || "Pune";
+      const finalLand = matched?.total_land_acres || 5.0;
+      const finalEmail = matched?.email || (input.includes("@") ? input : `${finalFarmerId.toLowerCase()}@krishimitra.in`);
+
+      localStorage.setItem("user_id", finalFarmerId);
+      localStorage.setItem("farmer_id", finalFarmerId);
+      localStorage.setItem("user_name", finalFarmerName);
+      localStorage.setItem("farmer_district", finalDistrict);
+      localStorage.setItem("farmer_land_acres", String(finalLand));
+      localStorage.setItem("user_email", finalEmail);
       localStorage.setItem("supabase_token", mockToken);
-      localStorage.setItem("user_email", matched?.email || (userId.includes("@") ? userId : `${userId.toLowerCase()}@krishimitra.in`));
 
       if (onLoginSuccess) {
         onLoginSuccess({
-          id: userId.trim(),
-          name: farmerName,
+          id: finalFarmerId,
+          name: finalFarmerName,
           token: mockToken,
         });
       }
 
-      setSuccessMsg(`Welcome back, ${farmerName}! Redirecting to simulator...`);
+      setSuccessMsg(`Welcome back, ${finalFarmerName}! Opening simulator...`);
 
       setTimeout(() => {
         setLoading(false);
         if (onNavigate) {
           onNavigate("dashboard");
         }
-      }, 700);
+      }, 600);
     } catch (err) {
       setError(err.message || "Failed to sign in. Please verify your ID and password.");
       setLoading(false);
