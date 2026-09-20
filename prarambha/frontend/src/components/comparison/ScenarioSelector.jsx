@@ -132,8 +132,9 @@ export default function ScenarioSelector({
                     {t("comparison.setBaseline")}
                   </button>
                 ) : isBaseline ? (
-                  <div className="text-center text-[11px] text-emerald-700 font-semibold py-1">
-                    ✓ Reference Baseline
+                  <div className="text-center text-[11px] text-emerald-700 font-semibold py-1 flex items-center justify-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">check</span>
+                    <span>Reference Baseline</span>
                   </div>
                 ) : (
                   <div className="h-6" />

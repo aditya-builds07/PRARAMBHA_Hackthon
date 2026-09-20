@@ -20,7 +20,7 @@ export default function RecommendationCard({ recommendation }) {
       bgHeader: "bg-rose-50",
       textHeader: "text-rose-950",
       badge: "bg-rose-600 text-white",
-      icon: "🚨",
+      icon: "error",
       label: t("recommendations.severity.critical") || "Critical Attention Required",
       actionBg: "bg-rose-50/70 border-rose-200 text-rose-950",
     },
@@ -29,7 +29,7 @@ export default function RecommendationCard({ recommendation }) {
       bgHeader: "bg-amber-50",
       textHeader: "text-amber-950",
       badge: "bg-amber-600 text-white",
-      icon: "⚠️",
+      icon: "warning",
       label: t("recommendations.severity.warning") || "Optimization Opportunity",
       actionBg: "bg-amber-50/70 border-amber-200 text-amber-950",
     },
@@ -38,7 +38,7 @@ export default function RecommendationCard({ recommendation }) {
       bgHeader: "bg-blue-50",
       textHeader: "text-blue-950",
       badge: "bg-blue-600 text-white",
-      icon: "💡",
+      icon: "lightbulb",
       label: t("recommendations.severity.info") || "Informational Advisory",
       actionBg: "bg-blue-50/70 border-blue-200 text-blue-950",
     },
@@ -47,7 +47,7 @@ export default function RecommendationCard({ recommendation }) {
     bgHeader: "bg-slate-50",
     textHeader: "text-slate-950",
     badge: "bg-slate-600 text-white",
-    icon: "📌",
+    icon: "push_pin",
     label: "Advisory",
     actionBg: "bg-slate-50 border-slate-200 text-slate-900",
   };
@@ -60,7 +60,7 @@ export default function RecommendationCard({ recommendation }) {
       {/* Card Header: Severity & Trigger */}
       <div className={`${severityConfig.bgHeader} p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2`}>
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-base" aria-hidden="true">
+          <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
             {severityConfig.icon}
           </span>
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider shadow-2xs ${severityConfig.badge}`}>
@@ -98,7 +98,7 @@ export default function RecommendationCard({ recommendation }) {
         {/* 3. Recommended Action (Hero Action Box) */}
         <div className="space-y-1">
           <span className="font-bold text-slate-700 uppercase tracking-wider text-[10px] flex items-center gap-1">
-            <span>✅</span>
+            <span className="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span>
             <span>{t("recommendations.action") || "Recommended Action"}</span>
           </span>
           <div className={`p-3 rounded-lg border font-semibold leading-relaxed ${severityConfig.actionBg}`}>

@@ -34,7 +34,7 @@ export default function ControllableVsExternal({ factors = [] }) {
           <div className="bg-blue-50/80 p-4 border-b border-blue-100 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center text-xs font-bold" aria-hidden="true">
-                ⚙️
+                <span className="material-symbols-outlined text-[16px]">settings</span>
               </span>
               <div>
                 <h4 className="font-bold text-blue-950 text-sm">
@@ -97,7 +97,7 @@ export default function ControllableVsExternal({ factors = [] }) {
           <div className="bg-purple-50/80 p-4 border-b border-purple-100 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="w-6 h-6 rounded-md bg-purple-600 text-white flex items-center justify-center text-xs font-bold" aria-hidden="true">
-                🌦️
+                <span className="material-symbols-outlined text-[16px]">cloud</span>
               </span>
               <div>
                 <h4 className="font-bold text-purple-950 text-sm">

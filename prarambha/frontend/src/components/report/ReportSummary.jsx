@@ -45,7 +45,7 @@ export default function ReportSummary({ reportModel, onExportText }) {
             onClick={onExportText}
             className="px-3.5 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors shadow-2xs flex items-center gap-1.5"
           >
-            <span>📄</span>
+            <span className="material-symbols-outlined text-[16px]">description</span>
             <span>Download Summary</span>
           </button>
         )}
@@ -55,7 +55,7 @@ export default function ReportSummary({ reportModel, onExportText }) {
           onClick={triggerPrint}
           className="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
         >
-          <span>🖨️</span>
+          <span className="material-symbols-outlined text-[16px]">print</span>
           <span>Print Decision Sheet</span>
         </button>
       </div>

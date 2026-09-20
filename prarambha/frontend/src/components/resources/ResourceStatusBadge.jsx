@@ -13,25 +13,25 @@ export default function ResourceStatusBadge({ status = "available" }) {
       bg: "bg-emerald-50 text-emerald-950 border-emerald-300",
       dot: "bg-emerald-600",
       label: t("resources.status.available") || "Sufficient",
-      icon: "✓",
+      icon: "check",
     },
     shortage: {
       bg: "bg-amber-50 text-amber-950 border-amber-300",
       dot: "bg-amber-600",
       label: t("resources.status.shortage") || "Deficit Identified",
-      icon: "!",
+      icon: "warning",
     },
     critical: {
       bg: "bg-rose-50 text-rose-950 border-rose-300",
       dot: "bg-rose-600",
       label: t("resources.status.critical") || "Critical Shortage",
-      icon: "✕",
+      icon: "close",
     },
   }[status] || {
     bg: "bg-slate-50 text-slate-900 border-slate-300",
     dot: "bg-slate-500",
     label: status.toUpperCase(),
-    icon: "•",
+    icon: "info",
   };
 
   return (
@@ -40,7 +40,7 @@ export default function ResourceStatusBadge({ status = "available" }) {
       aria-label={`Resource status: ${configs.label}`}
       className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-2xs ${configs.bg}`}
     >
-      <span aria-hidden="true" className="font-extrabold text-[11px]">{configs.icon}</span>
+      <span aria-hidden="true" className="material-symbols-outlined text-[14px]">{configs.icon}</span>
       <span>{configs.label}</span>
     </span>
   );

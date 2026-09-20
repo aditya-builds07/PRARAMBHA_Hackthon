@@ -13,30 +13,30 @@ export function getRiskBadge(risk) {
     case "low":
       return {
         label: "Low Risk",
-        icon: "✓",
-        dot: "🟢",
+        icon: "check_circle",
+        dot: "",
         className: "bg-emerald-50 text-emerald-950 border-emerald-300",
       };
     case "high":
       return {
         label: "High Risk",
-        icon: "⚠",
-        dot: "🟠",
+        icon: "warning",
+        dot: "",
         className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "critical":
       return {
         label: "Critical Risk",
-        icon: "🚨",
-        dot: "🔴",
+        icon: "error",
+        dot: "",
         className: "bg-rose-50 text-rose-950 border-rose-300",
       };
     case "medium":
     default:
       return {
         label: "Medium Risk",
-        icon: "ℹ",
-        dot: "🟡",
+        icon: "info",
+        dot: "",
         className: "bg-yellow-50 text-yellow-950 border-yellow-300",
       };
   }
@@ -148,7 +148,8 @@ export default function ScenarioHistoryTable({
               : "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"
           }`}
         >
-          <span>📊 {t("history.compareButton") || "Compare Selected"}</span>
+          <span className="material-symbols-outlined text-[16px]">bar_chart</span>
+          <span>{t("history.compareButton") || "Compare Selected"}</span>
           <span aria-hidden="true">→</span>
         </button>
       </div>
@@ -164,7 +165,7 @@ export default function ScenarioHistoryTable({
           <div className="bg-white rounded-2xl border border-slate-200 p-6 max-w-md w-full shadow-xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center gap-3">
               <span className="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center text-xl font-bold">
-                ⚠️
+                <span className="material-symbols-outlined">warning</span>
               </span>
               <div>
                 <h2 id="confirm-delete-title" className="text-base font-black text-slate-900">
@@ -210,7 +211,7 @@ export default function ScenarioHistoryTable({
         {/* Mobile Horizontal Scroll Indicator */}
         <div className="px-4 py-2 bg-slate-100/90 border-b border-slate-200 text-[11px] text-slate-600 flex items-center justify-between sm:hidden">
           <span>← Swipe to view all table columns →</span>
-          <span aria-hidden="true">📊</span>
+          <span className="material-symbols-outlined text-[16px]">bar_chart</span>
         </div>
 
         <div className="overflow-x-auto max-w-full touch-pan-x">
@@ -280,14 +281,14 @@ export default function ScenarioHistoryTable({
                             type="submit"
                             className="px-2 py-1 bg-emerald-600 text-white rounded text-[10px] font-bold cursor-pointer"
                           >
-                            ✓
+                            Save
                           </button>
                           <button
                             type="button"
                             onClick={cancelRename}
                             className="px-2 py-1 bg-slate-200 text-slate-700 rounded text-[10px] font-bold cursor-pointer"
                           >
-                            ✕
+                            Cancel
                           </button>
                         </form>
                       ) : (
@@ -299,7 +300,7 @@ export default function ScenarioHistoryTable({
                             title="Rename Scenario"
                             className="text-slate-400 hover:text-slate-700 text-xs cursor-pointer"
                           >
-                            ✏️
+                            <span className="material-symbols-outlined text-[14px]">edit</span>
                           </button>
                         </div>
                       )}

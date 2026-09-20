@@ -1,0 +1,694 @@
+<!DOCTYPE html><html lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "secondary-fixed-dim": "#88d8a0", "on-tertiary-fixed": "#001f29", "tertiary-fixed-dim": "#84d1f0", "on-tertiary-fixed-variant": "#004d62", "on-secondary-fixed": "#00210e", "on-primary": "#ffffff", "on-surface-variant": "#404943", "tertiary-fixed": "#baeaff", "surface-container-low": "#f5f3ed", "error-container": "#ffdad6", "primary-fixed-dim": "#9dd2b5", "inverse-surface": "#30312d", "inverse-on-surface": "#f3f1eb", "tertiary-container": "#00475a", "on-error": "#ffffff", "secondary-fixed": "#a4f4ba", "primary-fixed": "#b9efd0", "primary-container": "#164a34", "on-primary-fixed": "#002113", "outline": "#717973", "background": "#fbf9f3", "on-surface": "#1b1c18", "surface": "#fbf9f3", "on-tertiary-container": "#6ab7d5", "tertiary": "#002f3d", "surface-container-lowest": "#ffffff", "surface-variant": "#e4e2dd", "secondary-container": "#a1f1b7", "on-secondary-container": "#1f7042", "error": "#ba1a1a", "outline-variant": "#c0c9c1", "surface-tint": "#366850", "on-error-container": "#93000a", "on-secondary-fixed-variant": "#00522b", "primary": "#003320", "on-background": "#1b1c18", "on-primary-fixed-variant": "#1d5039", "surface-dim": "#dcdad4", "surface-container": "#f0eee8", "on-primary-container": "#85b99c", "secondary": "#196c3e", "surface-bright": "#fbf9f3", "inverse-primary": "#9dd2b5", "surface-container-highest": "#e4e2dd", "surface-container-high": "#eae8e2", "on-secondary": "#ffffff", "on-tertiary": "#ffffff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2.5rem", "space-md": "1rem", "gutter-mobile": "1rem", "gutter": "1.5rem", "margin-mobile": "1rem", "margin": "3rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-lg": "1.5rem" }, "fontFamily": { "title-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "title-lg": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "display-lg-mobile": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"] }, "fontSize": { "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "title-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased" style="background: radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.15) 0px, transparent 50%) fixed, radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.18) 0px, transparent 50%), radial-gradient(rgba(132, 204, 22, 0.08) 0px, transparent 50%), radial-gradient(at 80% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 50%), rgb(244, 247, 244); min-height: 100vh;"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between pt-5 pb-6" style="backdrop-filter: blur(20px) saturate(180%); background-color: rgba(255, 255, 255, 0.78); border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.04) 0px 4px 24px -1px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;"><div class="flex flex-col gap-6"><div class="px-6 flex items-center gap-3"><img alt="Brand logo. - Primary color: #164a34
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UwvheEflVQETpVODXud1bKJQLTG3Z9V091WAQuRWb3OjkfynIYN40ImZHKnidhICqNkNrqFqpWKzSfZlgxI5J_M82iY6odlXGtsZTTc8HXdVBAz6ryKsSz-P5wU6ZoKTCO5D247hagw2iNx0PZZfjdthMC8zjpWAGLJh7xg4qo3i9LZdCn7j6gGxugjmJTrMiBN0EKKxLQuSsUMZx2F7LChrzofAoNzJDssH-iE5FNMrlgSgXlD6etBto"><div class="flex flex-col"><span class="font-title-lg text-primary tracking-tight leading-none">KrishiMitra</span><span class="font-label-sm text-secondary">Agri-Advisory OS</span></div></div><nav class="flex flex-col px-3 space-y-1" data-active-classes="bg-primary-container text-on-primary-container font-title-md"><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[20px]">space_dashboard</span><span class="">Dashboard</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="my-farms" href="#"><span class="material-symbols-outlined text-[20px]">agriculture</span><span class="">My Farms</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="plans" href="#"><span class="material-symbols-outlined text-[20px]">calendar_month</span><span class="">Plans</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="compare" href="#"><span class="material-symbols-outlined text-[20px]">balance</span><span class="">Compare</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="recommendations" href="#"><span class="material-symbols-outlined text-[20px]">psychology_alt</span><span class="">Recommendations</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="resource-check" href="#"><span class="material-symbols-outlined text-[20px]">water_voc</span><span class="">Resource Check</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="reports" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span><span class="">Reports</span></a></nav></div><div class="px-4"><div class="p-3 bg-surface-container rounded-xl flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-label-lg text-on-surface truncate">Ramesh Deshmukh</span><span class="font-label-sm text-on-surface-variant truncate">Shivaji Nagar Farm #2</span></div><span class="material-symbols-outlined text-on-surface-variant text-[18px]">unfold_more</span></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8" style="backdrop-filter: blur(20px) saturate(180%); background-color: rgba(255, 255, 255, 0.78); border-bottom: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.04) 0px 4px 24px -1px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;"><div class="flex items-center gap-3"><img alt="Brand logo. - Primary color: #164a34
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UwvheEflVQETpVODXud1bKJQLTG3Z9V091WAQuRWb3OjkfynIYN40ImZHKnidhICqNkNrqFqpWKzSfZlgxI5J_M82iY6odlXGtsZTTc8HXdVBAz6ryKsSz-P5wU6ZoKTCO5D247hagw2iNx0PZZfjdthMC8zjpWAGLJh7xg4qo3i9LZdCn7j6gGxugjmJTrMiBN0EKKxLQuSsUMZx2F7LChrzofAoNzJDssH-iE5FNMrlgSgXlD6etBto"><span class="font-title-md text-on-surface hidden sm:inline">KrishiMitra Management</span></div><div class="flex items-center gap-4"><div class="flex items-center bg-surface-container px-2 py-1 rounded-lg"><span class="material-symbols-outlined text-[18px] text-on-surface-variant mr-1">translate</span><select class="bg-transparent font-label-md text-on-surface outline-none cursor-pointer pr-1"><option value="en">English</option><option value="hi">हिंदी</option><option value="mr">मराठी</option></select></div><button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low rounded-lg font-label-md text-on-surface hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[18px] text-secondary">wb_sunny</span><span class="">Nashik 28°C · Soil Wet</span></button><button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 w-full min-h-screen bg-surface" style="background: transparent;"><div class="flex flex-col w-full">
+<!-- Visual Hero Strip with Context -->
+<div class="relative w-full px-6 lg:px-10 pt-6 pb-8 bg-surface-container-low/60 border-b border-outline-variant/30" style="background-color: rgba(255, 255, 255, 0.55); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.7); box-shadow: rgba(22, 74, 52, 0.03) 0px 4px 20px -2px;">
+<div class="max-w-7xl mx-auto flex flex-col gap-6">
+<!-- Breadcrumb & Top Bar -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<nav class="flex items-center gap-2 font-label-md text-on-surface-variant">
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]">calendar_month</span>
+<span class="">Plans</span>
+</a>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface">Shivaji Patil Farm</span>
+<span class="text-outline-variant">/</span>
+<span class="font-semibold text-primary">Compare Crop Plans (Kharif-Rabi 2025)</span>
+</nav>
+<div class="flex items-center gap-3">
+<button class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-container-highest/60 hover:bg-surface-container-highest text-on-surface font-label-md transition-all">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+<span class="">Reset Selection</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-container-lowest hover:bg-surface text-primary font-label-md shadow-sm transition-all">
+<span class="material-symbols-outlined text-[18px] text-secondary">picture_as_pdf</span>
+<span class="">Export Comparison PDF</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary-container text-on-primary font-label-md shadow-md hover:bg-primary transition-all">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span class="">Create New Scenario</span>
+</button>
+</div>
+</div>
+<!-- Main Headline + Farm Geography Context Pill -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+<div class="flex flex-col gap-2 max-w-3xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container/40 text-on-secondary-container w-fit font-label-sm">
+<span class="material-symbols-outlined text-[16px]">balance</span>
+<span class="">Multi-Criteria Agronomic Trade-Off Analysis</span>
+</div>
+<h1 class="font-headline-lg text-primary tracking-tight">Compare your plans</h1>
+<p class="font-body-md text-on-surface-variant leading-relaxed">
+            Objective side-by-side trade-offs across financial return, water resilience, and climate exposure. Select up to 4 scenarios to evaluate before committing capital.
+          </p>
+</div>
+<!-- Geo & Soil Badge Bar -->
+<div class="p-3.5 bg-surface-container-lowest rounded-2xl shadow-sm flex items-center gap-3 self-start lg:self-auto">
+<div class="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">nature_people</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-on-surface-variant uppercase tracking-wider">Target Parcel</span>
+<span class="font-label-lg text-on-surface">Shivaji Patil Farm · Hingoli, MH</span>
+<span class="font-body-sm text-outline text-[12px]">8.5 Acres · Deep Black Cotton Soil · Canal + 2 Open Wells</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Page Body Content -->
+<div class="w-full px-6 lg:px-10 py-8">
+<div class="max-w-7xl mx-auto flex flex-col gap-10">
+<!-- SECTION 1: Top 3 Summary Comparison Highlights -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Metric Highlight 1: Profit Range -->
+<div class="relative overflow-hidden bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col justify-between" style="background-color: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary-container/10 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">currency_rupee</span>
+</div>
+<span class="font-label-md text-on-surface-variant uppercase tracking-wider">Estimated Profit</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm bg-secondary-container/30 text-on-secondary-container">3 Scenarios</span>
+</div>
+<div class="flex flex-col gap-1 my-2">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-primary tracking-tight">₹1,46,300</span>
+<span class="font-body-md text-outline">to</span>
+<span class="font-headline-lg text-primary tracking-tight">₹1,84,500</span>
+</div>
+<p class="font-body-sm text-outline">Projected net margin after all operational &amp; amortized inputs</p>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-container flex items-center gap-2 text-secondary font-label-sm">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+<span class="font-medium">+₹38,200 upside with drip optimization vs baseline</span>
+</div>
+</div>
+<!-- Metric Highlight 2: Water Range -->
+<div class="relative overflow-hidden bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col justify-between" style="background-color: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="absolute top-0 right-0 w-32 h-32 bg-tertiary-fixed/15 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[20px]">water_drop</span>
+</div>
+<span class="font-label-md text-on-surface-variant uppercase tracking-wider">Water Needed</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm bg-surface-container text-on-surface-variant">Capacity: 6,200 m³</span>
+</div>
+<div class="flex flex-col gap-1 my-2">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-primary tracking-tight">2,150 m³</span>
+<span class="font-body-md text-outline">to</span>
+<span class="font-headline-lg text-primary tracking-tight">4,650 m³</span>
+</div>
+<p class="font-body-sm text-outline">Demand draws between 34% and 75% of local farm water reserve</p>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-container flex items-center gap-2 text-tertiary font-label-sm">
+<span class="material-symbols-outlined text-[18px]">water_ec</span>
+<span class="font-medium">Max 2,500 m³ water conserved (53% savings with Chana)</span>
+</div>
+</div>
+<!-- Metric Highlight 3: Overall Risk -->
+<div class="relative overflow-hidden bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col justify-between" style="background-color: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="absolute top-0 right-0 w-32 h-32 bg-surface-container-high rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">shield_with_heart</span>
+</div>
+<span class="font-label-md text-on-surface-variant uppercase tracking-wider">Overall Risk Range</span>
+</div>
+<span class="px-2 py-0.5 rounded-full font-label-sm bg-surface-container text-on-surface-variant">Climate &amp; Yield</span>
+</div>
+<div class="flex flex-col gap-1 my-2">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-primary tracking-tight">Low</span>
+<span class="font-body-md text-outline">vs</span>
+<span class="font-headline-lg text-primary tracking-tight">Moderate Risk</span>
+</div>
+<p class="font-body-sm text-outline">Sensitivity to late canal release &amp; heat spike at flowering</p>
+</div>
+<div class="mt-4 pt-3 border-t border-surface-container flex items-center gap-2 text-on-surface-variant font-label-sm">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span class="font-medium">2 of 3 options retain &gt;45% contingency moisture cushion</span>
+</div>
+</div>
+</div>
+<!-- SECTION 2: Side-by-side Plan Cards (3 distinct plans) -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-headline-sm text-primary">Evaluated Plans Side-by-Side</h2>
+<p class="font-body-sm text-on-surface-variant">Each option is calibrated specifically for Hingoli soil profiles and Rabi seasonal outlook.</p>
+</div>
+<div class="hidden sm:flex items-center gap-2 text-outline font-label-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span> Selected for Implementation
+          </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+<!-- PLAN A: Baseline Furrow Wheat Plan -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col justify-between relative" style="background-color: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<!-- Left Accent Strip -->
+<div class="absolute left-0 top-6 bottom-6 w-1 rounded-r-full bg-outline-variant"></div>
+<div class="flex flex-col gap-4">
+<!-- Top Pill & Baseline Label -->
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-lg bg-surface-container-high text-on-surface-variant font-label-sm uppercase tracking-wider font-semibold">
+                  BASELINE
+                </span>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm">
+                  Lowest Upfront Outlay
+                </span>
+</div>
+<!-- Title & Variety -->
+<div>
+<h3 class="font-title-lg text-primary">Baseline Furrow Wheat</h3>
+<p class="font-body-sm text-on-surface-variant mt-0.5">Sonalika HD-2967 · Traditional Flood Furrow</p>
+</div>
+<!-- Key Metrics Grid -->
+<div class="grid grid-cols-2 gap-3 py-3 border-y border-surface-container">
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Net Profit</span>
+<span class="font-title-lg text-primary">₹1,46,300</span>
+<span class="font-label-sm text-on-surface-variant">ROI: 172%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Expected Yield</span>
+<span class="font-title-lg text-primary">19.1 Q/ac</span>
+<span class="font-label-sm text-outline">18.5 - 20.0 range</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Water Needed</span>
+<span class="font-title-lg text-primary">4,650 m³</span>
+<span class="font-label-sm text-error">75% of reserve</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Decision Score</span>
+<div class="flex items-baseline gap-1">
+<span class="font-title-lg text-primary">68</span>
+<span class="font-label-sm text-outline">/100</span>
+</div>
+<span class="font-label-sm text-outline">Moderate Risk</span>
+</div>
+</div>
+<!-- Operational Attributes -->
+<div class="space-y-2.5 text-on-surface-variant">
+<div class="flex items-center justify-between font-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">payments</span>
+<span class="">Input Cost Outlay</span>
+</span>
+<span class="font-medium text-on-surface">₹68,000</span>
+</div>
+<div class="flex items-center justify-between font-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">group</span>
+<span class="">Labor Overhead</span>
+</span>
+<span class="font-medium text-on-surface">High (Manual)</span>
+</div>
+<div class="flex items-center justify-between font-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">cyclone</span>
+<span class="">Climate Sensitivity</span>
+</span>
+<span class="font-medium text-on-surface">Rain/Canal Lag Sensitive</span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 mt-6 pt-4 border-t border-surface-container">
+<button class="flex-1 py-2.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md transition-colors text-center">
+                View Details
+              </button>
+<button class="py-2.5 px-3 rounded-xl bg-transparent hover:bg-surface-container-low text-primary font-label-md transition-colors">
+                Set as Target
+              </button>
+</div>
+</div>
+<!-- PLAN B: Drip Precision Wheat Plan (Recommended / Target) -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 shadow-md flex flex-col justify-between relative ring-2 ring-secondary/30" style="background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1.5px solid rgba(25, 108, 62, 0.35); box-shadow: rgba(22, 74, 52, 0.12) 0px 16px 36px -6px, rgba(255, 255, 255, 0.98) 0px 1px 2px inset;">
+<!-- Left Accent Strip -->
+<div class="absolute left-0 top-6 bottom-6 w-1 rounded-r-full bg-secondary"></div>
+<div class="flex flex-col gap-4">
+<!-- Top Pill & Badge -->
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-lg bg-primary-container text-on-primary font-label-sm uppercase tracking-wider font-semibold">
+                  RECOMMENDED
+                </span>
+<span class="px-2.5 py-1 rounded-full bg-secondary-container/40 text-on-secondary-container font-label-sm font-semibold">
+                  Highest Net Profit
+                </span>
+</div>
+<!-- Title & Variety -->
+<div>
+<h3 class="font-title-lg text-primary flex items-center gap-1.5">
+<span class="">Drip Precision Wheat</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">verified</span>
+</h3>
+<p class="font-body-sm text-on-surface-variant mt-0.5">Sonalika HD-2967 · Micro-sprinkler + Inline Drip</p>
+</div>
+<!-- Key Metrics Grid -->
+<div class="grid grid-cols-2 gap-3 py-3 border-y border-surface-container">
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Net Profit</span>
+<span class="font-title-lg text-secondary font-bold">₹1,84,500</span>
+<span class="font-label-sm text-secondary font-medium">+₹38,200 · ROI: 217%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Expected Yield</span>
+<span class="font-title-lg text-primary">21.2 Q/ac</span>
+<span class="font-label-sm text-outline">21.0 - 23.5 range</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Water Needed</span>
+<span class="font-title-lg text-primary">3,450 m³</span>
+<span class="font-label-sm text-secondary">55% (2,750 m³ buffer)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Decision Score</span>
+<div class="flex items-baseline gap-1">
+<span class="font-title-lg text-secondary font-bold">89</span>
+<span class="font-label-sm text-outline">/100</span>
+</div>
+<span class="font-label-sm text-secondary font-medium">Low Risk</span>
+</div>
+</div>
+<!-- Operational Attributes -->
+<div class="space-y-2.5 text-on-surface-variant">
+<div class="flex items-center justify-between font-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">payments</span>
+<span class="">Input Cost Outlay</span>
+</span>
+<span class="font-medium text-on-surface">₹85,000 (inc. drip fert.)</span>
+</div>
+<div class="flex items-center justify-between font-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">group</span>
+<span class="">Labor Overhead</span>
+</span>
+<span class="font-medium text-on-surface">Low (Automated Checks)</span>
+</div>
+<div class="flex items-center justify-between font-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">cyclone</span>
+<span class="">Climate Sensitivity</span>
+</span>
+<span class="font-medium text-secondary">High Buffer &amp; Fertigation</span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 mt-6 pt-4 border-t border-surface-container">
+<button class="flex-1 py-2.5 px-3 rounded-xl bg-primary-container text-on-primary hover:bg-primary font-label-md transition-colors text-center shadow-sm">
+                Adopt This Plan
+              </button>
+<button class="py-2.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md transition-colors">
+                Full Results
+              </button>
+</div>
+</div>
+<!-- PLAN C: Gram / Chickpea Low-Water Plan -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col justify-between relative" style="background-color: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<!-- Left Accent Strip -->
+<div class="absolute left-0 top-6 bottom-6 w-1 rounded-r-full bg-tertiary-container"></div>
+<div class="flex flex-col gap-4">
+<!-- Top Pill & Badge -->
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-lg bg-surface-container-high text-on-surface-variant font-label-sm uppercase tracking-wider font-semibold">
+                  LOW WATER ALTERNATIVE
+                </span>
+<span class="px-2.5 py-1 rounded-full bg-tertiary-fixed/30 text-on-tertiary-fixed-variant font-label-sm font-semibold">
+                  Lowest Water &amp; Risk
+                </span>
+</div>
+<!-- Title & Variety -->
+<div>
+<h3 class="font-title-lg text-primary">Gram / Desi Chickpea</h3>
+<p class="font-body-sm text-on-surface-variant mt-0.5">Vijay Desi Chana · 2 Protective Runs Only</p>
+</div>
+<!-- Key Metrics Grid -->
+<div class="grid grid-cols-2 gap-3 py-3 border-y border-surface-container">
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Net Profit</span>
+<span class="font-title-lg text-primary">₹1,58,200</span>
+<span class="font-label-sm text-on-surface-variant">+₹11,900 · ROI: 243%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Expected Yield</span>
+<span class="font-title-lg text-primary">12.2 Q/ac</span>
+<span class="font-label-sm text-outline">₹5,800/Q Mandi rate</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Water Needed</span>
+<span class="font-title-lg text-tertiary">2,150 m³</span>
+<span class="font-label-sm text-tertiary font-medium">Only 34% (4,050 surplus)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-outline">Decision Score</span>
+<div class="flex items-baseline gap-1">
+<span class="font-title-lg text-primary">84</span>
+<span class="font-label-sm text-outline">/100</span>
+</div>
+<span class="font-label-sm text-secondary">Ultra-Low Risk</span>
+</div>
+</div>
+<!-- Operational Attributes -->
+<div class="space-y-2.5 text-on-surface-variant">
+<div class="flex items-center justify-between font-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">payments</span>
+<span class="">Input Cost Outlay</span>
+</span>
+<span class="font-medium text-on-surface">₹52,000 (Zero N Synth)</span>
+</div>
+<div class="flex items-center justify-between font-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">group</span>
+<span class="">Labor Overhead</span>
+</span>
+<span class="font-medium text-on-surface">Moderate</span>
+</div>
+<div class="flex items-center justify-between font-body-sm">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">cyclone</span>
+<span class="">Climate Sensitivity</span>
+</span>
+<span class="font-medium text-on-surface">Drought Hardy &amp; Pulse N-Fix</span>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 mt-6 pt-4 border-t border-surface-container">
+<button class="flex-1 py-2.5 px-3 rounded-xl bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md transition-colors text-center">
+                View Details
+              </button>
+<button class="py-2.5 px-3 rounded-xl bg-transparent hover:bg-surface-container-low text-primary font-label-md transition-colors">
+                Evaluate Plan
+              </button>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 3: Comparative Visual Chart Section -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm flex flex-col gap-6" style="background-color: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-primary">Trade-Off Bar Spectrum</h2>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm">No Single "Best" Plan</span>
+</div>
+<p class="font-body-sm text-on-surface-variant">Realized performance across conflicting agronomic priorities.</p>
+</div>
+<!-- Metric Tabs / Filter Pills -->
+<div class="flex flex-wrap items-center gap-1.5 p-1 bg-surface-container rounded-xl">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-lowest shadow-xs text-primary font-label-md">All Metrics</button>
+<button class="px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md transition-colors">Financial Return</button>
+<button class="px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md transition-colors">Water Stress</button>
+<button class="px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md transition-colors">Risk Exposure</button>
+<button class="px-3 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md transition-colors">Cash Outlay</button>
+</div>
+</div>
+<!-- Comparative Horizontal Bars -->
+<div class="p-5 rounded-2xl bg-surface-container-low/60 border border-outline-variant/30 flex flex-col gap-4"><div class="flex flex-wrap items-center justify-between gap-2"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[20px] text-secondary">bar_chart</span><h3 class="font-title-md text-primary">Normalized Multi-Metric Cluster Benchmark</h3></div><div class="flex items-center gap-4 text-[12px] font-medium"><span class="inline-flex items-center gap-1.5 text-on-surface-variant"><span class="w-3 h-3 rounded-sm bg-outline/60 inline-block"></span>Baseline Furrow</span><span class="inline-flex items-center gap-1.5 text-primary font-semibold"><span class="w-3 h-3 rounded-sm bg-secondary inline-block"></span>Drip Wheat (Target)</span><span class="inline-flex items-center gap-1.5 text-on-surface-variant"><span class="w-3 h-3 rounded-sm bg-tertiary-container inline-block"></span>Desi Chickpea</span></div></div><div class="w-full overflow-x-auto"><div class="min-w-[620px] pt-2"><svg class="w-full h-56" viewBox="0 0 760 210" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="50" y1="160" x2="730" y2="160" stroke="#c0c9c1" stroke-width="1.5"></line><line x1="50" y1="125" x2="730" y2="125" stroke="#eae8e2" stroke-dasharray="4 4"></line><line x1="50" y1="90" x2="730" y2="90" stroke="#eae8e2" stroke-dasharray="4 4"></line><line x1="50" y1="55" x2="730" y2="55" stroke="#eae8e2" stroke-dasharray="4 4"></line><line x1="50" y1="20" x2="730" y2="20" stroke="#eae8e2" stroke-dasharray="4 4"></line><text x="40" y="164" text-anchor="end" font-size="11" fill="#717973" font-family="Plus Jakarta Sans">0</text><text x="40" y="129" text-anchor="end" font-size="11" fill="#717973" font-family="Plus Jakarta Sans">25</text><text x="40" y="94" text-anchor="end" font-size="11" fill="#717973" font-family="Plus Jakarta Sans">50</text><text x="40" y="59" text-anchor="end" font-size="11" fill="#717973" font-family="Plus Jakarta Sans">75</text><text x="40" y="24" text-anchor="end" font-size="11" fill="#717973" font-family="Plus Jakarta Sans">100</text><g transform="translate(85,0)"><rect x="0" y="57" width="28" height="103" rx="4" fill="#717973" fill-opacity="0.6"></rect><text x="14" y="51" text-anchor="middle" font-size="11" font-weight="600" fill="#1b1c18" font-family="Plus Jakarta Sans">₹1.46L</text><rect x="34" y="33" width="28" height="127" rx="4" fill="#196c3e"></rect><text x="48" y="27" text-anchor="middle" font-size="11" font-weight="700" fill="#196c3e" font-family="Plus Jakarta Sans">₹1.85L</text><rect x="68" y="51" width="28" height="109" rx="4" fill="#00475a"></rect><text x="82" y="45" text-anchor="middle" font-size="11" font-weight="600" fill="#00475a" font-family="Plus Jakarta Sans">₹1.58L</text><text x="48" y="182" text-anchor="middle" font-size="12" font-weight="600" fill="#003320" font-family="Plus Jakarta Sans">Net Profit (₹L)</text><text x="48" y="197" text-anchor="middle" font-size="10" fill="#717973" font-family="Plus Jakarta Sans">Higher is better</text></g><g transform="translate(255,0)"><rect x="0" y="38" width="28" height="122" rx="4" fill="#ba1a1a" fill-opacity="0.65"></rect><text x="14" y="32" text-anchor="middle" font-size="11" font-weight="600" fill="#ba1a1a" font-family="Plus Jakarta Sans">4.65k</text><rect x="34" y="69" width="28" height="91" rx="4" fill="#196c3e"></rect><text x="48" y="63" text-anchor="middle" font-size="11" font-weight="700" fill="#196c3e" font-family="Plus Jakarta Sans">3.45k</text><rect x="68" y="104" width="28" height="56" rx="4" fill="#00475a"></rect><text x="82" y="98" text-anchor="middle" font-size="11" font-weight="700" fill="#00475a" font-family="Plus Jakarta Sans">2.15k</text><text x="48" y="182" text-anchor="middle" font-size="12" font-weight="600" fill="#003320" font-family="Plus Jakarta Sans">Water Used (k m³)</text><text x="48" y="197" text-anchor="middle" font-size="10" fill="#717973" font-family="Plus Jakarta Sans">Lower is better</text></g><g transform="translate(425,0)"><rect x="0" y="58" width="28" height="102" rx="4" fill="#717973" fill-opacity="0.6"></rect><text x="14" y="52" text-anchor="middle" font-size="11" font-weight="600" fill="#1b1c18" font-family="Plus Jakarta Sans">₹68k</text><rect x="34" y="38" width="28" height="122" rx="4" fill="#196c3e"></rect><text x="48" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#196c3e" font-family="Plus Jakarta Sans">₹85k</text><rect x="68" y="82" width="28" height="78" rx="4" fill="#00475a"></rect><text x="82" y="76" text-anchor="middle" font-size="11" font-weight="700" fill="#00475a" font-family="Plus Jakarta Sans">₹52k</text><text x="48" y="182" text-anchor="middle" font-size="12" font-weight="600" fill="#003320" font-family="Plus Jakarta Sans">Capital Needed (₹k)</text><text x="48" y="197" text-anchor="middle" font-size="10" fill="#717973" font-family="Plus Jakarta Sans">Upfront outlay</text></g><g transform="translate(595,0)"><rect x="0" y="46" width="28" height="114" rx="4" fill="#717973" fill-opacity="0.6"></rect><text x="14" y="40" text-anchor="middle" font-size="11" font-weight="600" fill="#1b1c18" font-family="Plus Jakarta Sans">42 d</text><rect x="34" y="92" width="28" height="68" rx="4" fill="#196c3e"></rect><text x="48" y="86" text-anchor="middle" font-size="11" font-weight="700" fill="#196c3e" font-family="Plus Jakarta Sans">24 d</text><rect x="68" y="76" width="28" height="84" rx="4" fill="#00475a"></rect><text x="82" y="70" text-anchor="middle" font-size="11" font-weight="600" fill="#00475a" font-family="Plus Jakarta Sans">30 d</text><text x="48" y="182" text-anchor="middle" font-size="12" font-weight="600" fill="#003320" font-family="Plus Jakarta Sans">Labor Input (Days)</text><text x="48" y="197" text-anchor="middle" font-size="10" fill="#717973" font-family="Plus Jakarta Sans">Human effort required</text></g></svg></div></div></div><div class="flex flex-col gap-8 pt-2">
+<!-- Metric 1: Net Profit Realization -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">monetization_on</span>
+<span class="font-title-md text-primary">Net Profit Realization</span>
+<span class="text-outline-variant">·</span>
+<span class="font-label-sm text-secondary font-medium">Trade-off: Precision Wheat generates ₹38.2k higher income</span>
+</div>
+<span class="font-label-sm text-outline">Target ceiling: ₹2,00,000</span>
+</div>
+<!-- Bar Rows -->
+<div class="space-y-2">
+<!-- Plan A -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-on-surface-variant truncate">Baseline Furrow</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-outline/60 flex items-center justify-end pr-2 transition-all duration-500" style="width: 73.15%;">
+<span class="font-label-sm text-surface text-[11px] font-semibold">₹1,46,300</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-outline text-right">ROI 172%</span>
+</div>
+<!-- Plan B -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-primary font-semibold truncate">Drip Wheat (Target)</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-secondary flex items-center justify-between px-2.5 transition-all duration-500" style="width: 92.25%;">
+<span class="font-label-sm text-surface text-[11px] font-semibold">Highest Net Profit</span>
+<span class="font-label-sm text-surface text-[11px] font-bold">₹1,84,500</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-secondary font-semibold text-right">ROI 217%</span>
+</div>
+<!-- Plan C -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-on-surface-variant truncate">Desi Chickpea</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-tertiary-container flex items-center justify-end pr-2 transition-all duration-500" style="width: 79.1%;">
+<span class="font-label-sm text-surface text-[11px] font-semibold">₹1,58,200</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-primary font-semibold text-right">Highest ROI 243%</span>
+</div>
+</div>
+</div>
+<!-- Metric 2: Water Consumption vs Farm Reserve -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-tertiary">water_drop</span>
+<span class="font-title-md text-primary">Water Consumption (6,200 m³ Farm Water Reserve)</span>
+<span class="text-outline-variant">·</span>
+<span class="font-label-sm text-tertiary font-medium">Trade-off: Chickpea conserves 53% water (4,050 m³ surplus)</span>
+</div>
+<span class="font-label-sm text-outline">Lower bar = safer reserve</span>
+</div>
+<!-- Bar Rows -->
+<div class="space-y-2">
+<!-- Plan A -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-on-surface-variant truncate">Baseline Furrow</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-error/70 flex items-center justify-end pr-2 transition-all duration-500" style="width: 75%;">
+<span class="font-label-sm text-surface text-[11px] font-semibold">4,650 m³ (75% reserve drawn)</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-error text-right">1,550 m³ buffer</span>
+</div>
+<!-- Plan B -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-primary font-semibold truncate">Drip Wheat (Target)</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-secondary-fixed-dim flex items-center justify-end pr-2 transition-all duration-500" style="width: 55.6%;">
+<span class="font-label-sm text-on-secondary-fixed text-[11px] font-semibold">3,450 m³ (55%)</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-on-surface text-right">2,750 m³ buffer</span>
+</div>
+<!-- Plan C -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-on-surface-variant truncate">Desi Chickpea</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-tertiary flex items-center justify-between px-2.5 transition-all duration-500" style="width: 34.6%;">
+<span class="font-label-sm text-on-tertiary text-[11px] font-semibold">Lowest Water Use</span>
+<span class="font-label-sm text-on-tertiary text-[11px] font-bold">2,150 m³</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-tertiary font-semibold text-right">4,050 m³ surplus</span>
+</div>
+</div>
+</div>
+<!-- Metric 3: Climate & Delay Risk Factor -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">thermostat</span>
+<span class="font-title-md text-primary">Climate &amp; Sowing Delay Risk Score</span>
+<span class="text-outline-variant">·</span>
+<span class="font-label-sm text-outline">Lower score indicates higher resilience to winter heat waves</span>
+</div>
+<span class="font-label-sm text-outline">Scale: 0 (Ultra safe) to 100</span>
+</div>
+<!-- Bar Rows -->
+<div class="space-y-2">
+<!-- Plan A -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-on-surface-variant truncate">Baseline Furrow</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-error/60 flex items-center justify-end pr-2 transition-all duration-500" style="width: 42%;">
+<span class="font-label-sm text-surface text-[11px] font-semibold">42 / 100</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-error text-right">Moderate Risk</span>
+</div>
+<!-- Plan B -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-primary font-semibold truncate">Drip Wheat (Target)</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-secondary-fixed-dim flex items-center justify-end pr-2 transition-all duration-500" style="width: 15%;">
+<span class="font-label-sm text-on-secondary-fixed text-[11px] font-semibold">15</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-secondary font-semibold text-right">Low Risk</span>
+</div>
+<!-- Plan C -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-on-surface-variant truncate">Desi Chickpea</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-tertiary-container flex items-center justify-between px-2 transition-all duration-500" style="width: 11%;">
+<span class="font-label-sm text-surface text-[11px] font-bold">11</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-tertiary font-semibold text-right">Lowest Risk</span>
+</div>
+</div>
+</div>
+<!-- Metric 4: Upfront Cash Outlay -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">credit_card</span>
+<span class="font-title-md text-primary">Upfront Cash Outlay Required</span>
+<span class="text-outline-variant">·</span>
+<span class="font-label-sm text-outline">Seed, chemical inputs, labor staging, and irrigation fittings</span>
+</div>
+<span class="font-label-sm text-outline">Lower bar = less debt exposure</span>
+</div>
+<!-- Bar Rows -->
+<div class="space-y-2">
+<!-- Plan A -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-on-surface-variant truncate">Baseline Furrow</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-outline/50 flex items-center justify-end pr-2 transition-all duration-500" style="width: 68%;">
+<span class="font-label-sm text-surface text-[11px] font-semibold">₹68,000</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-outline text-right">Moderate Outlay</span>
+</div>
+<!-- Plan B -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-primary font-semibold truncate">Drip Wheat (Target)</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-primary-container flex items-center justify-end pr-2 transition-all duration-500" style="width: 85%;">
+<span class="font-label-sm text-on-primary text-[11px] font-semibold">₹85,000</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-on-surface text-right">Highest Outlay</span>
+</div>
+<!-- Plan C -->
+<div class="flex items-center gap-3">
+<span class="w-36 text-right font-label-md text-on-surface-variant truncate">Desi Chickpea</span>
+<div class="flex-1 h-6 bg-surface-container rounded-full overflow-hidden flex items-center p-0.5">
+<div class="h-full rounded-full bg-secondary flex items-center justify-between px-2.5 transition-all duration-500" style="width: 52%;">
+<span class="font-label-sm text-surface text-[11px] font-semibold">Lowest Input Cost</span>
+<span class="font-label-sm text-surface text-[11px] font-bold">₹52,000</span>
+</div>
+</div>
+<span class="w-28 font-label-sm text-secondary font-semibold text-right">Save ₹33k Outlay</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- SECTION 4: Objective Trade-Off Detailed Matrix Table -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 lg:p-8 shadow-sm flex flex-col gap-5" style="background-color: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="flex items-center justify-between"><div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 w-full"><div class="flex flex-col gap-1.5 max-w-xl"><div class="flex items-center gap-2"><h2 class="font-headline-sm text-primary">In-Depth Agronomic Matrix</h2><span class="px-3 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm">5 Criteria Compared</span></div><p class="font-body-sm text-on-surface-variant">Cross-referencing soil chemistry, harvest timing, and economic sensitivity parameters with holistic multi-axis radar positioning.</p><div class="flex flex-wrap items-center gap-4 mt-2 text-[12px] font-medium"><span class="inline-flex items-center gap-1.5 text-on-surface-variant"><span class="w-2.5 h-2.5 rounded-full bg-outline/60"></span>Plan A: Furrow Wheat</span><span class="inline-flex items-center gap-1.5 text-secondary font-semibold"><span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>Plan B: Drip Precision (Target)</span><span class="inline-flex items-center gap-1.5 text-tertiary font-semibold"><span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>Plan C: Desi Chickpea</span></div></div><div class="flex items-center gap-3 p-3 rounded-2xl bg-surface-container-low/70 border border-outline-variant/30 self-start lg:self-auto shrink-0"><svg class="w-48 h-44" viewBox="0 0 220 200" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="110,28 178,74 152,148 68,148 42,74" stroke="#eae8e2" stroke-width="1.5" fill="#fbf9f3" fill-opacity="0.6"></polygon><polygon points="110,50 156,82 138,134 82,134 64,82" stroke="#e4e2dd" stroke-dasharray="3 3" fill="none"></polygon><line x1="110" y1="100" x2="110" y2="28" stroke="#dcdad4" stroke-width="1"></line><line x1="110" y1="100" x2="178" y2="74" stroke="#dcdad4" stroke-width="1"></line><line x1="110" y1="100" x2="152" y2="148" stroke="#dcdad4" stroke-width="1"></line><line x1="110" y1="100" x2="68" y2="148" stroke="#dcdad4" stroke-width="1"></line><line x1="110" y1="100" x2="42" y2="74" stroke="#dcdad4" stroke-width="1"></line><polygon points="110,48 152,82 135,138 88,124 62,88" stroke="#717973" stroke-width="1.5" fill="#717973" fill-opacity="0.12"></polygon><polygon points="110,34 172,76 142,135 78,138 52,78" stroke="#196c3e" stroke-width="2.2" fill="#196c3e" fill-opacity="0.2"></polygon><polygon points="110,45 138,90 148,145 69,146 46,75" stroke="#00475a" stroke-width="1.8" fill="#00475a" fill-opacity="0.15" stroke-dasharray="4 2"></polygon><text x="110" y="20" text-anchor="middle" font-size="9" font-weight="600" fill="#196c3e" font-family="Plus Jakarta Sans">Profit (92%)</text><text x="186" y="78" text-anchor="start" font-size="9" font-weight="600" fill="#003320" font-family="Plus Jakarta Sans">Feasibility</text><text x="160" y="162" text-anchor="start" font-size="9" font-weight="600" fill="#00475a" font-family="Plus Jakarta Sans">Soil (+N)</text><text x="60" y="162" text-anchor="end" font-size="9" font-weight="600" fill="#00475a" font-family="Plus Jakarta Sans">Water Sav.</text><text x="34" y="78" text-anchor="end" font-size="9" font-weight="600" fill="#196c3e" font-family="Plus Jakarta Sans">Low Risk</text></svg><div class="flex flex-col gap-1 pr-2"><span class="font-label-sm uppercase tracking-wider text-outline text-[10px]">Radar Fit Score</span><span class="font-title-md text-secondary font-bold">89 / 100</span><span class="font-body-sm text-outline text-[11px] leading-tight">Drip Wheat leads across 4 of 5 vectors</span></div></div></div></div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md">
+<th class="py-3 px-4 rounded-l-xl">Evaluation Parameter</th>
+<th class="py-3 px-4">Plan A: Baseline Furrow</th>
+<th class="py-3 px-4 bg-secondary-container/20 text-on-secondary-container font-bold">Plan B: Drip Precision (Target)</th>
+<th class="py-3 px-4 rounded-r-xl">Plan C: Desi Chickpea</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container font-body-sm text-on-surface">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-4 px-4 font-semibold text-primary">Sowing Window Flexibility</td>
+<td class="py-4 px-4 text-on-surface-variant">Narrow (Nov 5 - Nov 20). Delays cut yield by 1.2 Q/wk.</td>
+<td class="py-4 px-4 bg-secondary-container/10 text-on-surface font-medium">Moderate (Nov 5 - Dec 02). Microclimate controls mitigate early heat.</td>
+<td class="py-4 px-4 text-secondary font-semibold">Wide (Oct 25 - Dec 10). Highly adaptive to dry conditions.</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-4 px-4 font-semibold text-primary">Moisture Deficit Tolerance</td>
+<td class="py-4 px-4 text-error">Poor. Deep cracks in Black Cotton soil cause root shear.</td>
+<td class="py-4 px-4 bg-secondary-container/10 text-on-surface font-medium">High. Uniform lateral drip lines sustain root moisture seal.</td>
+<td class="py-4 px-4 text-secondary font-semibold">Exceptional. Deep taproot extracts subsoil moisture.</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-4 px-4 font-semibold text-primary">Mandi Price &amp; MSP Buffer</td>
+<td class="py-4 px-4 text-on-surface-variant">MSP ₹2,275/Q. Mandi price stable around ₹2,320.</td>
+<td class="py-4 px-4 bg-secondary-container/10 text-on-surface font-medium">Grade A grains secure +₹90 premium at APMC yard.</td>
+<td class="py-4 px-4 text-on-surface font-medium">MSP ₹5,440/Q. Spot price volatility (₹5,200 - ₹6,400).</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-4 px-4 font-semibold text-primary">Break-even Yield Threshold</td>
+<td class="py-4 px-4 text-on-surface-variant">12.4 Quintals / Acre</td>
+<td class="py-4 px-4 bg-secondary-container/10 text-on-surface font-medium">11.2 Quintals / Acre</td>
+<td class="py-4 px-4 text-secondary font-semibold">6.1 Quintals / Acre (Lowest failure risk)</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-4 px-4 font-semibold text-primary">Soil Health Impact</td>
+<td class="py-4 px-4 text-on-surface-variant">Heavy nitrogen drawdown (120 kg N/ac). High fertilizer runoff.</td>
+<td class="py-4 px-4 bg-secondary-container/10 text-on-surface font-medium">35% less fertilizer via fertigation; preserves soil microbiome.</td>
+<td class="py-4 px-4 text-secondary font-semibold">Positive! Atmospheric N-fixation (+32 kg N/ac residual benefit).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SECTION 5: Transparent Advisory & Decision Autonomy Callout -->
+<div class="relative overflow-hidden rounded-2xl bg-surface-container-low p-6 lg:p-8 flex flex-col md:flex-row items-start md:items-center gap-6" style="background-color: rgba(255, 255, 255, 0.78); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="w-12 h-12 rounded-2xl bg-secondary/15 flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[28px]">psychology_alt</span>
+</div>
+<div class="flex flex-col gap-1.5 flex-1">
+<div class="flex items-center gap-2">
+<h4 class="font-title-lg text-primary">Agronomist Recommendation Note</h4>
+<span class="px-2 py-0.5 rounded-md bg-secondary-container/50 text-on-secondary-container font-label-sm font-semibold">Farmer Autonomy First</span>
+</div>
+<p class="font-body-md text-on-surface-variant">
+            No plan is unilaterally superior. If water tables decline below 18m before November, the <strong class="text-primary font-semibold">Chickpea Plan</strong> provides superior security and lowers your debt exposure. If canal irrigation is confirmed on schedule, the <strong class="text-primary font-semibold">Drip Wheat Plan</strong> maximizes household disposable income by ₹38,200.
+          </p>
+<span class="font-label-sm text-outline mt-1">
+            * Estimated outcomes derived from historical Hingoli mandi trends, IMD Kharif receding forecasts, and farmer input costs. Actual yields subject to microclimatic variations.
+          </span>
+</div>
+<div class="flex items-center gap-3 shrink-0 self-stretch md:self-auto justify-end">
+<button class="px-5 py-3 rounded-xl bg-primary-container text-on-primary hover:bg-primary font-label-lg shadow-sm transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span class="">Confirm Drip Plan</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div></main></div>
+
+</body></html>

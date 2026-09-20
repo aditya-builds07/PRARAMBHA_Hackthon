@@ -1,5 +1,4 @@
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom"
-import { Sprout } from "lucide-react"
 import { cn } from "../../lib/utils.js"
 import en from "../../i18n/en.json"
 
@@ -19,7 +18,6 @@ export default function AppLayout() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Full-screen video-first launch page on root "/" renders without outer container framing
   if (location.pathname === "/") {
     return <Outlet />
   }
@@ -33,7 +31,7 @@ export default function AppLayout() {
             className="flex items-center gap-2 font-bold text-primary hover:opacity-80 transition-opacity touch-target"
             aria-label={en.app.name}
           >
-            <Sprout className="h-5 w-5" />
+            <span className="material-symbols-outlined text-[20px] text-[#164A34]">psychiatry</span>
             <span className="text-base tracking-tight">PRARAMBHA</span>
             <span className="text-xs text-muted-foreground font-normal">2.0</span>
           </button>

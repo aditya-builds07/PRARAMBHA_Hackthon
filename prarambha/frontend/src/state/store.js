@@ -1,4 +1,4 @@
-﻿/**
+/**
  * store.js — Zustand store for PRARAMBHA 2.0 (Member 3 owns this file).
  *
  * State shape:
@@ -48,11 +48,50 @@ export function defaultScenarioInput(farmId, overrides = {}) {
 // ─── Store ───────────────────────────────────────────────────────────────────
 export const useAppStore = create((set, get) => ({
   // ── Farm state ──────────────────────────────────────────────────────────
-  activeFarmId:  null,
-  farms:         [],
+  activeFarmId:  "farm-001",
+  farms:         [
+    {
+      id: "farm-001",
+      name: "Desai Farm",
+      region: "Sangli, Maharashtra",
+      areaAcres: 5,
+      totalAcres: 5,
+      cropCycle: "Rabi 2026-27",
+      waterProfile: "normal",
+      budgetInr: 50000,
+      waterM3: 3000,
+      seedKg: 100,
+      fertilizerKg: 200,
+      village: "Palus",
+      district: "Sangli",
+      state: "Maharashtra",
+      soilType: "Black Cotton",
+      irrigationType: "drip",
+      waterReserve: 3000,
+    },
+    {
+      id: "farm-002",
+      name: "Patil Organic Plot",
+      region: "Kolhapur, Maharashtra",
+      areaAcres: 8,
+      totalAcres: 8,
+      cropCycle: "Rabi 2026-27",
+      waterProfile: "abundant",
+      budgetInr: 85000,
+      waterM3: 5000,
+      seedKg: 150,
+      fertilizerKg: 300,
+      village: "Karveer",
+      district: "Kolhapur",
+      state: "Maharashtra",
+      soilType: "Loamy Soil",
+      irrigationType: "sprinkler",
+      waterReserve: 5000,
+    }
+  ],
 
   setFarms(farms) {
-    set({ farms })
+    set({ farms: farms && farms.length > 0 ? farms : get().farms })
   },
 
   setActiveFarm(farmId) {

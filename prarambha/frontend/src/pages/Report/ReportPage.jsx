@@ -49,53 +49,41 @@ export default function ReportPage({ scenarioId = "sc-001", onNavigate = null })
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 p-4 sm:p-6 lg:p-8 font-sans print:p-0 print:bg-white print:m-0">
-      <div className="max-w-5xl mx-auto space-y-6 print:max-w-none print:w-full print:space-y-0">
-        {/* Navigation Toolbar (Hidden during print) */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-300 print:hidden">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-widest mb-1">
-              <span>PRARAMBHA 2.0</span> • <span>Executive Report</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              {t("report.title")}
-            </h1>
-            <p className="text-sm text-slate-600 mt-0.5">
-              {t("report.subtitle") || "Printable agricultural decision sheet for farmer records and extension reviews."}
-            </p>
+    <div className="space-y-6 print:p-0 print:bg-white print:m-0">
+      {/* Navigation Toolbar (Hidden during print) */}
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#D0DEC0] print:hidden">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-bold text-[#164A34] uppercase tracking-widest mb-1">
+            <span>KRISHIMITRA</span> • <span>EXECUTIVE REPORT</span>
           </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1E2924] tracking-tight">
+            {t("report.title") || "Printable Scenario Report"}
+          </h1>
+          <p className="text-sm text-[#596A61] mt-1 max-w-2xl">
+            {t("report.subtitle") || "Complete 12-section decision summary and feasibility analysis."}
+          </p>
+        </div>
 
-          <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap">
-            {onNavigate && (
-              <button
-                type="button"
-                onClick={() => onNavigate("comparison")}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer"
-              >
-                ← Back to Comparison
-              </button>
-            )}
-
-            {/* Language Selector */}
-            <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg p-1.5 shadow-2xs">
-              <span className="text-xs font-semibold text-slate-500 pl-1.5">Language:</span>
-              {supportedLanguages.map((lang) => (
-                <button
-                  key={lang.code}
-                  type="button"
-                  onClick={() => setLanguage(lang.code)}
-                  className={`px-2.5 py-1 rounded text-xs font-bold transition-colors ${
-                    language === lang.code
-                      ? "bg-emerald-600 text-white shadow-2xs"
-                      : "text-slate-700 hover:bg-slate-100 cursor-pointer"
-                  }`}
-                >
-                  {lang.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </header>
+        <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap">
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="px-4 py-2 bg-[#164A34] hover:bg-[#196C3E] text-white text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[18px]">print</span>
+            <span>Print / Save PDF</span>
+          </button>
+          {onNavigate && (
+            <button
+              type="button"
+              onClick={() => onNavigate("comparison")}
+              className="px-3.5 py-2 rounded-xl border border-[#D0DEC0] bg-white hover:bg-[#EBF3ED] text-xs font-bold text-[#164A34] transition-colors shadow-xs cursor-pointer"
+            >
+              ← Back to Comparison
+            </button>
+          )}
+        </div>
+      </header>
 
         {/* Action Toolbar with Print/Export Button (Hidden during print) */}
         <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 print:hidden">
@@ -116,7 +104,7 @@ export default function ReportPage({ scenarioId = "sc-001", onNavigate = null })
                 : "bg-slate-200 text-slate-400 cursor-not-allowed"
             }`}
           >
-            <span>🖨️</span>
+            <span className="material-symbols-outlined text-[18px]">print</span>
             <span>{t("report.printButton") || "Print / Export Summary"}</span>
           </button>
         </div>
@@ -142,7 +130,7 @@ export default function ReportPage({ scenarioId = "sc-001", onNavigate = null })
             className="p-6 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs print:hidden"
           >
             <div className="flex items-center gap-3">
-              <span className="text-2xl" aria-hidden="true">⚠️</span>
+              <span className="material-symbols-outlined text-2xl" aria-hidden="true">warning</span>
               <div>
                 <h3 className="font-black text-sm uppercase tracking-wide">
                   {t("report.unavailableTitle") || "Report Unavailable"}
@@ -166,7 +154,6 @@ export default function ReportPage({ scenarioId = "sc-001", onNavigate = null })
         {!isLoading && !error && reportData && (
           <PrintableReport reportData={reportData} />
         )}
-      </div>
     </div>
   );
 }

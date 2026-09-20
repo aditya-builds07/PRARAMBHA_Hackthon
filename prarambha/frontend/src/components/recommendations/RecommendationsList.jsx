@@ -23,7 +23,9 @@ export default function RecommendationsList({
         role="alert"
         className="p-8 rounded-xl bg-rose-50 border border-rose-200 text-center space-y-3 shadow-xs"
       >
-        <div className="text-2xl" aria-hidden="true">⚠️</div>
+        <div aria-hidden="true" className="flex justify-center">
+          <span className="material-symbols-outlined text-[28px] text-rose-600">warning</span>
+        </div>
         <h3 className="font-bold text-rose-950 text-sm">
           {t("recommendations.errorTitle") || "Unable to Load Recommendations"}
         </h3>
@@ -63,7 +65,9 @@ export default function RecommendationsList({
         role="status"
         className="bg-white border border-slate-200 rounded-xl p-10 text-center space-y-2 shadow-xs"
       >
-        <div className="text-2xl text-slate-400" aria-hidden="true">🌱</div>
+        <div aria-hidden="true" className="flex justify-center">
+          <span className="material-symbols-outlined text-[28px] text-slate-400">eco</span>
+        </div>
         <h3 className="font-bold text-slate-900 text-sm">
           {t("recommendations.emptyTitle") || "No Recommendations For This Scenario"}
         </h3>
@@ -83,7 +87,7 @@ export default function RecommendationsList({
       {/* Deterministic Rule-Based Transparency Banner */}
       <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
         <div className="flex items-center gap-2">
-          <span className="text-base" aria-hidden="true">🛡️</span>
+          <span className="material-symbols-outlined text-[18px] text-emerald-800" aria-hidden="true">verified_user</span>
           <span>
             <strong>Deterministic Advisory:</strong> {t("recommendations.ruleBasedNote")}
           </span>

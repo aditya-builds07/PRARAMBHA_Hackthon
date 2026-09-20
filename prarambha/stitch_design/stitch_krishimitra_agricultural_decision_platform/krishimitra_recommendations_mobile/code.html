@@ -1,0 +1,553 @@
+<!DOCTYPE html><html class="h-full" lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed": "#002113", "on-tertiary-fixed-variant": "#004d62", "on-secondary-fixed-variant": "#00522b", "secondary": "#196c3e", "primary-container": "#164a34", "on-secondary-fixed": "#00210e", "on-tertiary-container": "#6ab7d5", "secondary-fixed-dim": "#88d8a0", "tertiary": "#002f3d", "on-surface-variant": "#404943", "on-error": "#ffffff", "surface-container-high": "#eae8e2", "error": "#ba1a1a", "background": "#fbf9f3", "on-secondary-container": "#1f7042", "on-primary-container": "#85b99c", "surface-dim": "#dcdad4", "surface": "#fbf9f3", "outline-variant": "#c0c9c1", "primary-fixed-dim": "#9dd2b5", "secondary-fixed": "#a4f4ba", "secondary-container": "#a1f1b7", "outline": "#717973", "primary": "#003320", "inverse-surface": "#30312d", "on-background": "#1b1c18", "error-container": "#ffdad6", "on-primary-fixed-variant": "#1d5039", "surface-tint": "#366850", "tertiary-fixed-dim": "#84d1f0", "on-surface": "#1b1c18", "surface-container-low": "#f5f3ed", "surface-container-lowest": "#ffffff", "on-secondary": "#ffffff", "surface-container": "#f0eee8", "on-error-container": "#93000a", "on-primary": "#ffffff", "on-tertiary-fixed": "#001f29", "inverse-primary": "#9dd2b5", "primary-fixed": "#b9efd0", "inverse-on-surface": "#f3f1eb", "tertiary-fixed": "#baeaff", "surface-variant": "#e4e2dd", "tertiary-container": "#00475a", "surface-container-highest": "#e4e2dd", "on-tertiary": "#ffffff", "surface-bright": "#fbf9f3" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "3rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "gutter": "1.5rem", "margin-mobile": "1rem", "space-xl": "2.5rem", "space-md": "1rem", "gutter-mobile": "1rem", "space-lg": "1.5rem" }, "fontFamily": { "display-lg-mobile": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "title-lg": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"] }, "fontSize": { "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "title-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }] } } } }</script><style>@layer base { body { min-height: 100vh; overscroll-behavior-y: none; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head><body class="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)] bg-surface"><div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><img alt="Brand logo. - Primary color: #164a34
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1UwvheEflVQETpVODXud1bKJQLTG3Z9V091WAQuRWb3OjkfynIYN40ImZHKnidhICqNkNrqFqpWKzSfZlgxI5J_M82iY6odlXGtsZTTc8HXdVBAz6ryKsSz-P5wU6ZoKTCO5D247hagw2iNx0PZZfjdthMC8zjpWAGLJh7xg4qo3i9LZdCn7j6gGxugjmJTrMiBN0EKKxLQuSsUMZx2F7LChrzofAoNzJDssH-iE5FNMrlgSgXlD6etBto"><div class="flex flex-col min-w-0"><span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold leading-none">KrishiMitra</span><h1 class="font-title-md text-title-md text-on-surface truncate leading-tight">Farm Reports</h1></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Toggle Marathi or English Language" class="h-9 px-space-sm rounded-full bg-surface-container flex items-center gap-1 text-on-surface-variant hover:text-on-surface"><span class="font-label-sm text-label-sm font-semibold text-primary">मराठी</span><span class="text-outline-variant font-label-sm text-label-sm">/</span><span class="font-label-sm text-label-sm font-semibold text-on-surface-variant">EN</span></button><button aria-label="Notifications" class="w-11 h-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface rounded-full"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-20 bg-surface px-gutter-mobile"><div class="flex flex-col w-full pb-10">
+<!-- Farm Context Hero & Score Strip -->
+<section class="w-full mb-space-md">
+<div class="rounded-xl p-space-md bg-surface-container-low shadow-sm flex flex-col gap-space-sm relative overflow-hidden">
+<!-- Ambient decorative leaf aura -->
+
+<!-- Top Location & Farm Identification -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="min-w-0">
+<div class="flex items-center gap-1.5 text-secondary">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">Hingoli, Maharashtra</span>
+</div>
+<h2 class="font-title-lg text-title-lg text-on-surface truncate mt-0.5">Shivaji Patil Farm</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+<span class="">8.5 Acres</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-tertiary font-medium">Deep Black Cotton Soil (Regur)</span>
+</p>
+</div>
+<!-- Plan Mode Badge -->
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary text-on-primary font-label-sm text-label-sm shadow-sm flex-shrink-0">
+<span class="material-symbols-outlined text-[14px]">tune</span>
+          Optimized
+        </span>
+</div>
+<!-- Sowing Target Benchmark -->
+<div class="p-space-sm rounded-lg flex items-center justify-between gap-space-sm bg-surface-container-lowest">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary flex-shrink-0">
+<span class="material-symbols-outlined text-[18px]">grain</span>
+</div>
+<div class="min-w-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant block leading-tight">Current Target</span>
+<p class="font-label-lg text-label-lg text-on-surface font-semibold truncate leading-tight">Drip Precision Wheat</p>
+</div>
+</div>
+<div class="text-right flex-shrink-0">
+<span class="font-label-sm text-label-sm text-outline block leading-tight">Baseline</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant line-through leading-tight">Furrow Field</span>
+</div>
+</div>
+<!-- Decision Score Banner -->
+<div class="pt-space-xs flex items-center justify-between gap-space-sm">
+<div class="flex items-baseline gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Agronomic Fidelity:</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">89</span>
+<span class="font-label-md text-label-md text-on-surface-variant">/100</span>
+</div>
+<div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[15px]">trending_up</span>
+          +5 potential → 94
+        </div>
+</div>
+</div>
+</section>
+<!-- Advisory Summary Horizon Strip (3 High-Value Indicators) -->
+<section class="w-full mb-space-md">
+<div class="grid grid-cols-3 gap-2">
+<!-- Stat Card 1 -->
+<div class="p-2.5 rounded-xl flex flex-col justify-between shadow-sm bg-error-container">
+<div class="flex items-center justify-between mb-1">
+<span class="material-symbols-outlined text-error text-[18px]">alarm</span>
+<span class="w-2 h-2 rounded-full bg-error animate-ping"></span>
+</div>
+<span class="font-headline-sm text-headline-sm font-bold text-error leading-tight">2 Items</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-tight mt-0.5">Need action by Nov 02</span>
+</div>
+<!-- Stat Card 2 -->
+<div class="p-2.5 rounded-xl bg-surface-container-lowest flex flex-col justify-between shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[18px] mb-1">monetization_on</span>
+<span class="font-headline-sm text-headline-sm font-bold text-secondary leading-tight">+₹24.8k</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-tight mt-0.5">+18.4% value unlock</span>
+</div>
+<!-- Stat Card 3 -->
+<div class="p-2.5 rounded-xl bg-surface-container-lowest flex flex-col justify-between shadow-sm">
+<span class="material-symbols-outlined text-tertiary text-[18px] mb-1">water_drop</span>
+<span class="font-headline-sm text-headline-sm font-bold text-tertiary leading-tight">+420 m³</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant leading-tight mt-0.5">Water buffer reserve</span>
+</div>
+</div>
+</section>
+<!-- Filter Horizon Tabs -->
+<section class="w-full mb-space-md sticky top-16 z-40 py-1 bg-surface">
+<div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1" id="filterTabGroup">
+<button class="filter-tab active h-9 px-3.5 rounded-full bg-primary text-on-primary font-label-md text-label-md whitespace-nowrap flex items-center gap-1.5 shadow-sm transition-all duration-200" onclick="filterAdvisories('all', this)">
+<span class="">All</span>
+<span class="w-4 h-4 rounded-full bg-on-primary/20 text-on-primary text-[10px] flex items-center justify-center font-bold">7</span>
+</button>
+<button class="filter-tab h-9 px-3.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap flex items-center gap-1.5 transition-all duration-200" onclick="filterAdvisories('urgent', this)">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="">Needs Attention</span>
+<span class="font-semibold text-error">2</span>
+</button>
+<button class="filter-tab h-9 px-3.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap flex items-center gap-1.5 transition-all duration-200" onclick="filterAdvisories('improve', this)">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="">Can Improve</span>
+<span class="font-semibold text-secondary">3</span>
+</button>
+<button class="filter-tab h-9 px-3.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md whitespace-nowrap flex items-center gap-1.5 transition-all duration-200" onclick="filterAdvisories('enabler', this)">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="">Enablers</span>
+<span class="font-semibold text-tertiary">2</span>
+</button>
+</div>
+</section>
+<!-- SECTION 1: Needs Attention (2 Cards) -->
+<section class="w-full mb-space-lg advisory-section" data-category="urgent">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[20px]">warning</span>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Needs Attention</h3>
+</div>
+<span class="font-label-sm text-label-sm text-error font-semibold uppercase tracking-wider">2 Pre-Sowing Crits</span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Card 1: Well #2 Buffer -->
+<article class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-space-sm relative overflow-hidden">
+<!-- Visual left-accent indicator stripe -->
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-error"></div>
+<div class="pl-2">
+<!-- Top Urgency Pill & Date -->
+<div class="flex items-center justify-between gap-space-xs mb-1">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[13px]">emergency</span>
+              High Priority · Before Oct 28
+            </span>
+<span class="font-label-sm text-label-sm font-bold text-error">5 Days Left</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface font-semibold leading-snug">Secondary Well #2 Contingency Buffer</h4>
+<div class="mt-2 p-2.5 rounded-lg bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm flex flex-col gap-1.5">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-error text-[18px] flex-shrink-0 mt-0.5">report_problem</span>
+<p class=""><strong class="text-on-surface">Issue:</strong> Well #2 recharge is 18% below post-monsoon baseline. Risk of 1.8 Q/ac grain pinch if February Purna canal rotation gets delayed.</p>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px] flex-shrink-0 mt-0.5">task_alt</span>
+<p class=""><strong class="text-on-surface">Agronomic Fix:</strong> Desilt 40m feeder ditch or confirm shared micro-storage agreement with Plot #5 (Pawar Farm).</p>
+</div>
+</div>
+<!-- Impact Metrics -->
+<div class="mt-2.5 flex items-center justify-between text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm text-on-surface font-medium">Secures ₹16,200 crop value</span>
+</div>
+<span class="font-label-sm text-label-sm font-semibold text-tertiary">420 m³ reserve buffer</span>
+</div>
+<!-- Actions -->
+<div class="mt-space-sm pt-2 flex flex-col sm:flex-row gap-2">
+<button class="h-11 px-space-md rounded-xl bg-primary text-on-primary font-label-md text-label-md font-semibold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-sm" onclick="handlePlanAction('Well #2 buffer synced to Wheat schedule', this)">
+<span class="material-symbols-outlined text-[18px]">add_task</span>
+              Apply to Active Plan
+            </button>
+<button class="h-11 px-space-md rounded-xl bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-transform" onclick="handlePlanAction('Pawar Farm contact alert opened', this)">
+<span class="material-symbols-outlined text-[18px]">handshake</span>
+              Coordinate Plot #5
+            </button>
+</div>
+</div>
+</article>
+<!-- Card 2: Seed Sourcing & Bio-Fungicide -->
+<article class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-space-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-error"></div>
+<div class="pl-2">
+<div class="flex items-center justify-between gap-space-xs mb-1">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[13px]">schedule</span>
+              Time-Sensitive · Before Oct 29
+            </span>
+<span class="font-label-sm text-label-sm font-bold text-error">6 Days Left</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface font-semibold leading-snug">Pre-Order Certified Sonalika HD-2967 &amp; Bio-Treatment</h4>
+<div class="mt-2 p-2.5 rounded-lg bg-surface-container-low text-on-surface-variant font-body-sm text-body-sm flex flex-col gap-1.5">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-error text-[18px] flex-shrink-0 mt-0.5">inventory_2</span>
+<p class=""><strong class="text-on-surface">Issue:</strong> APMC Hingoli certified seed lots down to last 15%. Untreated farm seed carries 22% loose smut and foot rot vulnerability.</p>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px] flex-shrink-0 mt-0.5">science</span>
+<p class=""><strong class="text-on-surface">Agronomic Fix:</strong> Procure 340 kg seed from Krishi Kendra &amp; dry-coat with <em>Trichoderma viride</em> (5g/kg) + Azotobacter prior to sowing.</p>
+</div>
+</div>
+<div class="mt-2.5 flex items-center justify-between text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm text-on-surface font-medium">94% germination rate</span>
+</div>
+<span class="font-label-sm text-label-sm font-semibold text-secondary">₹14,200 loss prevention</span>
+</div>
+<!-- Actions -->
+<div class="mt-space-sm pt-2 flex flex-col sm:flex-row gap-2">
+<button class="h-11 px-space-md rounded-xl bg-primary text-on-primary font-label-md text-label-md font-semibold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-sm" onclick="handlePlanAction('Seed procurement timeline locked', this)">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+              Apply to Active Plan
+            </button>
+<button class="h-11 px-space-md rounded-xl bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold flex items-center justify-center gap-1.5 active:scale-95 transition-transform" onclick="handlePlanAction('Opening Hingoli Kendra Dealer directory', this)">
+<span class="material-symbols-outlined text-[18px]">storefront</span>
+              Locate Kendra Dealer
+            </button>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- SECTION 2: Can Improve (3 Optimizations) -->
+<section class="w-full mb-space-lg advisory-section" data-category="improve">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">psychology</span>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Can Improve (Crop Economics)</h3>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-semibold uppercase tracking-wider">3 Upgrades</span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Optimization 1: Fertigation -->
+<article class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-space-xs relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary"></div>
+<div class="pl-2">
+<div class="flex items-center justify-between gap-space-xs">
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Nutrient Timing Upgrade</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">+₹11,200 Margin</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface font-semibold mt-1">Split Fertigation via Venturi Drip (19:19:19 &amp; Bio-NPK)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Replace single-shot broadcast with 4-stage soluble fertigation tied directly to root flushes. Eliminates 35% synthetic chemical leaching in clay soil.
+          </p>
+<div class="mt-2 flex items-center gap-3 text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-[16px]">eco</span>
+              -35% chemical load
+            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[16px]">speed</span>
+              Higher uptake in 8.5 Ac
+            </span>
+</div>
+<div class="mt-3 pt-2">
+<button class="w-full h-11 rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md font-semibold flex items-center justify-center gap-2 active:scale-98 transition-all" onclick="handlePlanAction('Split fertigation mapped into plan', this)">
+<span class="material-symbols-outlined text-secondary text-[18px]">swap_calls</span>
+              Use in Plan
+            </button>
+</div>
+</div>
+</article>
+<!-- Optimization 2: Sowing Window Shift -->
+<article class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-space-xs relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary"></div>
+<div class="pl-2">
+<div class="flex items-center justify-between gap-space-xs">
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Heat Stress Mitigation</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">+2.1 Q/Ac Yield</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface font-semibold mt-1">Shift Sowing Target to Nov 02 (Dodge Late-Season Heat)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Planting by Nov 02 ensures grain-filling occurs before Marathwada February temperatures breach 34°C, preventing early shriveling.
+          </p>
+<div class="mt-2 flex items-center gap-3 text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary text-[16px]">thermostat</span>
+              Avoids terminal heat stress
+            </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-[16px]">calendar_today</span>
+              16 days extra vegetative buffer
+            </span>
+</div>
+<div class="mt-3 pt-2">
+<button class="w-full h-11 rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md font-semibold flex items-center justify-center gap-2 active:scale-98 transition-all" onclick="handlePlanAction('Sowing date shifted to Nov 02', this)">
+<span class="material-symbols-outlined text-secondary text-[18px]">calendar_month</span>
+              Lock Nov 02 Window
+            </button>
+</div>
+</div>
+</article>
+<!-- Optimization 3: BBF Bed Configuration -->
+<article class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-space-xs relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary"></div>
+<div class="pl-2">
+<div class="flex items-center justify-between gap-space-xs">
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Soil Physics</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">+8% Aeration</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface font-semibold mt-1">Broad Bed &amp; Furrow (BBF) + Lateral Placement</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Heavy Hingoli black cotton soil tends to compact. 120cm broad beds improve root aeration and prevent crown rot during heavy unseasonal dew spells.
+          </p>
+<div class="mt-3 pt-2">
+<button class="w-full h-11 rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md font-semibold flex items-center justify-center gap-2 active:scale-98 transition-all" onclick="handlePlanAction('BBF bed geometry integrated', this)">
+<span class="material-symbols-outlined text-secondary text-[18px]">layers</span>
+              Adopt BBF Geometry
+            </button>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- SECTION 3: Phenological Stage & Irrigation Pulse Horizon -->
+<section class="w-full mb-space-lg">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">timeline</span>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Phenology &amp; Pulse Roadmap</h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Nov – Feb</span>
+</div>
+<!-- Scrollable Lifecycle Timeline -->
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden">
+<div class="overflow-x-auto no-scrollbar pb-2">
+<div class="flex items-center min-w-[540px] relative pt-2">
+<!-- Continuous Connection Line -->
+<div class="absolute top-5 left-4 right-4 h-0.5 bg-surface-container-highest z-0"></div>
+<!-- Milestone 1 -->
+<div class="flex flex-col items-center flex-1 relative z-10">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-label-sm font-bold shadow-sm ring-4 ring-surface-container-lowest">
+              1
+            </div>
+<span class="font-label-md text-label-md font-bold text-on-surface mt-2">Sowing</span>
+<span class="font-label-sm text-label-sm text-secondary font-medium">Nov 02</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 text-center">Light Drip</span>
+</div>
+<!-- Milestone 2 (CRI) -->
+<div class="flex flex-col items-center flex-1 relative z-10">
+<div class="w-7 h-7 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-sm text-label-sm font-bold shadow-sm ring-4 ring-surface-container-lowest">
+              2
+            </div>
+<span class="font-label-md text-label-md font-bold text-on-surface mt-2">CRI Stage</span>
+<span class="font-label-sm text-label-sm text-error font-semibold">Nov 23</span>
+<span class="font-label-sm text-label-sm text-error mt-0.5 text-center">Critical Pulse</span>
+</div>
+<!-- Milestone 3 -->
+<div class="flex flex-col items-center flex-1 relative z-10">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm font-bold ring-4 ring-surface-container-lowest">
+              3
+            </div>
+<span class="font-label-md text-label-md font-medium text-on-surface mt-2">Tillering</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Dec 15</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 text-center">19:19:19 Split</span>
+</div>
+<!-- Milestone 4 -->
+<div class="flex flex-col items-center flex-1 relative z-10">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm font-bold ring-4 ring-surface-container-lowest">
+              4
+            </div>
+<span class="font-label-md text-label-md font-medium text-on-surface mt-2">Booting</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Jan 10</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 text-center">Moisture Guard</span>
+</div>
+<!-- Milestone 5 -->
+<div class="flex flex-col items-center flex-1 relative z-10">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm font-bold ring-4 ring-surface-container-lowest">
+              5
+            </div>
+<span class="font-label-md text-label-md font-medium text-on-surface mt-2">Flowering</span>
+<span class="font-label-sm text-label-sm text-tertiary">Jan 28</span>
+<span class="font-label-sm text-label-sm text-tertiary mt-0.5 text-center">Heat Shield</span>
+</div>
+<!-- Milestone 6 -->
+<div class="flex flex-col items-center flex-1 relative z-10">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-sm text-label-sm font-bold ring-4 ring-surface-container-lowest">
+              6
+            </div>
+<span class="font-label-md text-label-md font-medium text-on-surface mt-2">Harvest</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Feb 24</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 text-center">Full Dry</span>
+</div>
+</div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-center flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">verified_user</span>
+        Synchronized with Hingoli agro-climatic historical heat models
+      </p>
+</div>
+</section>
+<!-- SECTION 4: Helpful Advice & Institutional Enablers (2 Cards) -->
+<section class="w-full mb-space-lg advisory-section" data-category="enabler">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[20px]">account_balance</span>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">Subsidies &amp; Extension Support</h3>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold uppercase tracking-wider">2 Institutional</span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Enabler 1: MahaDBT Subsidy -->
+<article class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-space-xs relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-tertiary"></div>
+<div class="pl-2">
+<div class="flex items-center justify-between gap-space-xs">
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary font-semibold">
+<span class="material-symbols-outlined text-[15px]">badge</span>
+              MahaDBT Micro-Irrigation (PMKSY)
+            </span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">7/12 Ready</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface font-semibold mt-1">Pre-filled Drip Component Dossier (₹38,500 Direct Subsidy)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Eligible under Hingoli Small &amp; Marginal Farmer cluster quota. Includes lateral bill estimates, GPS land map, and quotation from empanelled Jain / Netafim dealers.
+          </p>
+<div class="mt-3 pt-1">
+<button class="w-full h-11 rounded-xl bg-tertiary text-on-tertiary hover:bg-tertiary-container font-label-md text-label-md font-semibold flex items-center justify-center gap-2 active:scale-98 transition-all shadow-sm" onclick="handlePlanAction('Downloading pre-filled MahaDBT Dossier', this)">
+<span class="material-symbols-outlined text-[18px]">download</span>
+              Download Subsidy Dossier (PDF)
+            </button>
+</div>
+</div>
+</article>
+<!-- Enabler 2: Hingoli KVK Advisory -->
+<article class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-space-xs relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-tertiary"></div>
+<div class="pl-2">
+<div class="flex items-center justify-between gap-space-xs">
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary font-semibold">
+<span class="material-symbols-outlined text-[15px]">podcasts</span>
+              Hingoli Krishi Vigyan Kendra (KVK)
+            </span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-medium">Weekly SMS</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface font-semibold mt-1">Pest Surveillance &amp; Rust Spore Early Warning</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Direct agronomy alerts sent via WhatsApp &amp; SMS from KVK Hingoli agronomists, flagging localized yellow rust outbreaks and aphid spore trap counts.
+          </p>
+<div class="mt-3 pt-1">
+<button class="w-full h-11 rounded-xl bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md font-semibold flex items-center justify-center gap-2 active:scale-98 transition-all" onclick="handlePlanAction('KVK SMS &amp; WhatsApp advisories activated', this)">
+<span class="material-symbols-outlined text-secondary text-[18px]">notifications_active</span>
+              Opt into Local KVK Alerts
+            </button>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- Sticky Decision Bar / Confirmation Tray -->
+<section class="w-full mt-space-sm mb-space-sm">
+<div class="p-space-md rounded-xl bg-primary-container text-on-primary-container shadow-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-primary-container/80 uppercase font-semibold">Bulk Plan Sync</span>
+<p class="font-title-md text-title-md text-on-primary font-bold">Apply All 5 Technical Upgrades</p>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm font-bold text-primary-fixed">+₹24,800</span>
+<span class="block font-label-sm text-label-sm text-on-primary-container/70">Total Uplift</span>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-2 mt-1">
+<button class="h-12 w-full rounded-xl bg-primary-fixed text-on-primary-fixed font-title-md text-title-md font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md" id="applyAllBtn" onclick="applyAllRecommendations(this)">
+<span class="material-symbols-outlined text-[20px]">auto_fix_high</span>
+          Apply All Recommended Edits
+        </button>
+<button class="h-11 w-full rounded-xl bg-on-primary-container/10 text-on-primary font-label-md text-label-md font-semibold flex items-center justify-center gap-2 active:scale-95 transition-all" onclick="handlePlanAction('Customizing recommendation checklist', this)">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+          Customize Selection
+        </button>
+</div>
+<!-- Trust & Autonomy Seal -->
+<div class="pt-2 border-none flex items-start gap-2 text-on-primary-container/80 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary-fixed flex-shrink-0 mt-0.5">verified_user</span>
+<p class="">100% Objective &amp; Commission-Free. Backed by ICAR protocols and Hingoli KVK soil health record #HK-2023-882.</p>
+</div>
+</div>
+</section>
+<!-- Interactive Feedback Toast (Hidden by default) -->
+<div class="fixed bottom-20 left-4 right-4 z-50 transform translate-y-32 transition-transform duration-300 pointer-events-none" id="toastNotification">
+<div class="p-3.5 rounded-xl bg-primary text-on-primary shadow-xl flex items-center justify-between gap-3">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="material-symbols-outlined text-primary-fixed text-[20px] flex-shrink-0">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-primary truncate font-medium" id="toastMessage">Recommendation updated</span>
+</div>
+<button class="pointer-events-auto text-on-primary/70 hover:text-on-primary" onclick="dismissToast()">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  // Filter Advisory Cards
+  function filterAdvisories(category, clickedButton) {
+    // Update active tab style
+    const tabs = document.querySelectorAll('.filter-tab');
+    tabs.forEach(tab => {
+      tab.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+      tab.classList.add('bg-surface-container', 'text-on-surface-variant');
+    });
+
+    clickedButton.classList.remove('bg-surface-container', 'text-on-surface-variant');
+    clickedButton.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+
+    // Show/hide sections
+    const sections = document.querySelectorAll('.advisory-section');
+    sections.forEach(section => {
+      if (category === 'all' || section.getAttribute('data-category') === category) {
+        section.classList.remove('hidden');
+      } else {
+        section.classList.add('hidden');
+      }
+    });
+  }
+
+  // Interactive Toast trigger
+  let toastTimer;
+  function handlePlanAction(msg, btnElement) {
+    // Micro tactile bounce
+    if (btnElement) {
+      btnElement.classList.add('scale-95');
+      setTimeout(() => btnElement.classList.remove('scale-95'), 150);
+    }
+
+    const toast = document.getElementById('toastNotification');
+    const toastMessage = document.getElementById('toastMessage');
+    toastMessage.textContent = msg;
+
+    toast.classList.remove('translate-y-32');
+    toast.classList.add('translate-y-0');
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      dismissToast();
+    }, 3200);
+  }
+
+  function dismissToast() {
+    const toast = document.getElementById('toastNotification');
+    toast.classList.remove('translate-y-0');
+    toast.classList.add('translate-y-32');
+  }
+
+  // Bulk Apply All Action
+  function applyAllRecommendations(btn) {
+    btn.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">sync</span> Updating Plan & Schedule...';
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.innerHTML = '<span class="material-symbols-outlined text-[20px]">done_all</span> All 5 Upgrades Applied!';
+      btn.classList.remove('bg-primary-fixed');
+      btn.classList.add('bg-secondary-container', 'text-on-secondary-container');
+      handlePlanAction('Wheat Plan calibrated: Score upgraded to 94/100', null);
+    }, 900);
+  }
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe shadow-[0_-2px_12px_rgba(22,74,52,0.05)] bg-surface" data-active-classes="text-primary font-semibold"><div class="h-16 px-space-xs flex items-center justify-around"><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[24px]">grid_view</span><span class="font-label-sm text-label-sm mt-0.5">Dashboard</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="crop-plans" href="#"><span class="material-symbols-outlined text-[24px]">calendar_month</span><span class="font-label-sm text-label-sm mt-0.5">Plans</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="compare-crops" href="#"><span class="material-symbols-outlined text-[24px]">compare_arrows</span><span class="font-label-sm text-label-sm mt-0.5">Compare</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="agronomy-advisory" href="#"><span class="material-symbols-outlined text-[24px]">psychology_alt</span><span class="font-label-sm text-label-sm mt-0.5">Advisory</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="farm-reports" href="#"><span class="material-symbols-outlined text-[24px]">analytics</span><span class="font-label-sm text-label-sm mt-0.5">Reports</span></a></div></nav>
+
+</body></html>

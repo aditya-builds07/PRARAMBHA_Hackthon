@@ -1,4 +1,4 @@
-﻿/**
+/**
  * FarmSelection/index.jsx — T3: Full Farm Selection page.
  *
  * Features:
@@ -10,14 +10,14 @@
  */
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { Plus, ArrowRight } from "lucide-react"
+
 import { useAppStore } from "../../state/store.js"
 import { useFarm } from "../../hooks/useFarm.js"
+import { useLanguage } from "../../i18n/LanguageContext.jsx"
 import FarmList from "../../components/farm/FarmList.jsx"
 import FarmForm from "../../components/farm/FarmForm.jsx"
 import ErrorState from "../../components/common/ErrorState.jsx"
 import { nextId } from "../../state/store.js"
-import en from "../../i18n/en.json"
 import { isMockMode } from "../../services/simulation.service.js"
 
 // ── Mock farms used when VITE_USE_MOCK=true ──────────────────────────────────
@@ -38,6 +38,7 @@ const MOCK_FARMS = [
 
 export default function FarmSelectionPage() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const farms       = useAppStore((s) => s.farms)
   const activeFarmId = useAppStore((s) => s.activeFarmId)
   const { fetching, fetchError, fetchFarms, fetchCrops, create, update, remove, select } = useFarm()
@@ -86,7 +87,7 @@ export default function FarmSelectionPage() {
   }
 
   async function handleDelete(farmId) {
-    if (!window.confirm(en.farms.confirmDelete)) return
+    if (!window.confirm(t("farms.deleteConfirm") || "Are you sure you want to delete this farm?")) return
     if (isMockMode) {
       useAppStore.getState().removeFarm(farmId)
     } else {
@@ -109,7 +110,7 @@ export default function FarmSelectionPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">{en.farms.title}</h1>
+          <h1 className="text-2xl font-bold text-foreground">{t("farms.title") || "My Farms"}</h1>
           {isMockMode && (
             <span className="inline-block mt-1 text-xs bg-amber-100 text-amber-800 border border-amber-200 rounded-full px-2 py-0.5 font-medium">
               MOCK MODE — demo data
@@ -120,29 +121,29 @@ export default function FarmSelectionPage() {
           {activeFarmId && (
             <button
               onClick={handleGoToBuilder}
-              className="touch-target inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-md px-4 text-sm font-medium hover:bg-primary/90 transition-colors"
+              className="touch-target inline-flex items-center gap-2 bg-[#164A34] text-white rounded-xl px-4 py-2 text-sm font-semibold hover:bg-[#196C3E] transition-colors cursor-pointer shadow-xs"
               id="go-to-builder-btn"
             >
-              {en.scenario.title}
-              <ArrowRight className="h-4 w-4" aria-hidden />
+              <span>{t("builder.title") || "Scenario Builder"}</span>
+              <span className="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_forward</span>
             </button>
           )}
           <button
             onClick={() => setFormMode("create")}
-            className="touch-target inline-flex items-center gap-2 border border-border rounded-md px-4 text-sm font-medium text-foreground hover:bg-muted transition-colors"
+            className="touch-target inline-flex items-center gap-2 border border-[#D0DEC0] bg-white rounded-xl px-4 py-2 text-sm font-semibold text-[#164A34] hover:bg-[#EBF3ED] transition-colors cursor-pointer shadow-xs"
             id="add-farm-btn"
           >
-            <Plus className="h-4 w-4" aria-hidden />
-            {en.farms.addFarm}
+            <span className="material-symbols-outlined text-[16px]" aria-hidden="true">add</span>
+            <span>{t("farms.addFarm") || "Add Farm"}</span>
           </button>
         </div>
       </div>
 
       {/* Inline form */}
       {formMode && (
-        <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+        <div className="rounded-xl border border-[#D0DEC0] bg-white p-6 shadow-sm">
           {saveError && (
-            <p className="text-sm text-destructive mb-4" role="alert">{saveError}</p>
+            <p className="text-sm text-rose-600 mb-4" role="alert">{saveError}</p>
           )}
           <FarmForm
             initial={formMode === "create" ? null : formMode}
@@ -154,9 +155,9 @@ export default function FarmSelectionPage() {
       )}
 
       {/* Farm list or error */}
-      {fetchError && !isMockMode ? (
+      {fetchError && (!farms || farms.length === 0) && !isMockMode ? (
         <ErrorState
-          message={en.errors.apiError}
+          message={t("errors.apiError") || "Unable to load farm records from API"}
           onRetry={fetchFarms}
         />
       ) : (

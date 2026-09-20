@@ -85,7 +85,7 @@ export default function AssumptionsViewer({ assumptionsData, isLoading = false }
         className="p-5 rounded-xl bg-amber-50 border-2 border-amber-300 text-amber-950 space-y-2 shadow-xs"
       >
         <div className="flex items-center gap-2.5">
-          <span className="text-2xl" aria-hidden="true">⚠️</span>
+          <span className="material-symbols-outlined text-[24px] text-amber-900" aria-hidden="true">warning</span>
           <div>
             <h2 className="font-black text-amber-950 text-sm uppercase tracking-wider">
               {t("assumptions.disclaimerTitle") || "Simulation Transparency & Disclaimer"}
@@ -263,7 +263,7 @@ export default function AssumptionsViewer({ assumptionsData, isLoading = false }
       >
         <div>
           <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-            <span>📚</span>
+            <span className="material-symbols-outlined text-[18px] text-emerald-800" aria-hidden="true">menu_book</span>
             <span>6. {t("assumptions.sources") || "Agronomic Research Sources & Data References"}</span>
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">

@@ -1,0 +1,733 @@
+<!DOCTYPE html><html lang="en" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "secondary-fixed-dim": "#88d8a0", "on-tertiary-fixed": "#001f29", "tertiary-fixed-dim": "#84d1f0", "on-tertiary-fixed-variant": "#004d62", "on-secondary-fixed": "#00210e", "on-primary": "#ffffff", "on-surface-variant": "#404943", "tertiary-fixed": "#baeaff", "surface-container-low": "#f5f3ed", "error-container": "#ffdad6", "primary-fixed-dim": "#9dd2b5", "inverse-surface": "#30312d", "inverse-on-surface": "#f3f1eb", "tertiary-container": "#00475a", "on-error": "#ffffff", "secondary-fixed": "#a4f4ba", "primary-fixed": "#b9efd0", "primary-container": "#164a34", "on-primary-fixed": "#002113", "outline": "#717973", "background": "#fbf9f3", "on-surface": "#1b1c18", "surface": "#fbf9f3", "on-tertiary-container": "#6ab7d5", "tertiary": "#002f3d", "surface-container-lowest": "#ffffff", "surface-variant": "#e4e2dd", "secondary-container": "#a1f1b7", "on-secondary-container": "#1f7042", "error": "#ba1a1a", "outline-variant": "#c0c9c1", "surface-tint": "#366850", "on-error-container": "#93000a", "on-secondary-fixed-variant": "#00522b", "primary": "#003320", "on-background": "#1b1c18", "on-primary-fixed-variant": "#1d5039", "surface-dim": "#dcdad4", "surface-container": "#f0eee8", "on-primary-container": "#85b99c", "secondary": "#196c3e", "surface-bright": "#fbf9f3", "inverse-primary": "#9dd2b5", "surface-container-highest": "#e4e2dd", "surface-container-high": "#eae8e2", "on-secondary": "#ffffff", "on-tertiary": "#ffffff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xl": "2.5rem", "space-md": "1rem", "gutter-mobile": "1rem", "gutter": "1.5rem", "margin-mobile": "1rem", "margin": "3rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "space-lg": "1.5rem" }, "fontFamily": { "title-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "title-lg": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "display-lg-mobile": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"] }, "fontSize": { "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "title-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased" style="background: radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.15) 0px, transparent 50%) fixed, radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.18) 0px, transparent 50%), radial-gradient(rgba(132, 204, 22, 0.08) 0px, transparent 50%), radial-gradient(at 80% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 50%), rgb(244, 247, 244);"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between pt-5 pb-6" style="backdrop-filter: blur(20px) saturate(180%); background-color: rgba(255, 255, 255, 0.78); border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.04) 0px 4px 24px -1px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;"><div class="flex flex-col gap-6"><div class="px-6 flex items-center gap-3"><img alt="Brand logo. - Primary color: #164a34
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UwvheEflVQETpVODXud1bKJQLTG3Z9V091WAQuRWb3OjkfynIYN40ImZHKnidhICqNkNrqFqpWKzSfZlgxI5J_M82iY6odlXGtsZTTc8HXdVBAz6ryKsSz-P5wU6ZoKTCO5D247hagw2iNx0PZZfjdthMC8zjpWAGLJh7xg4qo3i9LZdCn7j6gGxugjmJTrMiBN0EKKxLQuSsUMZx2F7LChrzofAoNzJDssH-iE5FNMrlgSgXlD6etBto"><div class="flex flex-col"><span class="font-title-lg text-primary tracking-tight leading-none">KrishiMitra</span><span class="font-label-sm text-secondary">Agri-Advisory OS</span></div></div><nav class="flex flex-col px-3 space-y-1" data-active-classes="bg-primary-container text-on-primary-container font-title-md"><a aria-current="page" class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all bg-primary-container text-on-primary-container font-title-md" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[20px]">space_dashboard</span><span class="">Dashboard</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="my-farms" href="#"><span class="material-symbols-outlined text-[20px]">agriculture</span><span class="">My Farms</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="plans" href="#"><span class="material-symbols-outlined text-[20px]">calendar_month</span><span class="">Plans</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="compare" href="#"><span class="material-symbols-outlined text-[20px]">balance</span><span class="">Compare</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="recommendations" href="#"><span class="material-symbols-outlined text-[20px]">psychology_alt</span><span class="">Recommendations</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="resource-check" href="#"><span class="material-symbols-outlined text-[20px]">water_voc</span><span class="">Resource Check</span></a><a class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="reports" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span><span class="">Reports</span></a></nav></div><div class="px-4"><div class="p-3 bg-surface-container rounded-xl flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-label-lg text-on-surface truncate">Ramesh Deshmukh</span><span class="font-label-sm text-on-surface-variant truncate">Shivaji Nagar Farm #2</span></div><span class="material-symbols-outlined text-on-surface-variant text-[18px]">unfold_more</span></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8" style="backdrop-filter: blur(20px) saturate(180%); background-color: rgba(255, 255, 255, 0.78); border-bottom: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(0, 0, 0, 0.04) 0px 4px 24px -1px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;"><div class="flex items-center gap-3"><img alt="Brand logo. - Primary color: #164a34
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UwvheEflVQETpVODXud1bKJQLTG3Z9V091WAQuRWb3OjkfynIYN40ImZHKnidhICqNkNrqFqpWKzSfZlgxI5J_M82iY6odlXGtsZTTc8HXdVBAz6ryKsSz-P5wU6ZoKTCO5D247hagw2iNx0PZZfjdthMC8zjpWAGLJh7xg4qo3i9LZdCn7j6gGxugjmJTrMiBN0EKKxLQuSsUMZx2F7LChrzofAoNzJDssH-iE5FNMrlgSgXlD6etBto"><span class="font-title-md text-on-surface hidden sm:inline">KrishiMitra Management</span></div><div class="flex items-center gap-4"><div class="flex items-center bg-surface-container px-2 py-1 rounded-lg"><span class="material-symbols-outlined text-[18px] text-on-surface-variant mr-1">translate</span><select class="bg-transparent font-label-md text-on-surface outline-none cursor-pointer pr-1"><option value="en">English</option><option value="hi">हिंदी</option><option value="mr">मराठी</option></select></div><button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low rounded-lg font-label-md text-on-surface hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[18px] text-secondary">wb_sunny</span><span class="">Nashik 28°C · Soil Wet</span></button><button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 w-full min-h-screen bg-transparent"><div class="flex flex-col w-full">
+<!-- Panoramic Hero Section -->
+<div class="relative w-full overflow-hidden bg-surface-container-low shadow-sm">
+<!-- Image Backdrop using placeholder token image -->
+<div class="relative h-64 sm:h-72 md:h-80 w-full overflow-hidden">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105" style="background-image: url('https://lh3.googleusercontent.com/aida/AEtjO1XYoROS-GE82iBXYItBc3r-DRupzmzsIH3mpf51-Gx3EjtX7eW2mgPoAML_BTQxxw9yO4iFmB-I7mNBTOKKDQfoGl2Csmi3MZzVbLySLdNeNt_EEH5q0FdssaR0oJYAZBZf1IgN_pDGtKEzx8a5UTiygffX9zbOhkvN-OVxQmuXl6t3sHqq5Y8wWKEafxRwk1HMVlJNldgBGQx9lNRVzwjR0_cMXQHwnTtXkp53vcCc5U0S4PclbtZzig')"></div>
+<!-- Soft ambient multi-layer gradients for text readability and warm rustic glow -->
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent"></div>
+</div>
+<!-- Content Overlaid in Panoramic Section -->
+<div class="max-w-[1280px] mx-auto px-6 md:px-12 -mt-36 sm:-mt-40 relative z-10 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="flex flex-col gap-2.5">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md shadow-sm w-fit text-primary font-label-md">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span class="">Kharif Season 2025 · Soil: Black Cotton · Canal &amp; Well Water</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">
+          Good morning, Shivaji
+        </h1>
+<div class="flex items-center gap-2 font-body-md text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-secondary">pin_drop</span>
+<span class="">Shivaji Patil Farm · Hingoli, Maharashtra · 8.5 acres</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-on-primary font-title-md shadow-md hover:bg-primary-container hover:shadow-lg transition-all transform active:scale-95 cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="">Create New Plan</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main Canvas Container -->
+<div class="max-w-[1280px] w-full mx-auto px-6 md:px-12 py-8 flex flex-col gap-10">
+<!-- 3 High Priority Executive Metric Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6"><!-- Metric 1: Profit with Mini Sparkline Trend -->
+<div class="relative bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col justify-between overflow-hidden group hover:shadow-md transition-all" style="background-color: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px;">
+  <div class="absolute top-0 left-0 w-1.5 h-full bg-secondary"></div>
+  <div class="flex items-center justify-between gap-2 mb-3">
+    <span class="font-label-lg text-on-surface-variant uppercase tracking-wider">Best Estimated Profit</span>
+    <span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm font-semibold">
+      Drip Wheat Plan
+    </span>
+  </div>
+  <div class="flex items-end justify-between gap-4">
+    <div>
+      <div class="font-display-lg text-display-lg text-primary tracking-tight font-bold leading-none">
+        ₹1,84,500
+      </div>
+      <div class="flex items-center gap-1.5 mt-2 font-body-sm text-secondary font-medium">
+        <span class="material-symbols-outlined text-[18px]">trending_up</span>
+        <span class="font-semibold">+₹38,200 (+26.1%)</span>
+        <span class="text-on-surface-variant text-[12px]">vs Baseline</span>
+      </div>
+    </div>
+    <!-- Mini SVG Sparkline for 6-Month Profit Trajectory -->
+    <div class="w-24 h-12 shrink-0">
+      <svg viewBox="0 0 100 45" class="w-full h-full overflow-visible">
+        <defs>
+          <linearGradient id="metricSparkGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#196c3e" stop-opacity="0.35"></stop>
+            <stop offset="100%" stop-color="#196c3e" stop-opacity="0.0"></stop>
+          </linearGradient>
+        </defs>
+        <path d="M 0 38 Q 20 35, 40 28 T 75 14 T 100 6 L 100 45 L 0 45 Z" fill="url(#metricSparkGrad)"></path>
+        <path d="M 0 38 Q 20 35, 40 28 T 75 14 T 100 6" fill="none" stroke="#196c3e" stroke-width="2.5" stroke-linecap="round"></path>
+        <circle cx="100" cy="6" r="3.5" fill="#196c3e" stroke="#ffffff" stroke-width="2"></circle>
+      </svg>
+    </div>
+  </div>
+  <div class="mt-3 pt-2.5 border-t border-surface-container flex items-center justify-between text-[11px] text-on-surface-variant">
+    <span class="">Projected ROI: <strong class="text-primary font-semibold">2.42x</strong></span>
+    <span class="text-secondary font-medium">89% Confidence Score</span>
+  </div>
+</div>
+
+<!-- Metric 2: Water Reserve with Radial Arc Progress -->
+<div class="relative bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col justify-between overflow-hidden group hover:shadow-md transition-all" style="background-color: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px;">
+  <div class="absolute top-0 left-0 w-1.5 h-full bg-tertiary-container"></div>
+  <div class="flex items-center justify-between gap-2 mb-3">
+    <span class="font-label-lg text-on-surface-variant uppercase tracking-wider">Water Available</span>
+    <span class="px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm font-semibold">
+      Canal + 2 Wells
+    </span>
+  </div>
+  <div class="flex items-center justify-between gap-2">
+    <div>
+      <div class="flex items-baseline gap-1.5 leading-none">
+        <span class="font-display-lg text-display-lg text-primary tracking-tight font-bold">6,200</span>
+        <span class="font-title-md text-on-surface-variant">m³</span>
+      </div>
+      <p class="font-body-sm text-on-surface-variant mt-2">
+        <strong class="text-on-surface">3,450 m³</strong> plan quota · <span class="text-secondary font-medium">2,750 m³ surplus</span>
+      </p>
+    </div>
+    <!-- Circular SVG Progress Ring Gauge -->
+    <div class="w-14 h-14 shrink-0 relative flex items-center justify-center">
+      <svg class="w-full h-full transform -rotate-90" viewBox="0 0 42 42">
+        <circle cx="21" cy="21" r="16" fill="none" stroke="#eae8e2" stroke-width="4"></circle>
+        <circle cx="21" cy="21" r="16" fill="none" stroke="#00475a" stroke-width="4" stroke-linecap="round" stroke-dasharray="100.53" stroke-dashoffset="45.24"></circle>
+      </svg>
+      <span class="absolute text-[11px] font-bold text-tertiary-container">55%</span>
+    </div>
+  </div>
+  <div class="mt-3 pt-2.5 border-t border-surface-container flex items-center justify-between text-[11px] text-on-surface-variant">
+    <span class="">Daily Depletion: <strong class="text-primary font-semibold">18 m³/day</strong></span>
+    <span class="text-secondary font-medium">High Buffer Safety</span>
+  </div>
+</div>
+
+<!-- Metric 3: Soil Nitrogen & Resilience Gauge -->
+<div class="relative bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col justify-between overflow-hidden group hover:shadow-md transition-all" style="background-color: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px;">
+  <div class="absolute top-0 left-0 w-1.5 h-full bg-primary"></div>
+  <div class="flex items-center justify-between gap-2 mb-3">
+    <span class="font-label-lg text-on-surface-variant uppercase tracking-wider">Soil Health &amp; Risk</span>
+    <span class="px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm font-semibold flex items-center gap-1">
+      <span class="material-symbols-outlined text-[14px]">verified</span>
+      Score 92/100
+    </span>
+  </div>
+  <div class="flex items-center justify-between gap-2">
+    <div>
+      <div class="font-headline-lg text-headline-lg text-primary font-bold">
+        Optimal N-P-K
+      </div>
+      <div class="flex items-center gap-1.5 mt-2 font-body-sm text-on-surface-variant">
+        <span class="material-symbols-outlined text-[18px] text-secondary">shield</span>
+        <span class="">Low Weather &amp; Heat Risk</span>
+      </div>
+    </div>
+    <!-- Multi-tier Bar Gauge -->
+    <div class="flex flex-col gap-1.5 w-20 shrink-0">
+      <div class="flex items-center justify-between text-[10px] text-on-surface-variant font-medium">
+        <span class="">N-Index</span>
+        <span class="text-primary font-bold">84%</span>
+      </div>
+      <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+        <div class="h-full bg-secondary rounded-full" style="width: 84%;"></div>
+      </div>
+      <div class="flex items-center justify-between text-[10px] text-on-surface-variant font-medium">
+        <span class="">Moisture</span>
+        <span class="text-tertiary-container font-bold">72%</span>
+      </div>
+      <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+        <div class="h-full bg-tertiary-container rounded-full" style="width: 72%;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-3 pt-2.5 border-t border-surface-container flex items-center justify-between text-[11px] text-on-surface-variant">
+    <span class="">Organic Carbon: <strong class="text-primary font-semibold">0.78% (Good)</strong></span>
+    <span class="text-secondary font-medium">Field Ready</span>
+  </div>
+</div></div>
+<!-- Featured Next Step Advisory Insight Card -->
+<div class="relative rounded-3xl bg-surface-container-low p-7 sm:p-9 shadow-sm overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6" style="background-color: rgba(255, 255, 255, 0.82); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-secondary-fixed/30 filter blur-3xl pointer-events-none"></div>
+<div class="flex items-start gap-4 z-10 max-w-2xl">
+<div class="w-12 h-12 rounded-2xl bg-secondary text-on-secondary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]">lightbulb</span>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="font-label-sm uppercase tracking-wider px-2 py-0.5 rounded bg-surface-container-high text-primary font-bold">
+              Key Strategic Insight
+            </span>
+<span class="font-label-md text-on-surface-variant">Hingoli Sub-basin advisory</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary">
+            Drip irrigation can save ~1,200 m³ water while improving expected yield by 14%.
+          </h2>
+<p class="font-body-md text-on-surface-variant leading-relaxed">
+            Hingoli reservoir levels indicate dry spell risk in mid-season. Adopting drip now preserves ₹26,000 in input investments and protects high-stage flowering.
+          </p>
+</div>
+</div>
+<div class="shrink-0 z-10 self-stretch sm:self-auto flex items-center">
+<button class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-primary text-on-primary font-title-md shadow hover:bg-primary-container transition-all cursor-pointer">
+<span class="">View Plan &amp; Apply</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div><!-- High-Fidelity KrishiTelemetry Visual Analytics Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <!-- Chart 1: Soil Moisture & Root-Zone Dynamics (Area SVG Chart) -->
+  <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-7 shadow-sm flex flex-col justify-between transition-all hover:shadow-md" style="background-color: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px;">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+          <h3 class="font-title-lg text-title-lg text-primary font-bold">Soil Moisture &amp; Ground Sensor Telemetry</h3>
+        </div>
+        <p class="font-body-sm text-on-surface-variant mt-0.5">Continuous 30-Day Root-zone VWC% at Dual Depths</p>
+      </div>
+      <div class="flex items-center gap-3 self-start sm:self-auto">
+        <div class="flex items-center gap-1.5 text-[12px] text-on-surface-variant">
+          <span class="w-3 h-1 bg-secondary rounded-full"></span>
+          <span class="">20cm Surface</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-[12px] text-on-surface-variant">
+          <span class="w-3 h-1 bg-tertiary-container rounded-full"></span>
+          <span class="">40cm Deep Root</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Telemetry SVG Area Canvas -->
+    <div class="relative w-full pt-2 pb-1">
+      <svg viewBox="0 0 520 220" class="w-full h-auto overflow-visible select-none">
+        <defs>
+          <!-- 20cm Gradient -->
+          <linearGradient id="gradMoisture20" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#196c3e" stop-opacity="0.38"></stop>
+            <stop offset="70%" stop-color="#196c3e" stop-opacity="0.08"></stop>
+            <stop offset="100%" stop-color="#196c3e" stop-opacity="0.0"></stop>
+          </linearGradient>
+          <!-- 40cm Gradient -->
+          <linearGradient id="gradMoisture40" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#00475a" stop-opacity="0.22"></stop>
+            <stop offset="100%" stop-color="#00475a" stop-opacity="0.0"></stop>
+          </linearGradient>
+        </defs>
+
+        <!-- Horizontal Axis Gridlines -->
+        <line x1="40" y1="30" x2="500" y2="30" stroke="#eae8e2" stroke-dasharray="3 3" stroke-width="1"></line>
+        <line x1="40" y1="75" x2="500" y2="75" stroke="#eae8e2" stroke-dasharray="3 3" stroke-width="1"></line>
+        <line x1="40" y1="120" x2="500" y2="120" stroke="#eae8e2" stroke-dasharray="3 3" stroke-width="1"></line>
+        <line x1="40" y1="165" x2="500" y2="165" stroke="#eae8e2" stroke-dasharray="3 3" stroke-width="1"></line>
+
+        <!-- Safety Threshold Band (Optimal Moisture Range) -->
+        <rect x="40" y="60" width="460" height="75" fill="#a1f1b7" fill-opacity="0.14" rx="4"></rect>
+        <text x="495" y="72" font-size="10" text-anchor="end" fill="#196c3e" font-weight="600">Optimal Moisture Zone (32% - 48%)</text>
+        <line x1="40" y1="135" x2="500" y2="135" stroke="#ba1a1a" stroke-dasharray="4 4" stroke-width="1.2" stroke-opacity="0.65"></line>
+        <text x="495" y="148" font-size="9.5" text-anchor="end" fill="#ba1a1a" font-weight="500">Wilting Stress Threshold (24%)</text>
+
+        <!-- Y-Axis Labels -->
+        <text x="32" y="33" font-size="10" text-anchor="end" fill="#717973">60%</text>
+        <text x="32" y="78" font-size="10" text-anchor="end" fill="#717973">45%</text>
+        <text x="32" y="123" font-size="10" text-anchor="end" fill="#717973">30%</text>
+        <text x="32" y="168" font-size="10" text-anchor="end" fill="#717973">15%</text>
+
+        <!-- 40cm Deep Root Area & Line -->
+        <path d="M 40 102 C 90 98, 140 106, 190 90 C 240 76, 290 85, 340 78 C 390 70, 440 74, 500 68 L 500 190 L 40 190 Z" fill="url(#gradMoisture40)"></path>
+        <path d="M 40 102 C 90 98, 140 106, 190 90 C 240 76, 290 85, 340 78 C 390 70, 440 74, 500 68" fill="none" stroke="#00475a" stroke-width="2.2" stroke-dasharray="6 4"></path>
+
+        <!-- 20cm Surface Root Area & Line -->
+        <path d="M 40 130 C 75 110, 110 65, 150 72 C 190 78, 220 115, 260 92 C 300 68, 335 52, 380 62 C 425 72, 460 55, 500 48 L 500 190 L 40 190 Z" fill="url(#gradMoisture20)"></path>
+        <path d="M 40 130 C 75 110, 110 65, 150 72 C 190 78, 220 115, 260 92 C 300 68, 335 52, 380 62 C 425 72, 460 55, 500 48" fill="none" stroke="#196c3e" stroke-width="2.8" stroke-linecap="round"></path>
+
+        <!-- Active Sensor Data Point Annotation (Today) -->
+        <line x1="380" y1="25" x2="380" y2="190" stroke="#164a34" stroke-width="1.2" stroke-dasharray="3 3" stroke-opacity="0.4"></line>
+        <circle cx="380" cy="62" r="5" fill="#196c3e" stroke="#ffffff" stroke-width="2.5"></circle>
+        <circle cx="380" cy="78" r="4" fill="#00475a" stroke="#ffffff" stroke-width="2"></circle>
+
+        <!-- Interactive Metric Badge on Pin -->
+        <g transform="translate(350, 18)">
+          <rect x="0" y="0" width="62" height="22" rx="6" fill="#003320" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.15))"></rect>
+          <text x="31" y="15" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">43.8% VWC</text>
+        </g>
+
+        <!-- X-Axis Days Labels -->
+        <text x="40" y="205" font-size="10" fill="#717973" text-anchor="center">Day 1</text>
+        <text x="130" y="205" font-size="10" fill="#717973" text-anchor="middle">Day 7</text>
+        <text x="245" y="205" font-size="10" fill="#717973" text-anchor="middle">Day 14 (Irrig.)</text>
+        <text x="380" y="205" font-size="10" fill="#164a34" font-weight="bold" text-anchor="middle">Today</text>
+        <text x="495" y="205" font-size="10" fill="#717973" text-anchor="end">Day 30 (Proj.)</text>
+      </svg>
+    </div>
+
+    <!-- Bottom Insight Micro-strip -->
+    <div class="pt-3 mt-2 border-t border-surface-container flex flex-wrap items-center justify-between text-body-sm text-on-surface-variant gap-2">
+      <div class="flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px] text-secondary">water_drop</span>
+        <span class="">Next optimal drip cycle in <strong class="text-primary font-bold">52 hours</strong> (0.8 bar pressure)</span>
+      </div>
+      <span class="font-label-sm font-semibold px-2 py-0.5 rounded bg-surface-container text-primary">Sensor Node SN-402 OK</span>
+    </div>
+  </div>
+
+  <!-- Chart 2: Monthly Water Consumption vs Quota (Grouped Bar Chart) -->
+  <div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-7 shadow-sm flex flex-col justify-between transition-all hover:shadow-md" style="background-color: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px;">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>
+          <h3 class="font-title-lg text-title-lg text-primary font-bold">Monthly Water Consumption vs. Quota</h3>
+        </div>
+        <p class="font-body-sm text-on-surface-variant mt-0.5">6-Month Comparison: Drip Allocation vs Actual Inflow (m³)</p>
+      </div>
+      <div class="flex items-center gap-3 self-start sm:self-auto">
+        <div class="flex items-center gap-1.5 text-[12px] text-on-surface-variant">
+          <span class="w-3 h-3 bg-tertiary-container rounded-sm"></span>
+          <span class="">Actual Usage</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-[12px] text-on-surface-variant">
+          <span class="w-3 h-3 bg-surface-container-high rounded-sm border border-outline-variant"></span>
+          <span class="">Quota Cap</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bar Chart SVG Canvas -->
+    <div class="relative w-full pt-2 pb-1">
+      <svg viewBox="0 0 520 220" class="w-full h-auto overflow-visible select-none">
+        <defs>
+          <linearGradient id="actualBarGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#00475a"></stop>
+            <stop offset="100%" stop-color="#164a34"></stop>
+          </linearGradient>
+          <linearGradient id="savedBarGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#196c3e"></stop>
+            <stop offset="100%" stop-color="#88d8a0"></stop>
+          </linearGradient>
+        </defs>
+
+        <!-- Horizontal Guideline grids -->
+        <line x1="35" y1="30" x2="505" y2="30" stroke="#eae8e2" stroke-dasharray="3 3"></line>
+        <line x1="35" y1="75" x2="505" y2="75" stroke="#eae8e2" stroke-dasharray="3 3"></line>
+        <line x1="35" y1="120" x2="505" y2="120" stroke="#eae8e2" stroke-dasharray="3 3"></line>
+        <line x1="35" y1="165" x2="505" y2="165" stroke="#eae8e2" stroke-dasharray="3 3"></line>
+
+        <!-- Y-Axis Labels (m³) -->
+        <text x="28" y="33" font-size="10" text-anchor="end" fill="#717973">1,200</text>
+        <text x="28" y="78" font-size="10" text-anchor="end" fill="#717973">900</text>
+        <text x="28" y="123" font-size="10" text-anchor="end" fill="#717973">600</text>
+        <text x="28" y="168" font-size="10" text-anchor="end" fill="#717973">300</text>
+
+        <!-- Month 1: Nov -->
+        <g transform="translate(50, 0)">
+          <rect x="0" y="80" width="26" height="100" rx="5" fill="#eae8e2"></rect>
+          <rect x="18" y="105" width="24" height="75" rx="5" fill="url(#actualBarGrad)"></rect>
+          <text x="20" y="198" font-size="11" fill="#717973" text-anchor="middle">Nov</text>
+          <text x="30" y="100" font-size="10" fill="#00475a" font-weight="bold" text-anchor="middle">520</text>
+        </g>
+
+        <!-- Month 2: Dec -->
+        <g transform="translate(125, 0)">
+          <rect x="0" y="65" width="26" height="115" rx="5" fill="#eae8e2"></rect>
+          <rect x="18" y="90" width="24" height="90" rx="5" fill="url(#actualBarGrad)"></rect>
+          <text x="20" y="198" font-size="11" fill="#717973" text-anchor="middle">Dec</text>
+          <text x="30" y="85" font-size="10" fill="#00475a" font-weight="bold" text-anchor="middle">680</text>
+        </g>
+
+        <!-- Month 3: Jan -->
+        <g transform="translate(200, 0)">
+          <rect x="0" y="50" width="26" height="130" rx="5" fill="#eae8e2"></rect>
+          <rect x="18" y="82" width="24" height="98" rx="5" fill="url(#actualBarGrad)"></rect>
+          <text x="20" y="198" font-size="11" fill="#717973" text-anchor="middle">Jan</text>
+          <text x="30" y="77" font-size="10" fill="#00475a" font-weight="bold" text-anchor="middle">740</text>
+        </g>
+
+        <!-- Month 4: Feb (Current) -->
+        <g transform="translate(275, 0)">
+          <rect x="0" y="42" width="26" height="138" rx="5" fill="#eae8e2"></rect>
+          <rect x="18" y="95" width="24" height="85" rx="5" fill="url(#savedBarGrad)"></rect>
+          <text x="20" y="198" font-size="11" fill="#164a34" font-weight="bold" text-anchor="middle">Feb</text>
+          <text x="30" y="90" font-size="10" fill="#196c3e" font-weight="bold" text-anchor="middle">580</text>
+          <rect x="7" y="20" width="50" height="18" rx="4" fill="#a1f1b7"></rect>
+          <text x="32" y="33" font-size="9" fill="#1f7042" font-weight="bold" text-anchor="middle">-28% Drip</text>
+        </g>
+
+        <!-- Month 5: Mar (Forecast) -->
+        <g transform="translate(355, 0)">
+          <rect x="0" y="35" width="26" height="145" rx="5" fill="#eae8e2" stroke="#c0c9c1" stroke-dasharray="3 2"></rect>
+          <rect x="18" y="110" width="24" height="70" rx="5" fill="url(#savedBarGrad)" opacity="0.85"></rect>
+          <text x="20" y="198" font-size="11" fill="#717973" text-anchor="middle">Mar*</text>
+          <text x="30" y="105" font-size="10" fill="#196c3e" font-weight="bold" text-anchor="middle">490</text>
+        </g>
+
+        <!-- Month 6: Apr (Harvest) -->
+        <g transform="translate(435, 0)">
+          <rect x="0" y="60" width="26" height="120" rx="5" fill="#eae8e2" stroke="#c0c9c1" stroke-dasharray="3 2"></rect>
+          <rect x="18" y="135" width="24" height="45" rx="5" fill="url(#savedBarGrad)" opacity="0.85"></rect>
+          <text x="20" y="198" font-size="11" fill="#717973" text-anchor="middle">Apr*</text>
+          <text x="30" y="130" font-size="10" fill="#196c3e" font-weight="bold" text-anchor="middle">320</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Bottom Conservation Badge -->
+    <div class="pt-3 mt-2 border-t border-surface-container flex flex-wrap items-center justify-between text-body-sm text-on-surface-variant gap-2">
+      <div class="flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[18px] text-secondary">eco</span>
+        <span class="">Cumulative water conserved: <strong class="text-secondary font-bold">1,230 m³</strong> (35.6% saved)</span>
+      </div>
+      <span class="font-label-sm text-on-surface-variant font-medium">*Projected with Drip System</span>
+    </div>
+  </div>
+</div>
+
+<!-- Chart 3: Season Yield Projection & Benchmark Comparison (Full-Width High Density SVG Line Chart) -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 sm:p-7 shadow-sm flex flex-col justify-between transition-all hover:shadow-md" style="background-color: rgba(255, 255, 255, 0.88); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px;">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[24px] text-primary">ssid_chart</span>
+        <h3 class="font-title-lg text-title-lg text-primary font-bold">Wheat Yield Growth Curve &amp; Benchmark Projections</h3>
+      </div>
+      <p class="font-body-sm text-on-surface-variant mt-0.5">
+        Current season growth timeline against 5-Year Farm History &amp; Hingoli District Top 10% benchmark
+      </p>
+    </div>
+    <!-- Legend items -->
+    <div class="flex flex-wrap items-center gap-4 text-[12px] font-medium">
+      <div class="flex items-center gap-1.5">
+        <span class="w-4 h-1 bg-primary rounded-full"></span>
+        <span class="text-primary font-bold">Current Plan (Drip Fertigation)</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="w-4 h-1 bg-secondary rounded-full"></span>
+        <span class="text-secondary font-semibold">District Top 10% Benchmark</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="w-4 h-1 bg-outline-variant rounded-full border-b border-dashed border-outline"></span>
+        <span class="text-on-surface-variant">5-Yr Farm Historical Avg</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Width SVG Multi-Line Chart Canvas -->
+  <div class="relative w-full pt-3 pb-2 overflow-hidden">
+    <svg viewBox="0 0 1000 280" class="w-full h-auto select-none overflow-visible">
+      <defs>
+        <linearGradient id="projAreaGlow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#003320" stop-opacity="0.18"></stop>
+          <stop offset="100%" stop-color="#003320" stop-opacity="0.0"></stop>
+        </linearGradient>
+      </defs>
+
+      <!-- Horizontal Grids with Quintals/Acre labels -->
+      <line x1="60" y1="30" x2="960" y2="30" stroke="#eae8e2" stroke-dasharray="3 3"></line>
+      <text x="50" y="34" font-size="11" text-anchor="end" fill="#717973">25 Q/ac</text>
+
+      <line x1="60" y1="85" x2="960" y2="85" stroke="#eae8e2" stroke-dasharray="3 3"></line>
+      <text x="50" y="89" font-size="11" text-anchor="end" fill="#717973">20 Q/ac</text>
+
+      <line x1="60" y1="140" x2="960" y2="140" stroke="#eae8e2" stroke-dasharray="3 3"></line>
+      <text x="50" y="144" font-size="11" text-anchor="end" fill="#717973">15 Q/ac</text>
+
+      <line x1="60" y1="195" x2="960" y2="195" stroke="#eae8e2" stroke-dasharray="3 3"></line>
+      <text x="50" y="199" font-size="11" text-anchor="end" fill="#717973">10 Q/ac</text>
+
+      <line x1="60" y1="250" x2="960" y2="250" stroke="#eae8e2"></line>
+      <text x="50" y="254" font-size="11" text-anchor="end" fill="#717973">0</text>
+
+      <!-- Phenological Stage Vertical Markers -->
+      <line x1="230" y1="25" x2="230" y2="250" stroke="#f0eee8" stroke-width="1.5"></line>
+      <line x1="460" y1="25" x2="460" y2="250" stroke="#f0eee8" stroke-width="1.5"></line>
+      <line x1="690" y1="25" x2="690" y2="250" stroke="#f0eee8" stroke-width="1.5"></line>
+
+      <!-- Line 3: 5-Yr Farm Historical Average (Dashed Grey Line) -->
+      <path d="M 60 250 C 140 240, 230 215, 330 190 C 440 165, 550 145, 680 125 C 780 115, 870 112, 960 110" fill="none" stroke="#717973" stroke-width="2" stroke-dasharray="5 4" opacity="0.7"></path>
+      <circle cx="960" cy="110" r="3.5" fill="#717973"></circle>
+      <text x="960" y="98" font-size="10" fill="#717973" font-weight="500" text-anchor="end">17.2 Q (Past Avg)</text>
+
+      <!-- Line 2: District Top 10% Benchmark (Emerald Green) -->
+      <path d="M 60 250 C 140 232, 230 195, 330 160 C 440 120, 550 92, 680 72 C 780 58, 870 54, 960 52" fill="none" stroke="#196c3e" stroke-width="2.5" stroke-dasharray="6 3" opacity="0.85"></path>
+      <circle cx="960" cy="52" r="4" fill="#196c3e"></circle>
+      <text x="960" y="42" font-size="11" fill="#196c3e" font-weight="bold" text-anchor="end">22.8 Q (Top 10%)</text>
+
+      <!-- Line 1: Current Season Projected (Forest Green, Shaded Area) -->
+      <path d="M 60 250 C 140 235, 230 198, 330 152 C 440 112, 550 82, 680 62 C 780 50, 870 45, 960 42 L 960 250 L 60 250 Z" fill="url(#projAreaGlow)"></path>
+      <path d="M 60 250 C 140 235, 230 198, 330 152 C 440 112, 550 82, 680 62 C 780 50, 870 45, 960 42" fill="none" stroke="#003320" stroke-width="3.5" stroke-linecap="round"></path>
+
+      <!-- Current Stage Indicator (Day 42 Tillering Phase) -->
+      <line x1="380" y1="25" x2="380" y2="250" stroke="#196c3e" stroke-width="1.5" stroke-dasharray="4 4"></line>
+      <circle cx="380" cy="132" r="6" fill="#196c3e" stroke="#ffffff" stroke-width="3"></circle>
+
+      <!-- Annotation Pill for Active Stage -->
+      <g transform="translate(325, 75)">
+        <rect x="0" y="0" width="110" height="44" rx="8" fill="#003320" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.18))"></rect>
+        <text x="55" y="18" fill="#a4f4ba" font-size="10" font-weight="bold" text-anchor="middle">CURRENT STAGE</text>
+        <text x="55" y="33" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Tillering: +16.2%</text>
+      </g>
+
+      <!-- Peak Harvest Forecast Badge at End -->
+      <circle cx="960" cy="42" r="5.5" fill="#003320" stroke="#ffffff" stroke-width="2.5"></circle>
+      <g transform="translate(875, 12)">
+        <rect x="0" y="0" width="85" height="24" rx="6" fill="#164a34"></rect>
+        <text x="42" y="16" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">★ 23.5 Q/acre</text>
+      </g>
+
+      <!-- X-Axis Stage Labels -->
+      <text x="60" y="270" font-size="11" fill="#717973" text-anchor="start">Vegetative (0-25d)</text>
+      <text x="230" y="270" font-size="11" fill="#717973" text-anchor="middle">Tillering (25-45d)</text>
+      <text x="460" y="270" font-size="11" fill="#717973" text-anchor="middle">Jointing &amp; Booting (45-70d)</text>
+      <text x="690" y="270" font-size="11" fill="#717973" text-anchor="middle">Flowering &amp; Grain Filling (70-95d)</text>
+      <text x="960" y="270" font-size="11" fill="#164a34" font-weight="bold" text-anchor="end">Maturity / Harvest (110d)</text>
+    </svg>
+  </div>
+
+  <!-- Bottom Summary KPI Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 mt-2 border-t border-surface-container">
+    <div class="flex items-center gap-3 p-2 rounded-xl bg-surface-container-low">
+      <div class="w-9 h-9 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-[20px]">award_star</span>
+      </div>
+      <div>
+        <span class="text-[11px] text-on-surface-variant block uppercase font-medium">Projected Harvest</span>
+        <strong class="font-title-md text-primary text-[15px]">199.7 Quintals total</strong>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-2 rounded-xl bg-surface-container-low">
+      <div class="w-9 h-9 rounded-lg bg-primary-fixed text-on-primary-fixed flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-[20px]">price_check</span>
+      </div>
+      <div>
+        <span class="text-[11px] text-on-surface-variant block uppercase font-medium">Expected MSP Value</span>
+        <strong class="font-title-md text-primary text-[15px]">₹2,275 / Q (Govt MSP)</strong>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 p-2 rounded-xl bg-surface-container-low">
+      <div class="w-9 h-9 rounded-lg bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-[20px]">verified</span>
+      </div>
+      <div>
+        <span class="text-[11px] text-on-surface-variant block uppercase font-medium">Risk Mitigation Status</span>
+        <strong class="font-title-md text-secondary text-[15px]">Insured under PMFBY</strong>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Latest Crop Plans Comparison & Details -->
+<div class="flex flex-col gap-5">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary">Available Crop Plans</h2>
+<p class="font-body-sm text-on-surface-variant">Comparative model based on 8.5 acres black soil characteristics</p>
+</div>
+<button class="font-label-lg text-secondary hover:text-primary transition-colors flex items-center gap-1">
+<span class="">Compare Side-by-Side</span>
+<span class="material-symbols-outlined text-[18px]">compare_arrows</span>
+</button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Card A: Baseline Wheat Plan -->
+<div class="bg-surface-container-lowest rounded-2xl p-7 shadow-sm flex flex-col justify-between gap-6 hover:shadow-md transition-all" style="background-color: rgba(255, 255, 255, 0.82); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="flex items-start justify-between gap-4">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-2xl bg-surface-container flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[32px]">grass</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">Baseline Wheat Plan</h3>
+<p class="font-body-sm text-on-surface-variant">Flood Irrigation · Traditional Furrow</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface-container text-outline font-label-md">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+              Moderate Risk
+            </span>
+</div>
+<div class="grid grid-cols-3 gap-4 py-4 bg-surface-container-low rounded-xl px-4">
+<div>
+<span class="font-label-sm text-on-surface-variant block">Est. Profit</span>
+<span class="font-headline-sm text-headline-sm text-primary mt-0.5 block">₹1,46,300</span>
+</div>
+<div>
+<span class="font-label-sm text-on-surface-variant block">Expected Yield</span>
+<span class="font-title-md text-title-md text-on-surface mt-0.5 block">18.5 – 20.0 Q</span>
+</div>
+<div>
+<span class="font-label-sm text-on-surface-variant block">Water Needed</span>
+<span class="font-title-md text-title-md text-on-surface mt-0.5 block">4,650 m³</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<span class="font-body-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-outline">info</span>
+              Higher evaporation loss during March
+            </span>
+<button class="px-5 py-2.5 rounded-xl bg-surface-container text-on-surface font-title-md hover:bg-surface-container-high transition-colors cursor-pointer">
+              Open Plan
+            </button>
+</div>
+</div>
+<!-- Card B: Drip Irrigation Plan (Recommended) -->
+<div class="bg-surface-container-lowest rounded-2xl p-7 shadow-md flex flex-col justify-between gap-6 relative overflow-hidden group hover:shadow-lg transition-all" style="background-color: rgba(255, 255, 255, 0.82); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="absolute top-0 right-0 w-28 h-28 bg-secondary-container/20 rounded-bl-full pointer-events-none"></div>
+<div class="flex items-start justify-between gap-4 z-10">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[32px]">water_voc</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title-lg text-title-lg text-primary">Drip Irrigation Plan</h3>
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-sm">Recommended</span>
+</div>
+<p class="font-body-sm text-on-surface-variant">Micro-sprinklers + Inline Fertigation</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-md">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+              Low Risk
+            </span>
+</div>
+<div class="grid grid-cols-3 gap-4 py-4 bg-primary-fixed/25 rounded-xl px-4 z-10">
+<div>
+<span class="font-label-sm text-on-surface-variant block">Est. Profit</span>
+<span class="font-headline-sm text-headline-sm text-primary mt-0.5 block font-bold">₹1,84,500</span>
+</div>
+<div>
+<span class="font-label-sm text-on-surface-variant block">Expected Yield</span>
+<span class="font-title-md text-title-md text-primary mt-0.5 block font-bold">21.0 – 23.5 Q</span>
+</div>
+<div>
+<span class="font-label-sm text-on-surface-variant block">Water Needed</span>
+<span class="font-title-md text-title-md text-primary mt-0.5 block font-bold">3,450 m³</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 z-10">
+<span class="font-body-sm text-secondary flex items-center gap-1.5 font-medium">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+              Saves 1,200 m³ water + 14% yield
+            </span>
+<button class="px-6 py-2.5 rounded-xl bg-primary text-on-primary font-title-md shadow-sm hover:bg-primary-container transition-all cursor-pointer">
+              Open Plan
+            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Farm Resources & Readiness Glance Bar -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm flex flex-col gap-4" style="background-color: rgba(255, 255, 255, 0.82); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">inventory_2</span>
+<h2 class="font-title-lg text-title-lg text-primary">Farm Resources &amp; Readiness</h2>
+</div>
+<a class="font-label-lg text-secondary hover:underline flex items-center gap-1" href="#">
+<span class="">Run Comprehensive Resource Check</span>
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</a>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+<!-- Resource 1: Budget -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-on-surface-variant uppercase">Capital &amp; Budget</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface mt-1">₹85,000</span>
+<span class="font-body-sm text-secondary">₹80,000 req. · Sufficient</span>
+</div>
+<!-- Resource 2: Water -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-on-surface-variant uppercase">Stored Water</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface mt-1">6,200 m³</span>
+<span class="font-body-sm text-secondary">Surplus +2,750 m³</span>
+</div>
+<!-- Resource 3: Seeds -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-on-surface-variant uppercase">Certified Seed</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">check_circle</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface mt-1 truncate">Sonalika HD-2967</span>
+<span class="font-body-sm text-on-surface-variant">In Stock · 180 kg</span>
+</div>
+<!-- Resource 4: Fertilizer -->
+<div class="p-4 rounded-xl bg-surface-container-low flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-on-surface-variant uppercase">Nutrients</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">pending</span>
+</div>
+<span class="font-title-md text-title-md text-on-surface mt-1">DAP &amp; Urea</span>
+<span class="font-body-sm text-on-surface-variant">Arranging 2 bags DAP</span>
+</div>
+</div>
+</div>
+<!-- Active Seasonal Field Timeline Bar -->
+<div class="bg-surface-container-low rounded-2xl p-6 flex flex-col gap-4 mb-8" style="background-color: rgba(255, 255, 255, 0.82); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(22, 74, 52, 0.05) 0px 10px 30px -5px, rgba(255, 255, 255, 0.95) 0px 1px 2px inset;">
+<div class="flex items-center justify-between">
+<span class="font-title-md text-primary">Kharif Schedule Status</span>
+<span class="font-label-md text-on-surface-variant">Stage 2 of 5: Pre-Sowing Moisture Priming</span>
+</div>
+<div class="relative w-full flex items-center justify-between pt-2">
+<div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1 bg-surface-variant"></div>
+<div class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-secondary w-1/3"></div>
+<!-- Stage 1 -->
+<div class="relative z-10 flex flex-col items-center gap-1.5 bg-surface-container-low px-2">
+<div class="w-7 h-7 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow">
+<span class="material-symbols-outlined text-[16px]">check</span>
+</div>
+<span class="font-label-sm text-on-surface font-semibold">Tillage</span>
+</div>
+<!-- Stage 2 -->
+<div class="relative z-10 flex flex-col items-center gap-1.5 bg-surface-container-low px-2">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center shadow ring-4 ring-secondary-container">
+<span class="material-symbols-outlined text-[16px]">water_drop</span>
+</div>
+<span class="font-label-sm text-primary font-bold">Soil Prep</span>
+</div>
+<!-- Stage 3 -->
+<div class="relative z-10 flex flex-col items-center gap-1.5 bg-surface-container-low px-2">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">potted_plant</span>
+</div>
+<span class="font-label-sm text-on-surface-variant">Sowing</span>
+</div>
+<!-- Stage 4 -->
+<div class="relative z-10 flex flex-col items-center gap-1.5 bg-surface-container-low px-2">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">science</span>
+</div>
+<span class="font-label-sm text-on-surface-variant">Fertigation</span>
+</div>
+<!-- Stage 5 -->
+<div class="relative z-10 flex flex-col items-center gap-1.5 bg-surface-container-low px-2">
+<div class="w-7 h-7 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">agriculture</span>
+</div>
+<span class="font-label-sm text-on-surface-variant">Harvest</span>
+</div>
+</div>
+</div>
+</div>
+</div></main></div>
+
+</body></html>

@@ -26,7 +26,7 @@ export default function FeasibilityBanner({
       bg: "bg-rose-50",
       text: "text-rose-950",
       badgeBg: "bg-rose-600 text-white",
-      icon: "✕",
+      icon: "close",
       label: t("resources.verdict.notFeasible") || "NOT FEASIBLE",
       subtitle: t("resources.verdict.notFeasibleDesc") || "Critical resource shortages must be resolved prior to planting.",
     },
@@ -35,7 +35,7 @@ export default function FeasibilityBanner({
       bg: "bg-amber-50",
       text: "text-amber-950",
       badgeBg: "bg-amber-600 text-white",
-      icon: "⚠️",
+      icon: "warning",
       label: t("resources.verdict.feasibleWithGaps") || "FEASIBLE WITH GAPS",
       subtitle: t("resources.verdict.feasibleWithGapsDesc") || "Operational plan is viable if noted input deficits are procured.",
     },
@@ -44,7 +44,7 @@ export default function FeasibilityBanner({
       bg: "bg-emerald-50",
       text: "text-emerald-950",
       badgeBg: "bg-emerald-600 text-white",
-      icon: "✓",
+      icon: "check",
       label: t("resources.verdict.feasible") || "FEASIBLE",
       subtitle: t("resources.verdict.feasibleDesc") || "Sufficient capital, water, seeds, and equipment are available.",
     },
@@ -53,7 +53,7 @@ export default function FeasibilityBanner({
     bg: "bg-slate-50",
     text: "text-slate-900",
     badgeBg: "bg-slate-700 text-white",
-    icon: "ℹ️",
+    icon: "info",
     label: (verdictData.label || "AUDIT COMPLETE").toUpperCase(),
     subtitle: "Resource assessment complete.",
   };
@@ -70,7 +70,7 @@ export default function FeasibilityBanner({
             <span
               className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wide shadow-2xs ${configs.badgeBg}`}
             >
-              <span aria-hidden="true" className="text-sm font-black">{configs.icon}</span>
+              <span aria-hidden="true" className="material-symbols-outlined text-[16px]">{configs.icon}</span>
               <span>{configs.label}</span>
             </span>
 

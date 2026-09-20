@@ -1,0 +1,587 @@
+<!DOCTYPE html><html class="h-full" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><meta content="mobile_tab" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed": "#002113", "on-tertiary-fixed-variant": "#004d62", "on-secondary-fixed-variant": "#00522b", "secondary": "#196c3e", "primary-container": "#164a34", "on-secondary-fixed": "#00210e", "on-tertiary-container": "#6ab7d5", "secondary-fixed-dim": "#88d8a0", "tertiary": "#002f3d", "on-surface-variant": "#404943", "on-error": "#ffffff", "surface-container-high": "#eae8e2", "error": "#ba1a1a", "background": "#fbf9f3", "on-secondary-container": "#1f7042", "on-primary-container": "#85b99c", "surface-dim": "#dcdad4", "surface": "#fbf9f3", "outline-variant": "#c0c9c1", "primary-fixed-dim": "#9dd2b5", "secondary-fixed": "#a4f4ba", "secondary-container": "#a1f1b7", "outline": "#717973", "primary": "#003320", "inverse-surface": "#30312d", "on-background": "#1b1c18", "error-container": "#ffdad6", "on-primary-fixed-variant": "#1d5039", "surface-tint": "#366850", "tertiary-fixed-dim": "#84d1f0", "on-surface": "#1b1c18", "surface-container-low": "#f5f3ed", "surface-container-lowest": "#ffffff", "on-secondary": "#ffffff", "surface-container": "#f0eee8", "on-error-container": "#93000a", "on-primary": "#ffffff", "on-tertiary-fixed": "#001f29", "inverse-primary": "#9dd2b5", "primary-fixed": "#b9efd0", "inverse-on-surface": "#f3f1eb", "tertiary-fixed": "#baeaff", "surface-variant": "#e4e2dd", "tertiary-container": "#00475a", "surface-container-highest": "#e4e2dd", "on-tertiary": "#ffffff", "surface-bright": "#fbf9f3" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin": "3rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "gutter": "1.5rem", "margin-mobile": "1rem", "space-xl": "2.5rem", "space-md": "1rem", "gutter-mobile": "1rem", "space-lg": "1.5rem" }, "fontFamily": { "display-lg-mobile": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "title-lg": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"] }, "fontSize": { "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "title-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }] } } } }</script><style>@layer base { body { min-height: 100vh; overscroll-behavior-y: none; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head><body class="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen" style="background: radial-gradient(at 15% 10%, rgba(34, 197, 94, 0.18) 0px, transparent 50%), radial-gradient(at 85% 15%, rgba(16, 185, 129, 0.16) 0px, transparent 45%), radial-gradient(rgba(5, 150, 105, 0.08) 0px, transparent 60%), radial-gradient(at 20% 85%, rgba(132, 204, 22, 0.15) 0px, transparent 50%), radial-gradient(at 80% 90%, rgba(16, 185, 129, 0.18) 0px, transparent 50%), rgb(248, 250, 247); min-height: max(884px, 100dvh);"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]" style="background: rgba(255, 255, 255, 0.72); backdrop-filter: blur(24px) saturate(180%); border-bottom: 1px solid rgba(255, 255, 255, 0.75); box-shadow: rgba(0, 33, 19, 0.04) 0px 4px 20px 0px;"><div class="h-16 px-gutter-mobile flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm min-w-0"><img alt="Brand logo. - Primary color: #164a34
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1UwvheEflVQETpVODXud1bKJQLTG3Z9V091WAQuRWb3OjkfynIYN40ImZHKnidhICqNkNrqFqpWKzSfZlgxI5J_M82iY6odlXGtsZTTc8HXdVBAz6ryKsSz-P5wU6ZoKTCO5D247hagw2iNx0PZZfjdthMC8zjpWAGLJh7xg4qo3i9LZdCn7j6gGxugjmJTrMiBN0EKKxLQuSsUMZx2F7LChrzofAoNzJDssH-iE5FNMrlgSgXlD6etBto"><div class="flex flex-col min-w-0"><span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold leading-none">KrishiMitra</span><h1 class="font-title-md text-title-md text-on-surface truncate leading-tight">Farm Reports</h1></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><button aria-label="Toggle Marathi or English Language" class="h-9 px-space-sm rounded-full bg-surface-container flex items-center gap-1 text-on-surface-variant hover:text-on-surface"><span class="font-label-sm text-label-sm font-semibold text-primary">मराठी</span><span class="text-outline-variant font-label-sm text-label-sm">/</span><span class="font-label-sm text-label-sm font-semibold text-on-surface-variant">EN</span></button><button aria-label="Notifications" class="w-11 h-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface rounded-full"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-20 bg-surface px-gutter-mobile" style="background: transparent;"><div class="flex flex-col w-full space-y-space-md">
+<!-- Operational Header & Sowing Countdown Hero Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.65); box-shadow: rgba(16, 78, 45, 0.06) 0px 8px 32px 0px, rgba(255, 255, 255, 0.8) 0px 1px 1px 0px inset;">
+<div class="flex items-center justify-between gap-space-xs mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+        FIELD AUDIT VERIFIED
+      </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Rabi 2025 Cycle</span>
+</div>
+<div class="flex items-baseline justify-between gap-2">
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">Sowing Readiness Audit</h2>
+<div class="flex items-center gap-1 text-error bg-error-container/60 px-2 py-0.5 rounded-md">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+<span class="font-label-md text-label-md font-bold">5 Days Left</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+      Shivaji Patil Farm · 8.5 Acres · Drip Precision Wheat (HD-2967)
+    </p>
+<!-- Context Chips Horizontal Scroll -->
+<div class="flex items-center gap-1.5 overflow-x-auto py-2 no-scrollbar">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container font-label-sm text-label-sm text-on-surface whitespace-nowrap">
+<span class="material-symbols-outlined text-[14px] text-secondary">landscape</span>
+        Deep Black Cotton Soil
+      </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container font-label-sm text-label-sm text-on-surface whitespace-nowrap">
+<span class="material-symbols-outlined text-[14px] text-tertiary">calendar_today</span>
+        Target: Nov 02, 2025
+      </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container font-label-sm text-label-sm text-on-surface whitespace-nowrap">
+<span class="material-symbols-outlined text-[14px] text-secondary">location_on</span>
+        Hingoli Sub-District
+      </span>
+</div>
+<!-- Micro Action Row -->
+<div class="flex items-center gap-space-sm pt-2">
+<button class="flex-1 h-10 px-3 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md flex items-center justify-center gap-1.5 active:scale-95 transition-transform" id="lockTargetBtn" onclick="toggleLockState()">
+<span class="material-symbols-outlined text-[18px]" id="lockIcon">lock_open</span>
+<span id="lockText" class="">Lock Sowing Target</span>
+</button>
+<button class="h-10 px-3 rounded-lg bg-surface-container text-on-surface font-label-md text-label-md flex items-center justify-center gap-1.5 active:scale-95 transition-transform" onclick="simulatePdfDownload()">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">picture_as_pdf</span>
+<span class="">Export PDF</span>
+</button>
+</div>
+</div>
+<!-- Urgent Action Required Banner (Bottleneck Alert) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm border-l-4 border-l-error" id="urgentAlertCard" style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px) saturate(180%); border-top: 1px solid rgba(255, 255, 255, 0.8); border-right: 1px solid rgba(255, 255, 255, 0.7); border-bottom: 1px solid rgba(255, 255, 255, 0.7); box-shadow: rgba(186, 26, 26, 0.08) 0px 8px 32px 0px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-error text-[20px]" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wide text-error font-bold">1 Action Required Prior to Sowing</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">Pickup Today</span>
+</div>
+<div class="mt-2.5">
+<h3 class="font-title-md text-title-md text-on-surface">Pick up remaining 160 kg Sonalika HD-2967 Seed</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+        Order <strong class="text-on-surface">#HKK-8821</strong> held at Hingoli Krishi Kendra. Balance to pay: <strong class="text-on-surface">₹7,200</strong>.
+      </p>
+</div>
+<!-- Mobile Action Buttons -->
+<div class="grid grid-cols-3 gap-2 mt-3.5">
+<a class="h-10 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 transition-transform" href="tel:+919822001122">
+<span class="material-symbols-outlined text-[16px] text-secondary">call</span>
+<span class="">Call Shop</span>
+</a>
+<button class="h-10 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 transition-transform" onclick="openDealerRoute()">
+<span class="material-symbols-outlined text-[16px] text-tertiary">directions</span>
+<span class="">Route (12km)</span>
+</button>
+<button class="h-10 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm flex items-center justify-center gap-1 active:scale-95 transition-transform shadow-sm" onclick="resolveUrgentAction()">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span class="">Picked Up</span>
+</button>
+</div>
+</div>
+<!-- Topline Readiness Scorecards (2x2 Touch Grid) -->
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- 1. Overall Readiness -->
+<div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm flex flex-col justify-between" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.65); box-shadow: rgba(16, 78, 45, 0.06) 0px 8px 32px 0px, rgba(255, 255, 255, 0.8) 0px 1px 1px 0px inset;">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Readiness Index</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">verified_user</span>
+</div>
+<div class="my-2 flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md font-bold text-primary" id="scoreOverall">88%</span>
+<span class="font-label-sm text-label-sm font-semibold text-secondary">Grade A-</span>
+</div>
+<div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 88%"></div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1.5">4 of 5 pillars verified</p>
+</div>
+</div>
+<!-- 2. Water Security -->
+<div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm flex flex-col justify-between" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.65); box-shadow: rgba(16, 78, 45, 0.06) 0px 8px 32px 0px, rgba(255, 255, 255, 0.8) 0px 1px 1px 0px inset;">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Water Security</span>
+<span class="material-symbols-outlined text-on-tertiary-container text-[18px]">water_drop</span>
+</div>
+<div class="my-2">
+<div class="flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">6,200</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">m³</span>
+</div>
+<span class="font-label-sm text-label-sm font-semibold text-secondary">180% of Req (+2.7k buffer)</span>
+</div>
+<div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-tertiary-container h-1.5 rounded-full" style="width: 92%"></div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1.5">Wells #1 &amp; #2 at 92%</p>
+</div>
+</div>
+<!-- 3. Working Capital -->
+<div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm flex flex-col justify-between" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.65); box-shadow: rgba(16, 78, 45, 0.06) 0px 8px 32px 0px, rgba(255, 255, 255, 0.8) 0px 1px 1px 0px inset;">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Working Capital</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">account_balance_wallet</span>
+</div>
+<div class="my-2">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">₹85,000</span>
+<p class="font-label-sm text-label-sm text-secondary font-semibold">₹47k Surplus Stage</p>
+</div>
+<div class="bg-surface-container px-2 py-1 rounded">
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">+ ₹1.2L KCC Headroom</p>
+</div>
+</div>
+<!-- 4. Certified Inputs & Tools -->
+<div class="bg-surface-container-lowest rounded-xl p-3.5 shadow-sm flex flex-col justify-between" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.65); box-shadow: rgba(16, 78, 45, 0.06) 0px 8px 32px 0px, rgba(255, 255, 255, 0.8) 0px 1px 1px 0px inset;">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Inputs &amp; Rig</span>
+<span class="material-symbols-outlined text-error text-[18px]">precision_manufacturing</span>
+</div>
+<div class="my-2 flex items-baseline gap-1.5">
+<span class="font-headline-md text-headline-md font-bold text-on-surface">78%</span>
+<span class="font-label-sm text-label-sm text-error font-medium">1 Item Short</span>
+</div>
+<div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 78%"></div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1.5">Mahindra 575 DI Ready</p>
+</div>
+</div>
+</div>
+<!-- 5-Day Critical Path Sowing Countdown (Interactive Timeline) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.65); box-shadow: rgba(16, 78, 45, 0.06) 0px 8px 32px 0px, rgba(255, 255, 255, 0.8) 0px 1px 1px 0px inset;">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[20px]">route</span>
+<h3 class="font-title-md text-title-md text-on-surface">Critical Path Sowing Plan</h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Nov 02 Sowing</span>
+</div>
+<div class="relative pl-6 space-y-4">
+<!-- Continuous vertical track -->
+<div class="absolute left-2.5 top-2 bottom-2 w-0.5 bg-surface-container-high"></div>
+<!-- Stage 1: Oct 28 (Done) -->
+<div class="relative flex items-start gap-2.5">
+<div class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-secondary text-on-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[13px]">done</span>
+</div>
+<div class="flex-1 bg-surface-container-low p-2.5 rounded-lg">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-bold text-on-surface">Oct 28 (Today)</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Completed</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Pre-irrigation Profile: Soil moisture logged at 18% dry weight across Plot A &amp; B.
+          </p>
+</div>
+</div>
+<!-- Stage 2: Oct 29 (Active) -->
+<div class="relative flex items-start gap-2.5">
+<div class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-error text-on-error flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-[13px]">radio_button_checked</span>
+</div>
+<div class="flex-1 bg-surface-container-lowest p-2.5 rounded-lg border-l-2 border-l-error shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-bold text-error">Oct 29 (Tomorrow)</span>
+<span class="font-label-sm text-label-sm bg-error-container text-on-error-container px-1.5 py-0.5 rounded font-semibold">Critical</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface font-medium mt-0.5">
+            Seed Pickup (160 kg) &amp; Trichoderma Bio-Mix Inoculation slurry prep.
+          </p>
+</div>
+</div>
+<!-- Stage 3: Oct 30 -->
+<div class="relative flex items-start gap-2.5">
+<div class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px]">schedule</span>
+</div>
+<div class="flex-1 p-2 rounded-lg bg-surface-container-low/60">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Oct 30 · T-3 Days</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Secondary Tillage &amp; laser leveling for uniform seedbed depth.
+          </p>
+</div>
+</div>
+<!-- Stage 4: Nov 01 -->
+<div class="relative flex items-start gap-2.5">
+<div class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px]">schedule</span>
+</div>
+<div class="flex-1 p-2 rounded-lg bg-surface-container-low/60">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Nov 01 · T-1 Day</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Drip line layout &amp; 4.2 bar manifold pressure check. Agronomist prep call.
+          </p>
+</div>
+</div>
+<!-- Stage 5: Nov 02 (Target) -->
+<div class="relative flex items-start gap-2.5">
+<div class="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px]">flag</span>
+</div>
+<div class="flex-1 p-2.5 rounded-lg bg-surface-container text-on-surface">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md font-bold text-primary">Nov 02 · TARGET SOWING DAY</span>
+<span class="font-label-sm text-label-sm text-secondary font-bold">5:30 AM Start</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Zero-till seed drill @ 40 kg/ac + basal NPK application across 8.5 acres.
+          </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Filterable Category Horizontal Pills -->
+<div class="flex items-center gap-1.5 overflow-x-auto py-1 no-scrollbar">
+<button class="category-pill px-3 py-1.5 rounded-full bg-primary text-on-primary font-label-md text-label-md whitespace-nowrap shadow-sm" onclick="filterChecklist('all', this)">
+      All (13)
+    </button>
+<button class="category-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md whitespace-nowrap" onclick="filterChecklist('water', this)">
+      Water (4)
+    </button>
+<button class="category-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md whitespace-nowrap" onclick="filterChecklist('seed', this)">
+      Seed &amp; Bio (4)
+    </button>
+<button class="category-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md whitespace-nowrap" onclick="filterChecklist('machinery', this)">
+      Machinery (2)
+    </button>
+<button class="category-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md whitespace-nowrap" onclick="filterChecklist('capital', this)">
+      Capital (1)
+    </button>
+<button class="category-pill px-3 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md whitespace-nowrap" onclick="filterChecklist('labor', this)">
+      Labor &amp; Advisory (2)
+    </button>
+</div>
+<!-- Itemized Checklist Cards -->
+<div class="space-y-2.5" id="checklistContainer">
+<!-- URGENT SEED CARD -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-error transition-all" data-category="seed">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-error-container/70 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-error text-[18px]">grain</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Sonalika HD-2967 Seed (340 kg Total)</h4>
+<p class="font-body-sm text-body-sm text-error font-semibold">180 kg on farm · 160 kg pending pickup</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold flex-shrink-0">Action Req</span>
+</div>
+<div class="mt-2.5 pt-2 flex items-center justify-between bg-surface-container-low px-2.5 py-1.5 rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Reserved at Hingoli Kendra (₹7,200 due)</span>
+<button class="font-label-sm text-label-sm text-secondary font-bold hover:underline" onclick="resolveSeedItem(this)">Mark Received</button>
+</div>
+</div>
+<!-- Well #1 -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="water">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">water</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Primary Open Well #1 (3,800 m³)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">5 HP Submersible tested · Discharge 180 LPM</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">100% Ready</span>
+</div>
+</div>
+<!-- Well #2 -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="water">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">solar_power</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Secondary Well #2 (2,400 m³)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Solar 3.0 kW dual inverter grid operational</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">100% Ready</span>
+</div>
+</div>
+<!-- Drip Irrigation -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="water">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">valve</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Drip Lateral &amp; Manifold (16mm Inline)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Flushed &amp; acid treated · Holds 4.2 bar</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">Verified</span>
+</div>
+</div>
+<!-- Canal Allocation -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="water">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">waves</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Hingoli Canal Water Turn #1</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Scheduled Nov 14–16 · Irrigation cess paid</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">Confirmed</span>
+</div>
+</div>
+<!-- Bio Inoculants -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="seed">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">science</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Trichoderma viride + Pseudomonas</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">2.0 kg fresh pack stored in cool shed</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">In Stock</span>
+</div>
+</div>
+<!-- Soluble Fertilizer -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="seed">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">inventory_2</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Fertilizer: NPK 19:19:19 (Soluble)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">6 bags (300 kg) staged for fertigation schedule</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">100% Staged</span>
+</div>
+</div>
+<!-- Micro-nutrients -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="seed">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">colorize</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Zinc Sulphate (21%) &amp; Solubor Boron</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">25 kg ZnSO4 + 5 kg Boron sealed</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">In Stock</span>
+</div>
+</div>
+<!-- Tractor -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="machinery">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">agriculture</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Mahindra 575 DI (47 HP)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Serviced, greased · 45L Diesel tank filled</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">100% Ready</span>
+</div>
+</div>
+<!-- Seed Drill -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="machinery">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">build</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">9-Tyne Zero-Till Seed Drill</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Furrow openers calibrated to 40 kg/acre rate</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">Calibrated</span>
+</div>
+</div>
+<!-- Liquid Capital -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="capital">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">payments</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Bank Liquid Capital &amp; Cash Buffer</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">₹45,000 cash on hand + ₹40,000 SBI current</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">Secured</span>
+</div>
+</div>
+<!-- Labor Squad -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="labor">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">groups</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Contracted Sowing Workcrew (4 Hands)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Assigned Nov 02–03 · Advance paid (₹500/day agreed)</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">Booked</span>
+</div>
+</div>
+<!-- Agronomist Consult -->
+<div class="checklist-item bg-surface-container-lowest rounded-xl p-3.5 shadow-sm border-l-4 border-l-secondary transition-all" data-category="labor">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2 min-w-0">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/60 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">psychology</span>
+</div>
+<div class="min-w-0">
+<h4 class="font-title-md text-title-md text-on-surface truncate">Dr. Vilas Rao (Hingoli KVK Agronomist)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Pre-sowing weather check call slotted for Nov 01, 6 PM</p>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold flex-shrink-0">Confirmed</span>
+</div>
+</div>
+</div>
+<!-- Notification Toast Simulation -->
+<div class="hidden fixed bottom-24 left-4 right-4 z-50 bg-primary text-on-primary p-3 rounded-xl shadow-lg flex items-center justify-between" id="toastMessage">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span>
+<span class="font-label-md text-label-md" id="toastText">Audit updated successfully!</span>
+</div>
+<button class="text-on-primary-container hover:text-on-primary" onclick="dismissToast()">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Footer Verification Guarantee Card -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-col items-center text-center space-y-2 mb-2" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(20px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.65); box-shadow: rgba(16, 78, 45, 0.06) 0px 8px 32px 0px, rgba(255, 255, 255, 0.8) 0px 1px 1px 0px inset;">
+<div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">shield_with_heart</span>
+</div>
+<h5 class="font-title-md text-title-md text-on-surface">ICAR Package of Practices Compliant</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs">
+      Verified against Marathwada Agri University (VNMKV) Wheat Protocol #W-2025.
+    </p>
+<div class="pt-1 flex items-center gap-2">
+<button class="inline-flex items-center gap-1 text-primary font-label-md text-label-md font-semibold hover:underline" onclick="simulateLogDownload()">
+<span class="material-symbols-outlined text-[16px]">history_edu</span>
+        Download Immutable Audit Log (#KM-88219-HNG)
+      </button>
+</div>
+</div>
+</div>
+<script>
+  let targetLocked = false;
+
+  function toggleLockState() {
+    targetLocked = !targetLocked;
+    const lockIcon = document.getElementById('lockIcon');
+    const lockText = document.getElementById('lockText');
+    const lockBtn = document.getElementById('lockTargetBtn');
+
+    if (targetLocked) {
+      lockIcon.innerText = 'lock';
+      lockText.innerText = 'Target Locked (Nov 02)';
+      lockBtn.classList.remove('bg-primary-container', 'text-on-primary-container');
+      lockBtn.classList.add('bg-primary', 'text-on-primary');
+      showToast('Sowing Target locked for Nov 02, 2025. Notifications synced with field labor.');
+    } else {
+      lockIcon.innerText = 'lock_open';
+      lockText.innerText = 'Lock Sowing Target';
+      lockBtn.classList.remove('bg-primary', 'text-on-primary');
+      lockBtn.classList.add('bg-primary-container', 'text-on-primary-container');
+      showToast('Target unlocked for revision.');
+    }
+  }
+
+  function resolveUrgentAction() {
+    const alertCard = document.getElementById('urgentAlertCard');
+    const scoreOverall = document.getElementById('scoreOverall');
+    
+    // Hide alert with smooth fade
+    alertCard.style.opacity = '0.3';
+    setTimeout(() => {
+      alertCard.classList.add('hidden');
+      scoreOverall.innerText = '98%';
+      showToast('Seed marked as collected! Readiness raised to 98% (Grade A+).');
+    }, 250);
+  }
+
+  function resolveSeedItem(btn) {
+    const card = btn.closest('.checklist-item');
+    card.classList.remove('border-l-error');
+    card.classList.add('border-l-secondary');
+    btn.parentElement.innerHTML = '<span class="font-label-sm text-label-sm text-secondary font-semibold flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">done_all</span> All 340 kg Stocked in Farm Storage</span>';
+    showToast('Seed inventory 100% verified on farm.');
+  }
+
+  function filterChecklist(category, element) {
+    // Update button states
+    const buttons = document.querySelectorAll('.category-pill');
+    buttons.forEach(btn => {
+      btn.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+      btn.classList.add('bg-surface-container', 'text-on-surface');
+    });
+    element.classList.remove('bg-surface-container', 'text-on-surface');
+    element.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+
+    // Filter cards
+    const items = document.querySelectorAll('.checklist-item');
+    items.forEach(item => {
+      if (category === 'all' || item.getAttribute('data-category') === category) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  }
+
+  function openDealerRoute() {
+    window.open('https://maps.google.com?q=Hingoli+Krishi+Kendra+Maharashtra', '_blank');
+  }
+
+  function simulatePdfDownload() {
+    showToast('Generating official Rabi 2025 Audit Sheet (PDF)...');
+  }
+
+  function simulateLogDownload() {
+    showToast('Downloading ICAR compliance log #KM-88219...');
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toastMessage');
+    const toastText = document.getElementById('toastText');
+    toastText.innerText = message;
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 3800);
+  }
+
+  function dismissToast() {
+    document.getElementById('toastMessage').classList.add('hidden');
+  }
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/85 backdrop-blur-xl shadow-[0_-2px_12px_rgba(22,74,52,0.05)]" data-active-classes="text-primary font-semibold" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(180%); border-top: 1px solid rgba(255, 255, 255, 0.75); box-shadow: rgba(0, 33, 19, 0.06) 0px -4px 24px 0px;"><div class="h-16 px-space-xs flex items-center justify-around"><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[24px]">grid_view</span><span class="font-label-sm text-label-sm mt-0.5">Dashboard</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="crop-plans" href="#"><span class="material-symbols-outlined text-[24px]">calendar_month</span><span class="font-label-sm text-label-sm mt-0.5">Plans</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="compare-crops" href="#"><span class="material-symbols-outlined text-[24px]">compare_arrows</span><span class="font-label-sm text-label-sm mt-0.5">Compare</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="agronomy-advisory" href="#"><span class="material-symbols-outlined text-[24px]">psychology_alt</span><span class="font-label-sm text-label-sm mt-0.5">Advisory</span></a><a class="flex flex-col items-center justify-center flex-1 h-full py-1 text-on-surface-variant hover:text-on-surface" data-path="farm-reports" href="#"><span class="material-symbols-outlined text-[24px]">analytics</span><span class="font-label-sm text-label-sm mt-0.5">Reports</span></a></div></nav>
+
+</body></html>

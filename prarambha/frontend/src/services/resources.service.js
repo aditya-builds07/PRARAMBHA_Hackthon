@@ -58,7 +58,7 @@ export function calculateFeasibility(resources = []) {
     return {
       verdict: "feasible",
       label: "Feasible",
-      icon: "✓",
+      icon: "check_circle",
       colorClass: "bg-emerald-50 border-emerald-300 text-emerald-950",
       summaryText: "All required resources are available on the farm.",
     };
@@ -75,7 +75,7 @@ export function calculateFeasibility(resources = []) {
     return {
       verdict: "not_feasible",
       label: "Not Feasible",
-      icon: "✕",
+      icon: "cancel",
       colorClass: "bg-rose-50 border-rose-300 text-rose-950",
       summaryText: shortItems.length > 0 ? shortItems.join(", ") : "Critical resource deficits identified.",
     };
@@ -85,7 +85,7 @@ export function calculateFeasibility(resources = []) {
     return {
       verdict: "feasible_with_gaps",
       label: "Feasible with Gaps",
-      icon: "⚠️",
+      icon: "warning",
       colorClass: "bg-amber-50 border-amber-300 text-amber-950",
       summaryText: shortItems.length > 0 ? shortItems.join(", ") : "Moderate resource gaps identified.",
     };
@@ -94,7 +94,7 @@ export function calculateFeasibility(resources = []) {
   return {
     verdict: "feasible",
     label: "Feasible",
-    icon: "✓",
+    icon: "check_circle",
     colorClass: "bg-emerald-50 border-emerald-300 text-emerald-950",
     summaryText: "All required resources are fully covered by farm reserves.",
   };

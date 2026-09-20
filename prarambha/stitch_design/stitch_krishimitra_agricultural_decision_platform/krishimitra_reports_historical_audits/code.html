@@ -1,0 +1,837 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-container-highest": "#e4e2dd", "tertiary": "#002f3d", "tertiary-container": "#00475a", "on-tertiary": "#ffffff", "primary-container": "#164a34", "surface-bright": "#fbf9f3", "on-secondary-fixed-variant": "#00522b", "outline": "#717973", "on-primary-fixed": "#002113", "on-secondary-container": "#1f7042", "on-error": "#ffffff", "on-surface": "#1b1c18", "secondary-fixed": "#a4f4ba", "on-secondary-fixed": "#00210e", "surface-container-high": "#eae8e2", "surface-variant": "#e4e2dd", "error-container": "#ffdad6", "secondary": "#196c3e", "secondary-container": "#a1f1b7", "surface-container-lowest": "#ffffff", "on-primary-container": "#85b99c", "surface-tint": "#366850", "inverse-surface": "#30312d", "on-tertiary-container": "#6ab7d5", "on-error-container": "#93000a", "primary-fixed-dim": "#9dd2b5", "surface-dim": "#dcdad4", "surface": "#fbf9f3", "inverse-primary": "#9dd2b5", "primary": "#003320", "surface-container-low": "#f5f3ed", "tertiary-fixed": "#baeaff", "inverse-on-surface": "#f3f1eb", "surface-container": "#f0eee8", "outline-variant": "#c0c9c1", "on-tertiary-fixed": "#001f29", "background": "#fbf9f3", "on-secondary": "#ffffff", "error": "#ba1a1a", "secondary-fixed-dim": "#88d8a0", "on-primary": "#ffffff", "on-background": "#1b1c18", "on-primary-fixed-variant": "#1d5039", "tertiary-fixed-dim": "#84d1f0", "primary-fixed": "#b9efd0", "on-surface-variant": "#404943", "on-tertiary-fixed-variant": "#004d62" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-mobile": "1rem", "space-md": "1rem", "gutter-mobile": "1rem", "gutter": "1.5rem", "space-lg": "1.5rem", "space-xl": "2.5rem", "margin": "3rem", "space-sm": "0.5rem", "space-xs": "0.25rem" }, "fontFamily": { "title-lg": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "display-lg-mobile": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "title-md": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"] }, "fontSize": { "title-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }], "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }] } } } };</script></head><body class="bg-background font-body-md text-on-surface antialiased" style="background: radial-gradient(at 10% 10%, rgba(34, 197, 94, 0.18) 0px, transparent 50%) fixed, radial-gradient(at 90% 15%, rgba(16, 185, 129, 0.16) 0px, transparent 50%), radial-gradient(rgba(5, 150, 105, 0.08) 0px, transparent 60%), radial-gradient(at 15% 85%, rgba(132, 204, 22, 0.15) 0px, transparent 50%), radial-gradient(at 85% 90%, rgba(16, 185, 129, 0.18) 0px, transparent 50%), rgb(248, 250, 247);"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between pt-5 pb-6" style="background: rgba(255, 255, 255, 0.72); backdrop-filter: blur(24px) saturate(190%); border-right: 1px solid rgba(255, 255, 255, 0.75); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.8) -1px 0px 1px 0px inset;"><div class="flex flex-col gap-6"><div class="px-6 flex items-center gap-3"><img alt="Brand logo. - Primary color: #164a34
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UwvheEflVQETpVODXud1bKJQLTG3Z9V091WAQuRWb3OjkfynIYN40ImZHKnidhICqNkNrqFqpWKzSfZlgxI5J_M82iY6odlXGtsZTTc8HXdVBAz6ryKsSz-P5wU6ZoKTCO5D247hagw2iNx0PZZfjdthMC8zjpWAGLJh7xg4qo3i9LZdCn7j6gGxugjmJTrMiBN0EKKxLQuSsUMZx2F7LChrzofAoNzJDssH-iE5FNMrlgSgXlD6etBto"><div class="flex flex-col"><span class="font-title-lg text-primary tracking-tight leading-none">KrishiMitra</span><span class="font-label-sm text-secondary">Agri-Advisory OS</span></div></div><nav class="flex flex-col px-3 space-y-1" data-active-classes="bg-primary-container text-on-primary-container font-title-md"><a class="flex items-center px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="dashboard" href="#">Dashboard</a><a class="flex items-center px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="my-farms" href="#">My Farms</a><a class="flex items-center px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="plans" href="#">Plans</a><a class="flex items-center px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="compare" href="#">Compare</a><a class="flex items-center px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="recommendations" href="#">Recommendations</a><a class="flex items-center px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="resource-check" href="#">Resource Check</a><a class="flex items-center px-3 py-2.5 rounded-lg font-body-md text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="reports" href="#">Reports</a></nav></div><div class="px-4"><div class="p-3 bg-surface-container rounded-xl flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-label-lg text-on-surface truncate">Ramesh Deshmukh</span><span class="font-label-sm text-on-surface-variant truncate">Shivaji Nagar Farm #2</span></div><span class="material-symbols-outlined text-on-surface-variant text-[18px]">unfold_more</span></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-8" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border-bottom: 1px solid rgba(255, 255, 255, 0.75); box-shadow: rgba(16, 78, 45, 0.05) 0px 10px 36px 0px, rgba(255, 255, 255, 0.9) 0px -1px 1px 0px inset;"><div class="flex items-center gap-3"><img alt="Brand logo. - Primary color: #164a34
+- Font: plusJakartaSans
+- Mode: light
+- Roundness: rounded-md
+" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UwvheEflVQETpVODXud1bKJQLTG3Z9V091WAQuRWb3OjkfynIYN40ImZHKnidhICqNkNrqFqpWKzSfZlgxI5J_M82iY6odlXGtsZTTc8HXdVBAz6ryKsSz-P5wU6ZoKTCO5D247hagw2iNx0PZZfjdthMC8zjpWAGLJh7xg4qo3i9LZdCn7j6gGxugjmJTrMiBN0EKKxLQuSsUMZx2F7LChrzofAoNzJDssH-iE5FNMrlgSgXlD6etBto"><span class="font-title-md text-on-surface hidden sm:inline">KrishiMitra Management</span></div><div class="flex items-center gap-4"><div class="flex items-center bg-surface-container px-2 py-1 rounded-lg"><span class="material-symbols-outlined text-[18px] text-on-surface-variant mr-1">translate</span><select class="bg-transparent font-label-md text-on-surface outline-none cursor-pointer pr-1"><option value="en">English</option><option value="hi">हिंदी</option><option value="mr">मराठी</option></select></div><button class="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container-low rounded-lg font-label-md text-on-surface hover:bg-surface-container-high transition-colors"><span class="material-symbols-outlined text-[18px] text-secondary">wb_sunny</span><span class="">Nashik 28°C · Soil Wet</span></button><button class="p-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 w-full min-h-screen bg-surface" style="background: transparent;"><div class="flex flex-col w-full">
+<!-- Content Canvas: Organic Paper Surface, Responsive Fluid Layout -->
+<div class="w-full max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-10 py-6 sm:py-8 space-y-8">
+<!-- Section 1: Header, Breadcrumb Context & Global Actions -->
+<section class="space-y-4">
+<!-- Breadcrumb & Status Pill -->
+<div class="flex flex-wrap items-center justify-between gap-3">
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 font-label-md text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined text-[16px] text-secondary">database</span>
+<span class="">Reports &amp; Audits</span>
+</span>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<span class="hover:text-on-surface cursor-pointer">Shivaji Patil Farm (Plots 2A-2D)</span>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<span class="text-primary font-label-lg bg-surface-container-high px-2.5 py-0.5 rounded-full">
+            Historical Performance &amp; Bank Ledgers
+          </span>
+</nav>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/70 text-on-secondary-container font-label-md">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+            Blockchain Ledger Verified · UID: MH-HNG-2024-884
+          </span>
+</div>
+</div>
+<!-- Main Header Row with Context & Actions -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 bg-surface-container-lowest p-6 sm:p-7 rounded-2xl shadow-sm" style="background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.85); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 2px 0px inset;">
+<div class="space-y-2 max-w-3xl">
+<div class="flex items-center gap-2.5 text-secondary">
+<span class="material-symbols-outlined text-[22px]">verified</span>
+<span class="font-label-lg tracking-wide uppercase">Institutional-Grade Agricultural Audit Dossier</span>
+</div>
+<h1 class="font-headline-lg text-primary tracking-tight">
+            Multi-Season Audit Ledger &amp; Field Telemetry
+          </h1>
+<p class="font-body-md text-on-surface-variant leading-relaxed">
+            Forensic agronomic accountability across 4 consecutive cropping cycles. Pre-sowing machine learning estimates contrasted against real APMC mandi returns, sensor-verified moisture draws, and soil carbon trajectories.
+          </p>
+</div>
+<!-- Export & Document Generator Buttons -->
+<div class="flex flex-wrap items-center gap-3 sm:self-start lg:self-end shrink-0">
+<button class="inline-flex items-center gap-2 px-4 py-3 bg-surface-container-low hover:bg-surface-container text-on-surface font-label-lg rounded-xl transition-all shadow-sm">
+<span class="material-symbols-outlined text-[20px] text-primary">account_balance</span>
+<span class="">KCC Bank Certification</span>
+</button>
+<button class="inline-flex items-center gap-2 px-5 py-3 bg-primary hover:bg-primary-container text-on-primary font-label-lg rounded-xl transition-all shadow-md active:scale-95">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+<span class="">Export Full Dossier (PDF)</span>
+</button>
+</div>
+</div>
+<!-- Farm Meta Bar: Quick Glance Field DNA -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 bg-surface-container p-4 rounded-xl font-label-md text-on-surface-variant" style="background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.65); box-shadow: rgba(16, 78, 45, 0.04) 0px 4px 20px 0px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;">
+<div class="flex items-center gap-2.5 px-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">landscape</span>
+<div class="flex flex-col">
+<span class="text-on-surface font-title-md">8.50 Acres</span>
+<span class="font-label-sm text-outline">Deep Vertisol (Black Cotton)</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5 px-2">
+<span class="material-symbols-outlined text-tertiary-container text-[20px]">location_on</span>
+<div class="flex flex-col">
+<span class="text-on-surface font-title-md">Hingoli Sub-Basin</span>
+<span class="font-label-sm text-outline">Marathwada · Maharashtra</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5 px-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">balance</span>
+<div class="flex flex-col">
+<span class="text-on-surface font-title-md">24.64 Metric Tonnes</span>
+<span class="font-label-sm text-outline">4 Harvest Cycles Evaluated</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5 px-2">
+<span class="material-symbols-outlined text-primary text-[20px]">analytics</span>
+<div class="flex flex-col">
+<span class="text-on-surface font-title-md">93.8% Forecast Fidelity</span>
+<span class="font-label-sm text-outline">Agronomic Plan Confidence</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filter & Live Query Toolbar -->
+<section class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-surface-container-lowest p-3.5 sm:p-4 rounded-xl shadow-sm" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;">
+<div class="flex flex-wrap items-center gap-2.5">
+<span class="font-label-sm text-on-surface-variant uppercase px-2">Timeline Scope:</span>
+<div class="relative">
+<select class="appearance-none bg-surface-container-low pl-3.5 pr-9 py-2 rounded-lg font-label-md text-on-surface outline-none cursor-pointer hover:bg-surface-container transition-colors" id="seasonFilter">
+<option value="all">All Available Cycles (2023 - 2025)</option>
+<option value="rabi-2425">Rabi 2024-25 (Wheat Precision · Active)</option>
+<option value="kharif-2025">Kharif 2025 (Cotton &amp; Tur · Harvested)</option>
+<option value="rabi-2324">Rabi 2023-24 (Desi Gram · Audited)</option>
+<option value="kharif-2024">Kharif 2024 (Soybean Pilot · Baseline)</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-2.5 text-[18px] text-on-surface-variant">expand_more</span>
+</div>
+<div class="relative">
+<select class="appearance-none bg-surface-container-low pl-3.5 pr-9 py-2 rounded-lg font-label-md text-on-surface outline-none cursor-pointer hover:bg-surface-container transition-colors">
+<option>Audit Type: All Institutional (Bank / APMC / PMFBY)</option>
+<option>APMC Mandi Weighment Slips</option>
+<option>PMFBY Drone &amp; NDVI Crop Loss</option>
+<option>MahaDBT Drip Micro-Irrigation</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-2.5 top-2.5 text-[18px] text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low pl-9 pr-3 py-2 rounded-lg font-body-sm text-on-surface placeholder:text-outline outline-none focus:bg-surface-container transition-colors" placeholder="Search bill #, lot, crop, or mandi..." type="text">
+</div>
+<button class="p-2 bg-surface-container-low hover:bg-surface-container rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" title="Print Selected Records">
+<span class="material-symbols-outlined text-[20px]">print</span>
+</button>
+</div>
+</section>
+<!-- Section 2: Multi-Year Historical Performance Overview (Hero Scorecards) -->
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]">ssid_chart</span>
+<h2 class="font-headline-sm text-primary">Cumulative Agronomic &amp; Fiscal Ledger</h2>
+</div>
+<span class="font-label-sm text-outline">Independent Agro-Economic Audit Benchmark</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Card 1: Profit Realized -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.75); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-secondary"></div>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm uppercase tracking-wider text-outline">Realized Net Profit</span>
+<span class="p-1.5 rounded-lg bg-secondary-container/50 text-on-secondary-container material-symbols-outlined text-[18px]">currency_rupee</span>
+</div>
+<div class="space-y-1">
+<span class="font-display-lg text-primary">₹6,42,800</span>
+<div class="flex items-center gap-1 font-label-md text-secondary">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="">+₹1,18,400 via Plan Optimization</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-4 bg-surface-container-low -mx-6 -mb-6 px-6 py-3 flex items-center justify-between text-on-surface-variant font-label-sm">
+<span class="">Historical ROI Uplift:</span>
+<span class="font-title-md text-secondary">+18.4% Net</span>
+</div>
+</div>
+<!-- Card 2: Water Conserved -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.75); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-tertiary-container"></div>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm uppercase tracking-wider text-outline">Groundwater Conserved</span>
+<span class="p-1.5 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed-variant material-symbols-outlined text-[18px]">water_drop</span>
+</div>
+<div class="space-y-1">
+<span class="font-display-lg text-tertiary">6,850 m³</span>
+<div class="flex items-center gap-1 font-label-md text-tertiary-container">
+<span class="material-symbols-outlined text-[16px]">waves</span>
+<span class="">4.8 Borewell-Months Protected</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-4 bg-surface-container-low -mx-6 -mb-6 px-6 py-3 flex items-center justify-between text-on-surface-variant font-label-sm">
+<span class="">Aquifer Depletion Risk:</span>
+<span class="font-title-md text-tertiary">Zero Incursions</span>
+</div>
+</div>
+<!-- Card 3: Model Prediction Fidelity -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.75); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-primary-container"></div>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm uppercase tracking-wider text-outline">Model Forecast Accuracy</span>
+<span class="p-1.5 rounded-lg bg-primary-fixed text-on-primary-fixed-variant material-symbols-outlined text-[18px]">fact_check</span>
+</div>
+<div class="space-y-1">
+<span class="font-display-lg text-primary">93.8%</span>
+<div class="flex items-center gap-1 font-label-md text-secondary">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span class="">Within ±0.8 Q/ac Variance</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-4 bg-surface-container-low -mx-6 -mb-6 px-6 py-3 flex items-center justify-between text-on-surface-variant font-label-sm">
+<span class="">Audit Validations:</span>
+<span class="font-title-md text-primary">4 / 4 Harvests Match</span>
+</div>
+</div>
+<!-- Card 4: Soil Carbon & Health Trajectory -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.75); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-secondary"></div>
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="font-label-sm uppercase tracking-wider text-outline">Organic Carbon Index</span>
+<span class="p-1.5 rounded-lg bg-surface-container text-on-surface-variant material-symbols-outlined text-[18px]">eco</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-primary">0.64%</span>
+<span class="font-title-md text-secondary line-through text-outline">0.48%</span>
+</div>
+<div class="flex items-center gap-1 font-label-md text-secondary">
+<span class="material-symbols-outlined text-[16px]">upgrade</span>
+<span class="">+33.3% Soil Rejuvenation</span>
+</div>
+</div>
+</div>
+<div class="pt-4 mt-4 bg-surface-container-low -mx-6 -mb-6 px-6 py-3 flex items-center justify-between text-on-surface-variant font-label-sm">
+<span class="">Microbial Activity:</span>
+<span class="font-title-md text-secondary">High (KVK Certified)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Visual Anchor: Contextual Landscape Panorama -->
+<div class="relative rounded-2xl overflow-hidden shadow-sm bg-surface-container">
+<div class="h-44 sm:h-52 w-full bg-cover bg-center" data-alt="High-altitude aerial photography of lush green agricultural patchwork in Maharashtra with curved irrigation drainage canal through deep black cotton soil vertisols, golden sunset light, trees and farmhouses in distance, clean natural tones." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBQFpe1KFeYrOZP-tVWaa-Xt233P9Le7oLd9XfsP2zbiOXq0w9-aWS2y_50UoUJmTOiJSDLz5jWflYE3iWifiqs6kTeihWMLRfNQL3FmgLbVllB9CYmassJ22X9kYI7Bzkm_so66APeEhsIMEDPfJYzIGIu4ap1CZM7VoPpC6fnIdxCcoj8JhZF0igrQ5eG3z9-oEsyAsVLltr97uFFsHGbuwDGHCcz9z0zRoiZPv9vWmqZLCUsq9R8YA')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent flex items-end p-6">
+<div class="text-on-primary flex flex-col sm:flex-row sm:items-center justify-between w-full gap-3">
+<div>
+<span class="font-label-sm tracking-widest uppercase opacity-80">Telemetry Zone: Hingoli Watershed Survey #104/A</span>
+<h3 class="font-title-lg font-headline-md">Plot 2A-2D Micro-Catchment Ledger</h3>
+</div>
+<span class="font-label-md bg-surface-container-lowest/20 backdrop-blur-md px-3.5 py-1.5 rounded-lg">
+            Certified by Krishi Vigyan Kendra (KVK Hingoli)
+          </span>
+</div>
+</div>
+</div>
+<!-- Section 3: Detailed Historical Season Audits & Yield Ledger -->
+<section class="space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<h2 class="font-headline-sm text-primary">Historical Season Audits &amp; Yield Ledger</h2>
+<p class="font-body-sm text-on-surface-variant">Direct breakdown of agricultural blueprints versus verified post-harvest realities.</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-outline">Showing 4 recorded production campaigns</span>
+</div>
+</div>
+<!-- Audit Cards Stack -->
+<div class="space-y-4">
+<!-- Item 1: Active Season (Rabi 2024-2025) -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm relative overflow-hidden transition-all hover:shadow-md" style="background: rgba(255, 255, 255, 0.76); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 1px 0px inset;">
+<div class="absolute top-0 left-0 w-2 h-full bg-secondary"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+<!-- Left: Crop & Season Identification -->
+<div class="space-y-2 lg:w-1/4">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm">
+                  Active Campaign
+                </span>
+<span class="font-label-sm text-outline">Season #4</span>
+</div>
+<h3 class="font-headline-sm text-primary">Rabi 2024–2025</h3>
+<p class="font-title-md text-on-surface">Drip Precision Wheat <span class="text-secondary font-label-md">(Sonalika HD-2967)</span></p>
+<div class="flex items-center gap-1.5 font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+<span class="">Nov 02 Sowing Target · 8.5 Acres</span>
+</div>
+</div>
+<!-- Middle: Agronomic & Economic Variance Matrix -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-3 px-4 bg-surface-container-low rounded-xl lg:flex-1">
+<div>
+<span class="font-label-sm text-outline block">Forecast Target</span>
+<span class="font-title-lg text-primary">21.2 Q/ac</span>
+<span class="font-label-sm text-secondary block">Model Confidence 94%</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Harvest Actual</span>
+<span class="font-title-lg text-on-surface-variant">Staged / Pod</span>
+<span class="font-label-sm text-outline block">Harvest in ~62 days</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Water Allocation</span>
+<span class="font-title-lg text-tertiary">3,450 m³</span>
+<span class="font-label-sm text-tertiary-container block">Drip emitter verified</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Projected Net P&amp;L</span>
+<span class="font-title-lg text-secondary">₹1,84,500</span>
+<span class="font-label-sm text-outline block">MSP Baseline Guarded</span>
+</div>
+</div>
+<!-- Right: Status Tag & Season Actions -->
+<div class="flex flex-col items-start lg:items-end justify-between gap-3 lg:w-60">
+<div class="flex items-center gap-1.5 text-secondary bg-secondary-container/40 px-3 py-1 rounded-full font-label-sm">
+<span class="material-symbols-outlined text-[16px]">task_alt</span>
+<span class="">Pre-Sowing Audit Verified</span>
+</div>
+<div class="flex items-center gap-2 w-full lg:w-auto">
+<button class="flex-1 lg:flex-initial px-3.5 py-2 bg-surface-container hover:bg-surface-container-high rounded-lg text-on-surface font-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+<span class="">Simulation</span>
+</button>
+<button class="flex-1 lg:flex-initial px-3.5 py-2 bg-primary hover:bg-primary-container text-on-primary rounded-lg font-label-md flex items-center justify-center gap-1.5 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span class="">Blueprint</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 2: Kharif 2025 (Completed with Gain) -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm relative overflow-hidden transition-all hover:shadow-md" style="background: rgba(255, 255, 255, 0.76); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 1px 0px inset;">
+<div class="absolute top-0 left-0 w-2 h-full bg-secondary"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+<div class="space-y-2 lg:w-1/4">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm">
+                  Audit Completed &amp; Cleared
+                </span>
+<span class="font-label-sm text-outline">Season #3</span>
+</div>
+<h3 class="font-headline-sm text-primary">Kharif 2025</h3>
+<p class="font-title-md text-on-surface">Cotton + Pigeon Pea (Tur) Intercrop</p>
+<div class="flex items-center gap-1.5 font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+<span class="">APMC Hingoli Ref: #KM-AUD-2025-08</span>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-3 px-4 bg-surface-container-low rounded-xl lg:flex-1">
+<div>
+<span class="font-label-sm text-outline block">Forecast Target</span>
+<span class="font-title-lg text-on-surface-variant">14.0 Q/ac</span>
+<span class="font-label-sm text-outline block">Pre-season model</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Harvest Actual</span>
+<span class="font-title-lg text-secondary">14.6 Q/ac</span>
+<span class="font-label-sm text-secondary font-title-md block">+4.28% Outperformance</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Water Used</span>
+<span class="font-title-lg text-tertiary">4,100 m³</span>
+<span class="font-label-sm text-tertiary block">-620 m³ vs regional avg</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Realized Net Profit</span>
+<span class="font-title-lg text-secondary">₹2,14,300</span>
+<span class="font-label-sm text-secondary block">+₹32,400 over Mandi avg</span>
+</div>
+</div>
+<div class="flex flex-col items-start lg:items-end justify-between gap-3 lg:w-60">
+<div class="flex items-center gap-1.5 text-secondary bg-secondary-container/40 px-3 py-1 rounded-full font-label-sm">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span class="">APMC Lot #449 Verified</span>
+</div>
+<div class="flex items-center gap-2 w-full lg:w-auto">
+<button class="flex-1 lg:flex-initial px-3.5 py-2 bg-surface-container hover:bg-surface-container-high rounded-lg text-on-surface font-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">receipt</span>
+<span class="">Mandi Slip</span>
+</button>
+<button class="flex-1 lg:flex-initial px-3.5 py-2 bg-surface-container hover:bg-surface-container-high rounded-lg text-on-surface font-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">folder_zip</span>
+<span class="">Dossier</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 3: Rabi 2023-2024 (Completed) -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm relative overflow-hidden transition-all hover:shadow-md" style="background: rgba(255, 255, 255, 0.76); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 1px 0px inset;">
+<div class="absolute top-0 left-0 w-2 h-full bg-secondary"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+<div class="space-y-2 lg:w-1/4">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm">
+                  Subsidies Disbursed
+                </span>
+<span class="font-label-sm text-outline">Season #2</span>
+</div>
+<h3 class="font-headline-sm text-primary">Rabi 2023–2024</h3>
+<p class="font-title-md text-on-surface">Desi Chickpea / Chana (Vijay-Phule)</p>
+<div class="flex items-center gap-1.5 font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px]">account_balance</span>
+<span class="">MahaDBT Ref: #MDBT-HNG-901</span>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-3 px-4 bg-surface-container-low rounded-xl lg:flex-1">
+<div>
+<span class="font-label-sm text-outline block">Forecast Target</span>
+<span class="font-title-lg text-on-surface-variant">12.0 Q/ac</span>
+<span class="font-label-sm text-outline block">Standard plan</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Harvest Actual</span>
+<span class="font-title-lg text-secondary">12.4 Q/ac</span>
+<span class="font-label-sm text-secondary font-title-md block">+3.33% Outperformance</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Water Used</span>
+<span class="font-title-lg text-tertiary">2,150 m³</span>
+<span class="font-label-sm text-tertiary block">Low-till moisture hold</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Realized Net Profit</span>
+<span class="font-title-lg text-secondary">₹1,54,800</span>
+<span class="font-label-sm text-secondary block">Zero wilt loss recorded</span>
+</div>
+</div>
+<div class="flex flex-col items-start lg:items-end justify-between gap-3 lg:w-60">
+<div class="flex items-center gap-1.5 text-secondary bg-secondary-container/40 px-3 py-1 rounded-full font-label-sm">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span class="">KCC Bank Audit Passed</span>
+</div>
+<div class="flex items-center gap-2 w-full lg:w-auto">
+<button class="flex-1 lg:flex-initial px-3.5 py-2 bg-surface-container hover:bg-surface-container-high rounded-lg text-on-surface font-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span class="">Certificate</span>
+</button>
+<button class="flex-1 lg:flex-initial px-3.5 py-2 bg-surface-container hover:bg-surface-container-high rounded-lg text-on-surface font-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">folder_zip</span>
+<span class="">Dossier</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 4: Kharif 2024 (Pilot Season - Dry spell anomaly) -->
+<div class="bg-surface-container-lowest rounded-2xl p-6 shadow-sm relative overflow-hidden transition-all hover:shadow-md" style="background: rgba(255, 255, 255, 0.76); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 1px 0px inset;">
+<div class="absolute top-0 left-0 w-2 h-full bg-outline-variant"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+<div class="space-y-2 lg:w-1/4">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm">
+                  First KrishiMitra Baseline Pilot
+                </span>
+<span class="font-label-sm text-outline">Season #1</span>
+</div>
+<h3 class="font-headline-sm text-primary">Kharif 2024</h3>
+<p class="font-title-md text-on-surface">Soybean (JS-335 Single Stand)</p>
+<div class="flex items-center gap-1.5 font-label-sm text-outline">
+<span class="material-symbols-outlined text-[16px]">cloud_off</span>
+<span class="">Agromet Dry-Spell Zone Event</span>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-3 px-4 bg-surface-container-low rounded-xl lg:flex-1">
+<div>
+<span class="font-label-sm text-outline block">Forecast Target</span>
+<span class="font-title-lg text-on-surface-variant">9.5 Q/ac</span>
+<span class="font-label-sm text-outline block">Pre-season model</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Harvest Actual</span>
+<span class="font-title-lg text-on-surface">9.1 Q/ac</span>
+<span class="font-label-sm text-error font-title-md block">-4.21% (Late Aug Rain Gap)</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Water Used</span>
+<span class="font-title-lg text-tertiary">3,980 m³</span>
+<span class="font-label-sm text-outline block">Supplemental sprinkler</span>
+</div>
+<div>
+<span class="font-label-sm text-outline block">Realized Net Profit</span>
+<span class="font-title-lg text-on-surface">₹89,200</span>
+<span class="font-label-sm text-secondary block">Weather insurance salvaged</span>
+</div>
+</div>
+<div class="flex flex-col items-start lg:items-end justify-between gap-3 lg:w-60">
+<div class="flex items-center gap-1.5 text-on-surface-variant bg-surface-container px-3 py-1 rounded-full font-label-sm">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span class="">Dry Spell Analyzed</span>
+</div>
+<div class="flex items-center gap-2 w-full lg:w-auto">
+<button class="flex-1 lg:flex-initial px-3.5 py-2 bg-surface-container hover:bg-surface-container-high rounded-lg text-on-surface font-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+<span class="">Agromet Log</span>
+</button>
+<button class="flex-1 lg:flex-initial px-3.5 py-2 bg-surface-container hover:bg-surface-container-high rounded-lg text-on-surface font-label-md flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">folder_zip</span>
+<span class="">Dossier</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Predicted vs Actual Variance Analysis (Data Viz & Agronomic Root Cause) -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Variance Comparative Visualizer -->
+<div class="lg:col-span-7 bg-surface-container-lowest p-6 sm:p-7 rounded-2xl shadow-sm space-y-6" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 1px 0px inset;">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-sm text-secondary uppercase tracking-wider">Agronomic Precision Analysis</span>
+<h3 class="font-title-lg font-headline-sm text-primary">Predicted vs. Actual Yield &amp; Market Realization</h3>
+</div>
+<div class="flex items-center gap-3 font-label-sm">
+<span class="flex items-center gap-1 text-outline"><span class="w-3 h-3 rounded-full bg-outline-variant"></span> Target Forecast</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-3 h-3 rounded-full bg-primary"></span> Ground Reality</span>
+</div>
+</div>
+<!-- Metric Bars Visualization -->
+<div class="space-y-5">
+<!-- Item 1: Cotton & Tur -->
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-on-surface">
+<span class="">Kharif 2025: Cotton + Pigeon Pea (Quintals / Acre)</span>
+<span class="text-secondary font-title-md">14.6 Q/ac (Target: 14.0) · +4.2%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-outline-variant h-full" style="width: 70%;"></div>
+<div class="bg-secondary h-full" style="width: 4%;"></div>
+</div>
+<p class="font-label-sm text-on-surface-variant">
+              Deep vertisol moisture retention buffering delayed monsoon withdrawal; APMC premium quality grade A1.
+            </p>
+</div>
+<!-- Item 2: Desi Gram -->
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-on-surface">
+<span class="">Rabi 2023–24: Desi Chickpea (Quintals / Acre)</span>
+<span class="text-secondary font-title-md">12.4 Q/ac (Target: 12.0) · +3.3%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-outline-variant h-full" style="width: 60%;"></div>
+<div class="bg-secondary h-full" style="width: 3%;"></div>
+</div>
+<p class="font-label-sm text-on-surface-variant">
+              Precision Trichoderma seed coating prevented root rot; market price realized at ₹6,100/Q (MSP was ₹5,440).
+            </p>
+</div>
+<!-- Item 3: Soybean Pilot -->
+<div class="space-y-2">
+<div class="flex justify-between font-label-md text-on-surface">
+<span class="">Kharif 2024: Soybean JS-335 (Quintals / Acre)</span>
+<span class="text-error font-title-md">9.1 Q/ac (Target: 9.5) · -4.2%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-high rounded-full overflow-hidden flex">
+<div class="bg-primary h-full" style="width: 46%;"></div>
+<div class="bg-error-container h-full" style="width: 2%;"></div>
+</div>
+<p class="font-label-sm text-on-surface-variant">
+              21-day dry spell during flowering stage mitigated through single supplemental sprinkler furrow pass.
+            </p>
+</div>
+</div>
+<!-- Mandi Pricing Realization Sparkline Indicator -->
+<div class="pt-4 bg-surface-container-low -mx-6 -mb-6 p-6 rounded-b-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-[20px]">price_check</span>
+</div>
+<div>
+<span class="font-title-md text-primary block">Mandi Spread: +₹92/Quintal Over Regional Mean</span>
+<span class="font-body-sm text-on-surface-variant">Graded cleanliness, reduced pod borer damage, high test weight.</span>
+</div>
+</div>
+<span class="font-label-sm bg-surface-container-lowest px-3 py-1.5 rounded-lg text-primary font-title-md shrink-0">
+            APMC Hingoli Certified
+          </span>
+</div>
+</div>
+<!-- Root Cause Analysis & AI Learning Insights -->
+<div class="lg:col-span-5 bg-primary-container text-on-primary rounded-2xl p-6 sm:p-7 shadow-sm space-y-5" style="background: rgba(22, 74, 52, 0.88); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(161, 241, 183, 0.35); box-shadow: rgba(0, 51, 32, 0.22) 0px 14px 40px 0px, rgba(255, 255, 255, 0.35) 0px 1px 1px 0px inset;">
+<div class="flex items-center gap-2 text-on-primary-container">
+<span class="material-symbols-outlined text-[22px]">psychology_alt</span>
+<span class="font-label-lg uppercase tracking-wider">KrishiMitra Agronomic Feedback Loop</span>
+</div>
+<h3 class="font-headline-sm text-on-primary">
+          How Field Variances Shaped 2024–2025 Sowing Parameters
+        </h3>
+<div class="space-y-4 font-body-sm text-on-primary-container">
+<div class="flex items-start gap-3 bg-primary/40 p-3.5 rounded-xl">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px] shrink-0 mt-0.5">water_lux</span>
+<p class="">
+<strong class="text-on-primary">Black Cotton Capillary Draw:</strong> In-situ sensors recorded 18% higher sub-surface water retention than standard FAO-56 models. Irrigation intervals for Wheat were pushed from 10 to 14 days, saving 18% pumping energy.
+            </p>
+</div>
+<div class="flex items-start gap-3 bg-primary/40 p-3.5 rounded-xl">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px] shrink-0 mt-0.5">compost</span>
+<p class="">
+<strong class="text-on-primary">Phosphorus Solubilizing Biofertilizers (PSB):</strong> After soil tests revealed pH 7.8 fixation, microbial inoculants mobilized tied-up phosphates, trimming DAP requirement by 35 kg across plot 2B.
+            </p>
+</div>
+<div class="flex items-start gap-3 bg-primary/40 p-3.5 rounded-xl">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px] shrink-0 mt-0.5">insights</span>
+<p class="">
+<strong class="text-on-primary">Dynamic Micro-Weather Windows:</strong> Automatic rain alert averted scheduled neem oil spray 8 hours before unseasonal drizzle, avoiding ₹3,400 chemical wash-off loss.
+            </p>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between border-t border-on-primary-container/20 text-on-primary font-label-md">
+<span class="">Model Iteration Engine v4.2</span>
+<span class="text-secondary-fixed font-title-md">Confidence Score: 96.2%</span>
+</div>
+</div>
+</section>
+<!-- Section 5: Institutional Dossiers for Bank & Government Clearance -->
+<section class="space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<h2 class="font-headline-sm text-primary">Bank, KCC &amp; Government Scheme Dossiers</h2>
+<p class="font-body-sm text-on-surface-variant">Certified tamper-evident documentation packages ready for sub-district institutional clearance.</p>
+</div>
+<span class="font-label-sm text-secondary bg-secondary-container/50 px-3 py-1 rounded-full flex items-center gap-1.5 self-start sm:self-auto">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+          ICAR Protocol Compliant
+        </span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<!-- Dossier 1: PMFBY Crop Insurance Loss-Proof File -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between space-y-4 relative group hover:shadow-md transition-all" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 1px 0px inset;">
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="p-2 rounded-xl bg-surface-container-high text-primary material-symbols-outlined text-[22px]">satellite_alt</span>
+<span class="font-label-sm px-2 py-0.5 rounded bg-surface-container text-on-surface-variant">QR Tamper-Proof</span>
+</div>
+<h3 class="font-headline-sm text-primary">PMFBY Crop Insurance Loss-Proof Dossier</h3>
+<p class="font-body-sm text-on-surface-variant">
+              Timestamped Sentinel-2 satellite NDVI imagery logs, soil moisture sensor archives, and rainfall deficit index for expedited, undisputed claim processing.
+            </p>
+<div class="bg-surface-container-low p-3 rounded-lg space-y-1 font-label-sm text-on-surface">
+<div class="flex justify-between">
+<span class="text-outline">Plots Surveyed:</span>
+<span class="font-title-md">2A, 2B, 2C, 2D (Hingoli)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Telemetry Nodes:</span>
+<span class="font-title-md">3 Capacitive Probes Active</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 px-4 bg-surface-container hover:bg-surface-container-high rounded-xl font-label-md text-on-surface flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span class="">Download Claim PDF (5.2 MB)</span>
+</button>
+</div>
+<!-- Dossier 2: Kisan Credit Card (KCC) Limit Enhancement File -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between space-y-4 relative group hover:shadow-md transition-all" style="background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(25, 108, 62, 0.35); box-shadow: rgba(25, 108, 62, 0.08) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 2px 0px inset;">
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="p-2 rounded-xl bg-secondary-container text-on-secondary-container material-symbols-outlined text-[22px]">account_balance_wallet</span>
+<span class="font-label-sm px-2 py-0.5 rounded bg-secondary-container/60 text-on-secondary-container">Bank Ready</span>
+</div>
+<h3 class="font-headline-sm text-primary">KCC Limit Enhancement Ledger</h3>
+<p class="font-body-sm text-on-surface-variant">
+              Verified 217% average input ROI across 4 seasons, zero default score, and certified harvest revenues calibrated for State Bank of India &amp; Bank of Maharashtra Hingoli Branch.
+            </p>
+<div class="bg-surface-container-low p-3 rounded-lg space-y-1 font-label-sm text-on-surface">
+<div class="flex justify-between">
+<span class="text-outline">Eligible Scale of Finance:</span>
+<span class="font-title-md text-secondary">₹4,25,000 (Recommended)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Debt-Service Ratio:</span>
+<span class="font-title-md">1.42 (Prime Tier 1)</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 px-4 bg-primary hover:bg-primary-container text-on-primary rounded-xl font-label-md flex items-center justify-center gap-2 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">badge</span>
+<span class="">Generate Bank Letter</span>
+</button>
+</div>
+<!-- Dossier 3: MahaDBT Micro-Irrigation Verification Slip -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between space-y-4 relative group hover:shadow-md transition-all" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 1px 0px inset;">
+<div class="space-y-3">
+<div class="flex items-center justify-between">
+<span class="p-2 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed-variant material-symbols-outlined text-[22px]">water</span>
+<span class="font-label-sm px-2 py-0.5 rounded bg-tertiary-fixed/60 text-on-tertiary-fixed-variant">Subsidy Cleared</span>
+</div>
+<h3 class="font-headline-sm text-primary">MahaDBT Drip Verification Dossier</h3>
+<p class="font-body-sm text-on-surface-variant">
+              Geo-tagged emitter pressure audits, GPS boundary points, and water conservation certificate required to clear 55% state micro-irrigation subsidy disbursal.
+            </p>
+<div class="bg-surface-container-low p-3 rounded-lg space-y-1 font-label-sm text-on-surface">
+<div class="flex justify-between">
+<span class="text-outline">Govt Application No:</span>
+<span class="font-title-md">MH-DBT-2024-DRP-810</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Subsidy Claim:</span>
+<span class="font-title-md text-tertiary">₹68,400 Approved</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 px-4 bg-surface-container hover:bg-surface-container-high rounded-xl font-label-md text-on-surface flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="">Inspection Certificate</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Section 6: Soil Test & Moisture Sensor Historical Logs -->
+<section class="bg-surface-container-lowest p-6 sm:p-8 rounded-2xl shadow-sm space-y-6" style="background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: rgba(16, 78, 45, 0.06) 0px 10px 36px 0px, rgba(255, 255, 255, 0.95) 0px 1px 1px 0px inset;">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<span class="font-label-sm text-secondary uppercase tracking-wider">Agronomic Ground Truth</span>
+<h2 class="font-headline-sm text-primary">Physical Soil Tests &amp; In-Situ Telemetry Archive</h2>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span> Dr. Vilas Rao (Senior Agronomist, KVK Hingoli) Sign-Off Active
+          </span>
+</div>
+</div>
+<!-- Soil Parameters Timeline Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left font-body-sm">
+<thead>
+<tr class="border-b border-surface-container-high font-label-sm text-outline uppercase tracking-wider">
+<th class="py-3 px-4">Audit Date</th>
+<th class="py-3 px-4">Lab / Agency</th>
+<th class="py-3 px-4">pH Index</th>
+<th class="py-3 px-4">Organic Carbon (OC)</th>
+<th class="py-3 px-4">Available Nitrogen (N)</th>
+<th class="py-3 px-4">Phosphate (P₂O₅)</th>
+<th class="py-3 px-4">Potash (K₂O)</th>
+<th class="py-3 px-4 text-right">Official Slip</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-high font-label-md text-on-surface">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-4 font-title-md">Oct 14, 2024</td>
+<td class="py-3.5 px-4 text-on-surface-variant">District Soil Testing Lab, Hingoli (#STL-8809)</td>
+<td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-surface-container font-label-sm">7.8 (Optimal Vertisol)</span></td>
+<td class="py-3.5 px-4 font-title-md text-secondary">0.64% (Improved)</td>
+<td class="py-3.5 px-4">224 kg/ha (Medium)</td>
+<td class="py-3.5 px-4 text-primary font-title-md">16.8 kg/ha (Fixed)</td>
+<td class="py-3.5 px-4">390 kg/ha (High)</td>
+<td class="py-3.5 px-4 text-right">
+<button class="text-primary hover:text-primary-container p-1 rounded transition-colors inline-flex items-center gap-1 font-label-sm">
+<span class="material-symbols-outlined text-[16px]">file_open</span> View Slip
+                </button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-4 font-title-md">May 22, 2024</td>
+<td class="py-3.5 px-4 text-on-surface-variant">Krishi Vigyan Kendra (KVK) Hingoli (#KVK-24-110)</td>
+<td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-surface-container font-label-sm">7.9 (Slightly Alkaline)</span></td>
+<td class="py-3.5 px-4 font-title-md text-on-surface">0.56%</td>
+<td class="py-3.5 px-4">208 kg/ha (Low-Med)</td>
+<td class="py-3.5 px-4">14.2 kg/ha (Low)</td>
+<td class="py-3.5 px-4">382 kg/ha (High)</td>
+<td class="py-3.5 px-4 text-right">
+<button class="text-primary hover:text-primary-container p-1 rounded transition-colors inline-flex items-center gap-1 font-label-sm">
+<span class="material-symbols-outlined text-[16px]">file_open</span> View Slip
+                </button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3.5 px-4 font-title-md">Nov 05, 2023</td>
+<td class="py-3.5 px-4 text-on-surface-variant">MahaAgri Baseline Survey (#MAHA-SOIL-701)</td>
+<td class="py-3.5 px-4"><span class="px-2 py-0.5 rounded bg-surface-container font-label-sm">8.1 (Alkaline Alert)</span></td>
+<td class="py-3.5 px-4 font-title-md text-outline">0.48% (Depleted)</td>
+<td class="py-3.5 px-4">186 kg/ha (Low)</td>
+<td class="py-3.5 px-4">11.8 kg/ha (Deficient)</td>
+<td class="py-3.5 px-4">364 kg/ha (High)</td>
+<td class="py-3.5 px-4 text-right">
+<button class="text-primary hover:text-primary-container p-1 rounded transition-colors inline-flex items-center gap-1 font-label-sm">
+<span class="material-symbols-outlined text-[16px]">file_open</span> View Slip
+                </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Soil Health Agronomist Prescription Box -->
+<div class="bg-surface-container-low p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-[24px]">verified_user</span>
+<div>
+<span class="font-title-md text-primary block">Official Sign-Off: FYM Compost &amp; Zinc Sulphate Recommendation Completed</span>
+<span class="font-body-sm text-on-surface-variant">Recommended 4 tonnes/acre well-decomposed FYM applied before Rabi wheat sowing. Next soil core scheduled April 2025.</span>
+</div>
+</div>
+<button class="px-4 py-2 bg-surface-container hover:bg-surface-container-high rounded-lg text-on-surface font-label-md shrink-0 transition-colors">
+          Schedule Next Core Sampling
+        </button>
+</div>
+</section>
+<!-- Section 7: Cryptographic Ledger & Farmer Autonomy Guarantee -->
+<section class="bg-surface-container p-6 sm:p-7 rounded-2xl space-y-4" style="background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(24px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.75); box-shadow: rgba(16, 78, 45, 0.05) 0px 10px 36px 0px, rgba(255, 255, 255, 0.9) 0px 1px 1px 0px inset;">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">lock</span>
+<span class="font-label-lg uppercase tracking-wider text-primary">Data Autonomy &amp; Cryptographic Integrity Guarantee</span>
+</div>
+<p class="font-body-sm text-on-surface-variant max-w-3xl">
+            All harvest records, APMC weighments, and sensor logs are cryptographically hashed using SHA-256 and anchored to the MahaAgri Public Cloud ledger. 
+            Ramesh Deshmukh retains 100% legal ownership of this data. Third-party lending or insurance access requires explicit farmer biometrics or OTP consent.
+          </p>
+</div>
+<div class="flex items-center gap-2 shrink-0">
+<button class="px-4 py-2 bg-surface-container-lowest hover:bg-surface-bright text-on-surface font-label-md rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">share</span>
+<span class="">Delegate Bank Access</span>
+</button>
+<button class="px-4 py-2 bg-surface-container-lowest hover:bg-surface-bright text-on-surface font-label-md rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+<span class="">JSON Audit Backup</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-container-highest/60 p-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-2 font-label-sm text-outline">
+<span class="font-mono truncate">Audit Hash: e9b47a8290fbc28394e1d528bca61084d59f772a859424c321d283625f190e8c</span>
+<span class="shrink-0 text-on-surface-variant font-label-md">Verified Node: Hingoli-AgriNet-04</span>
+</div>
+</section>
+</div>
+</div>
+<script>
+  // Simple interactive filter for multi-season view demonstration
+  const seasonSelect = document.getElementById('seasonFilter');
+  if (seasonSelect) {
+    seasonSelect.addEventListener('change', function(e) {
+      const selected = e.target.value;
+      // Visual feedback indicator for filter application
+      const indicator = document.querySelector('[aria-label="Breadcrumb"] span.text-primary');
+      if (indicator) {
+        if (selected === 'all') {
+          indicator.textContent = 'Multi-Season Audit Logs & Performance Ledgers';
+        } else {
+          indicator.textContent = `Filtered: ${seasonSelect.options[seasonSelect.selectedIndex].text}`;
+        }
+      }
+    });
+  }
+</script></main></div>
+
+</body></html>

@@ -8,18 +8,51 @@
       name="description"
       content="Transparent, explainable agricultural decision-support web app helping Indian farmers test farming plans before committing land, water, inputs, and money."
     />
-    <!-- Inter Font -->
+    <!-- Fonts: Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- Tailwind CSS CDN for instant styling -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS Engine Fallback -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              forest: {
+                50:  "#EBF3ED",
+                100: "#E2EAD8",
+                200: "#D0DEC0",
+                500: "#3D8B5A",
+                600: "#196C3E",
+                700: "#164A34",
+                800: "#003320",
+                900: "#002416",
+              },
+              ivory: {
+                DEFAULT: "#F8F6F0",
+                surface: "#EBF3ED",
+              },
+            },
+            fontFamily: {
+              sans: ["'Plus Jakarta Sans'", "Inter", "system-ui", "sans-serif"],
+            },
+          },
+        },
+      }
+    </script>
     <style>
       body {
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+        background-color: #F8F6F0;
+        color: #1E2924;
       }
       @media print {
         body {
@@ -29,7 +62,7 @@
       }
     </style>
   </head>
-  <body class="bg-slate-50 text-slate-900 antialiased min-h-screen">
+  <body class="bg-[#F8F6F0] text-[#1E2924] antialiased min-h-screen font-sans">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

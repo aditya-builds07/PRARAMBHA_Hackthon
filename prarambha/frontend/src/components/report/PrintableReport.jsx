@@ -13,30 +13,26 @@ function getRiskBadge(riskLevel, riskScore) {
     case "low":
       return {
         label: `Low Risk (${riskScore ?? 0}/100)`,
-        icon: "✓",
-        dot: "🟢",
+        iconName: "check_circle",
         className: "bg-emerald-50 text-emerald-950 border-emerald-300",
       };
     case "high":
       return {
         label: `High Risk (${riskScore ?? 0}/100)`,
-        icon: "⚠",
-        dot: "🟠",
+        iconName: "warning",
         className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "critical":
       return {
         label: `Critical Risk (${riskScore ?? 0}/100)`,
-        icon: "🚨",
-        dot: "🔴",
+        iconName: "error",
         className: "bg-rose-50 text-rose-950 border-rose-300",
       };
     case "medium":
     default:
       return {
         label: `Medium Risk (${riskScore ?? 0}/100)`,
-        icon: "ℹ",
-        dot: "🟡",
+        iconName: "info",
         className: "bg-yellow-50 text-yellow-950 border-yellow-300",
       };
   }
@@ -51,20 +47,20 @@ function getResourceStatusBadge(status) {
     case "available":
       return {
         label: "Sufficient",
-        icon: "✓",
+        iconName: "check",
         className: "bg-emerald-50 text-emerald-950 border-emerald-300",
       };
     case "shortage":
       return {
         label: "Shortage",
-        icon: "⚠️",
+        iconName: "warning",
         className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "critical":
     default:
       return {
         label: "Critical Shortage",
-        icon: "✕",
+        iconName: "close",
         className: "bg-rose-50 text-rose-950 border-rose-300",
       };
   }
@@ -79,20 +75,20 @@ function getRecommendationSeverityBadge(severity) {
     case "critical":
       return {
         label: "Critical Attention",
-        icon: "🚨",
+        iconName: "error",
         className: "bg-rose-50 text-rose-950 border-rose-300",
       };
     case "warning":
       return {
         label: "Optimization",
-        icon: "⚠️",
+        iconName: "warning",
         className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "info":
     default:
       return {
         label: "Informational",
-        icon: "💡",
+        iconName: "lightbulb",
         className: "bg-sky-50 text-sky-950 border-sky-300",
       };
   }
@@ -516,7 +512,7 @@ export default function PrintableReport({ reportData }) {
       {/* SECTION 12: Disclaimer (MANDATORY, always visible) */}
       <footer aria-label="12. Mandatory Disclaimer" className="pt-4 border-t-2 border-slate-900 text-xs space-y-2">
         <div className="p-4 rounded-xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex items-start gap-2.5">
-          <span className="text-xl shrink-0" aria-hidden="true">⚠️</span>
+          <span className="material-symbols-outlined text-[20px] shrink-0" aria-hidden="true">warning</span>
           <div>
             <span className="font-black text-xs uppercase tracking-wide block text-amber-950">
               {t("assumptions.disclaimerTitle") || "Mandatory Simulation Guidance & Disclaimer"}

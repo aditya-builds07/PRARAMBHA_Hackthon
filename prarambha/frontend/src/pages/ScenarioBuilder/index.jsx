@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { 
-  Sprout, Droplets, CloudSun, Calendar, Plus, Copy, Trash2, 
-  Sparkles, CheckCircle, RefreshCw, ArrowRight, Layers, Sliders
-} from "lucide-react"
-import { 
   useAppStore, 
   getScenarios, 
   getActiveFarm, 
@@ -26,7 +22,7 @@ const CROP_OPTIONS = [
   { id: "maize", name: "Maize (मका / मक्का)" }
 ]
 
-export default function ScenarioBuilderPage() {
+export default function ScenarioBuilderPage({ farmId, onNavigate }) {
   const navigate = useNavigate()
   
   const activeFarm = useAppStore(getActiveFarm)
@@ -62,16 +58,46 @@ export default function ScenarioBuilderPage() {
 
   const activeScenario = scenarios.find((s) => s.id === selectedScenarioId) || scenarios[0] || null
 
-  // Hook for live re-simulation
   useSimulation(activeFarmId, activeScenario?.id, activeScenario)
-
   const loading = useAppStore(isLoading(activeScenario?.id))
-  const error = useAppStore(getError(activeScenario?.id))
+
   const result = useAppStore(getResult(activeScenario?.id))
 
   const handleFieldChange = (field, value) => {
-    if (!activeFarmId || !activeScenario) return
+    if (!activeScenario || !activeFarmId) return
     updateScenario(activeFarmId, activeScenario.id, { [field]: value })
+  }
+
+  const handleCreateNewScenario = () => {
+    if (!activeFarmId) return
+    const created = addScenario(activeFarmId, {
+      label: `Alternative Plan ${scenarios.length + 1}`,
+      crop: activeScenario?.crop || "wheat"
+    })
+    setSelectedScenarioId(created.id)
+  }
+
+  const handleCloneCurrent = () => {
+    if (!activeScenario || !activeFarmId) return
+    const cloned = cloneScenario(activeFarmId, activeScenario.id)
+    if (cloned) {
+      setSelectedScenarioId(cloned.id)
+    }
+  }
+
+  const handleDeleteCurrent = () => {
+    if (!activeScenario || !activeFarmId || scenarios.length <= 1) return
+    if (window.confirm("Are you sure you want to remove this scenario?")) {
+      removeScenario(activeFarmId, activeScenario.id)
+    }
+  }
+
+  const handleViewResults = () => {
+    if (onNavigate) {
+      onNavigate("results", { farmId: activeFarmId, scenarioId: activeScenario?.id })
+    } else {
+      navigate(`/scenarios/${activeFarmId}/${activeScenario?.id}/results`)
+    }
   }
 
   const handlePlantingChange = (patch) => {
@@ -94,11 +120,14 @@ export default function ScenarioBuilderPage() {
 
   if (!activeFarm) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-12">
-        <Sprout className="w-12 h-12 text-primary mx-auto mb-4" />
-        <h2 className="text-xl font-bold mb-2">No Farm Selected</h2>
-        <p className="text-muted-foreground mb-6">Please select or create a farm before building scenarios.</p>
-        <button onClick={() => navigate("/farms")} className="touch-target bg-primary text-primary-foreground px-6 py-2 rounded-md font-medium">
+      <div className="max-w-2xl mx-auto text-center py-16">
+        <Sprout className="w-12 h-12 text-[#164A34] mx-auto mb-4" />
+        <h2 className="text-xl font-bold mb-2">No Active Farm Selected</h2>
+        <p className="text-[#596A61] mb-6">Select or create a farm to begin scenario simulation.</p>
+        <button 
+          onClick={() => onNavigate ? onNavigate("farms") : navigate("/farms")} 
+          className="touch-target bg-[#164A34] text-white px-6 py-2.5 rounded-xl font-bold shadow-xs hover:bg-[#196C3E]"
+        >
           Go to Farm Selection
         </button>
       </div>
@@ -106,40 +135,40 @@ export default function ScenarioBuilderPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-12">
-      {/* Farm & Status Header */}
-      <div className="bg-card border rounded-xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#D0DEC0]">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary uppercase tracking-wide">
-              Active Plot
-            </span>
-            <h1 className="text-xl font-bold text-foreground">{activeFarm.name}</h1>
+          <div className="flex items-center gap-2 text-xs font-bold text-[#164A34] uppercase tracking-widest mb-1">
+            <span>SCENARIO BUILDER</span> • <span>PLANNING ENGINE</span>
           </div>
-          <p className="text-sm text-muted-foreground">
-            {activeFarm.village ? `${activeFarm.village}, ` : ""}{activeFarm.district || "Default District"} • {activeFarm.totalAcres} Acres • {activeFarm.soilType || "Alluvial"} Soil
+          <h1 className="text-2xl font-extrabold text-[#1E2924] tracking-tight">
+            {activeFarm.name || "Desai Farm"} — Farming Plan Configurator
+          </h1>
+          <p className="text-xs text-[#596A61] mt-1">
+            {activeFarm.region ? `${activeFarm.region} • ` : ""}{activeFarm.areaAcres || 5} Acres • Test crop parameters before planting
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {loading ? (
-            <span className="inline-flex items-center gap-2 text-xs font-medium text-amber-600 bg-amber-50 dark:bg-amber-950/40 px-3 py-1.5 rounded-full border border-amber-200 dark:border-amber-800">
-              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+            <span className="inline-flex items-center gap-2 text-xs font-bold text-[#D9902F] bg-[#FDF5EA] px-3.5 py-1.5 rounded-full border border-[#F7D8B5]">
+              <span className="material-symbols-outlined text-sm animate-spin">refresh</span>
               Simulating Plan...
             </span>
           ) : result ? (
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-              <CheckCircle className="w-3.5 h-3.5" />
-              Simulated in Real-Time
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#164A34] bg-[#EBF3ED] px-3.5 py-1.5 rounded-full border border-[#D0DEC0]">
+              <span className="material-symbols-outlined text-sm">check_circle</span>
+              Simulated Realtime
             </span>
           ) : null}
 
           <button
-            onClick={() => navigate("/results")}
-            className="touch-target inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+            onClick={handleViewResults}
+            className="touch-target inline-flex items-center gap-2 bg-[#164A34] hover:bg-[#196C3E] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer"
           >
-            <span>View Results</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>View Detailed Results</span>
+            <span className="material-symbols-outlined text-base">arrow_forward</span>
           </button>
         </div>
       </div>
@@ -159,7 +188,7 @@ export default function ScenarioBuilderPage() {
                     : "bg-muted/70 hover:bg-muted text-foreground border"
                 }`}
               >
-                <Layers className="w-4 h-4" />
+                <span className="material-symbols-outlined text-base">layers</span>
                 <span>{sc.label || `Scenario ${String.fromCharCode(65 + idx)}`}</span>
                 {idx === 0 && (
                   <span className={`text-[10px] px-1.5 py-0.2 rounded font-semibold ${isSelected ? "bg-primary-foreground/20 text-white" : "bg-primary/10 text-primary"}`}>
@@ -178,7 +207,7 @@ export default function ScenarioBuilderPage() {
               }}
               className="touch-target inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors"
             >
-              <Plus className="w-4 h-4" />
+              <span className="material-symbols-outlined text-base">add</span>
               Add Scenario
             </button>
           )}
@@ -192,20 +221,20 @@ export default function ScenarioBuilderPage() {
                   const cloned = cloneScenario(activeFarmId, activeScenario.id)
                   if (cloned) setSelectedScenarioId(cloned.id)
                 }}
-                className="touch-target inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2.5 py-1.5 rounded border bg-card hover:bg-muted"
+                className="touch-target inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2.5 py-1.5 rounded border bg-card hover:bg-muted transition-colors"
                 title="Clone this scenario"
               >
-                <Copy className="w-3.5 h-3.5" />
+                <span className="material-symbols-outlined text-xs">content_copy</span>
                 Clone
               </button>
             )}
             {scenarios.length > 1 && (
               <button
                 onClick={() => removeScenario(activeFarmId, activeScenario.id)}
-                className="touch-target inline-flex items-center gap-1.5 text-xs text-rose-600 hover:text-rose-700 px-2.5 py-1.5 rounded border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-950/20"
+                className="touch-target inline-flex items-center gap-1.5 text-xs text-rose-600 hover:text-rose-700 px-2.5 py-1.5 rounded border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-950/20 transition-colors"
                 title="Delete scenario"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <span className="material-symbols-outlined text-xs">delete</span>
                 Remove
               </button>
             )}
@@ -218,7 +247,7 @@ export default function ScenarioBuilderPage() {
           {/* Presets Row */}
           <div className="bg-card border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <Sparkles className="w-4 h-4 text-amber-500" />
+              <span className="material-symbols-outlined text-amber-500 text-sm">auto_awesome</span>
               <span>Apply Instant Quick Preset:</span>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -254,7 +283,7 @@ export default function ScenarioBuilderPage() {
             {/* Card 1: Crop & Sowing */}
             <div className="bg-card border rounded-xl p-5 space-y-4 shadow-sm">
               <div className="flex items-center gap-2 text-base font-semibold border-b pb-2">
-                <Sprout className="w-5 h-5 text-emerald-600" />
+                <span className="material-symbols-outlined text-emerald-600 text-lg">eco</span>
                 <span>Crop & Land Sown</span>
               </div>
 
@@ -307,7 +336,7 @@ export default function ScenarioBuilderPage() {
             {/* Card 2: Water & Irrigation */}
             <div className="bg-card border rounded-xl p-5 space-y-4 shadow-sm">
               <div className="flex items-center gap-2 text-base font-semibold border-b pb-2">
-                <Droplets className="w-5 h-5 text-blue-600" />
+                <span className="material-symbols-outlined text-blue-600 text-lg">water_drop</span>
                 <span>Irrigation & Water</span>
               </div>
 
@@ -363,7 +392,7 @@ export default function ScenarioBuilderPage() {
             {/* Card 3: Weather & Input Costs */}
             <div className="bg-card border rounded-xl p-5 space-y-4 shadow-sm">
               <div className="flex items-center gap-2 text-base font-semibold border-b pb-2">
-                <CloudSun className="w-5 h-5 text-amber-600" />
+                <span className="material-symbols-outlined text-amber-600 text-lg">wb_sunny</span>
                 <span>Weather & Inputs</span>
               </div>
 

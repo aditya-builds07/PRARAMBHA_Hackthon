@@ -1,4 +1,3 @@
-﻿import { AlertCircle } from "lucide-react"
 import { cn } from "../../lib/utils.js"
 
 /**
@@ -14,7 +13,7 @@ export default function ErrorState({ message = "Something went wrong.", onRetry,
       )}
       role="alert"
     >
-      <AlertCircle className="h-8 w-8 text-destructive" aria-hidden />
+      <span className="material-symbols-outlined text-[32px] text-rose-600" aria-hidden="true">error</span>
       <p className="text-sm text-foreground">{message}</p>
       {onRetry && (
         <button

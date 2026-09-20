@@ -1,28 +1,22 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { MOCK_SCENARIOS, MOCK_WHY_EXPLANATIONS } from "../../services/mockData";
 import { getWhyExplanation } from "../../services/comparison.service";
-import WhyPanel from "../../components/why/WhyPanel";
+import ExpandableCard from "../../components/common/ExpandableCard";
 
-/**
- * WhyPage - Member 4 (Section 12 of Task_Distribution.md)
- * Dedicated page answering: "Why did this scenario change?"
- * Allows farmer to inspect attribution between any evaluated plan and their baseline.
- */
 export default function WhyPage({
   initialTargetId = "sc-002",
   initialReferenceId = "sc-001",
   onNavigate = null,
 }) {
-  const { t, language, setLanguage, supportedLanguages } = useLanguage();
+  const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const allScenarios = MOCK_SCENARIOS || [];
-
-  // Active scenario pair states
   const [targetId, setTargetId] = useState(initialTargetId);
   const [referenceId, setReferenceId] = useState(initialReferenceId);
 
-  // Find scenario objects
   const targetScenario = useMemo(
     () => allScenarios.find((s) => s.id === targetId) || allScenarios[1] || allScenarios[0],
     [allScenarios, targetId]
@@ -33,155 +27,163 @@ export default function WhyPage({
     [allScenarios, referenceId]
   );
 
-  // Retrieve why explanation data adhering to WhyExplanation contract
   const explanation = useMemo(() => {
     if (!targetScenario || !referenceScenario) return null;
     return getWhyExplanation(targetScenario.id, referenceScenario.id, MOCK_WHY_EXPLANATIONS);
   }, [targetScenario, referenceScenario]);
 
-  // Loading or empty state checks
-  if (!allScenarios || allScenarios.length === 0) {
-    return (
-      <div className="min-h-screen bg-slate-50 text-slate-800 p-8 flex items-center justify-center font-sans">
-        <div className="bg-white border border-slate-200 rounded-xl p-8 max-w-md text-center shadow-xs">
-          <div className="text-3xl mb-2">🌾</div>
-          <h2 className="text-lg font-bold text-slate-900">No Scenarios Available</h2>
-          <p className="text-xs text-slate-500 mt-1">
-            Simulate or create scenarios first to generate decision explainability.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const targetProfit = targetScenario?.outputs?.profit ?? 184500;
+  const refProfit = referenceScenario?.outputs?.profit ?? 146300;
+  const profitDiff = targetProfit - refProfit;
+  const profitPct = refProfit ? Math.round((profitDiff / refProfit) * 100) : 26;
+
+  const targetWater = targetScenario?.outputs?.waterRequired ?? 3450;
+  const refWater = referenceScenario?.outputs?.waterRequired ?? 4650;
+  const waterDiff = targetWater - refWater;
+
+  const targetYield = targetScenario?.outputs?.yieldPerAcre ?? 21.2;
+  const refYield = referenceScenario?.outputs?.yieldPerAcre ?? 19.1;
+  const yieldDiff = (targetYield - refYield).toFixed(1);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 p-4 sm:p-6 lg:p-8 font-sans">
-      <div className="max-w-6xl mx-auto space-y-6">
-        {/* Page Top Header with Title, Back Navigation & Language Switcher */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-widest mb-1">
-              <span>PRARAMBHA 2.0</span> • <span>Explainability Layer</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              {t("why.title")}
-            </h1>
-            <p className="text-sm text-slate-600 mt-1 max-w-2xl">
-              {t("why.subtitle")}
+    <div className="w-full space-y-6 animate-fadeIn pb-12">
+      {/* Level 1 Simple Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D0DEC0] pb-4">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-[#164A34] tracking-tight">
+            Why Did It Change?
+          </h1>
+          <p className="text-xs text-[#596A61] font-medium mt-0.5">
+            Comparing <strong className="text-[#164A34]">{targetScenario?.name || "Drip Precision Wheat"}</strong> against baseline <strong className="text-[#1E2924]">{referenceScenario?.name || "Standard Flood Plan"}</strong>
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => (onNavigate ? onNavigate("comparison") : navigate("/compare"))}
+            className="px-4 py-2 bg-[#164A34] hover:bg-[#196C3E] text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer"
+          >
+            Compare All Plans
+          </button>
+        </div>
+      </div>
+
+      {/* Scenario Selection Strip */}
+      <div className="bg-white rounded-2xl p-4 border border-[#D0DEC0] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold">
+        <div className="flex items-center gap-2">
+          <span className="text-[#164A34]">Target Plan:</span>
+          <select
+            value={targetId}
+            onChange={(e) => setTargetId(e.target.value)}
+            className="bg-[#FAF9F5] border border-[#D0DEC0] px-3 py-1.5 rounded-xl text-xs font-bold text-[#1E2924] outline-none cursor-pointer"
+          >
+            {allScenarios.map((s) => (
+              <option key={s.id} value={s.id}>{s.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-[#596A61]">Baseline Reference:</span>
+          <select
+            value={referenceId}
+            onChange={(e) => setReferenceId(e.target.value)}
+            className="bg-[#FAF9F5] border border-[#D0DEC0] px-3 py-1.5 rounded-xl text-xs font-bold text-[#1E2924] outline-none cursor-pointer"
+          >
+            {allScenarios.map((s) => (
+              <option key={s.id} value={s.id}>{s.name} (Baseline)</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Level 1 Storytelling Top Banner — 5-Second Scan */}
+      <div className="bg-white rounded-3xl p-6 border border-[#D0DEC0] shadow-md grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-[#FAF9F5] p-5 rounded-2xl border border-[#EBF3ED] space-y-2">
+          <span className="text-[10px] font-extrabold uppercase text-[#596A61] tracking-wider block">
+            Baseline Practice
+          </span>
+          <h3 className="font-bold text-[#1E2924] text-base">{referenceScenario?.name || "Standard Flood Plan"}</h3>
+          <div className="space-y-1 text-xs pt-2">
+            <div className="flex justify-between"><span>Profit:</span><span className="font-bold">₹{refProfit.toLocaleString("en-IN")}</span></div>
+            <div className="flex justify-between"><span>Water:</span><span className="font-bold">{refWater.toLocaleString()} m³</span></div>
+            <div className="flex justify-between"><span>Yield:</span><span className="font-bold">{refYield} Q/ac</span></div>
+          </div>
+        </div>
+
+        <div className="bg-[#164A34] text-white p-5 rounded-2xl flex flex-col justify-center items-center text-center space-y-2 shadow-md">
+          <span className="text-xs font-bold uppercase tracking-wider text-[#A1F1B7]">Key Differences</span>
+          <div className="text-xl sm:text-2xl font-black text-white">
+            {profitDiff >= 0 ? `+₹${profitDiff.toLocaleString("en-IN")} Net Profit` : `-₹${Math.abs(profitDiff).toLocaleString("en-IN")}`}
+          </div>
+          <div className="text-xs font-semibold text-[#A1F1B7]">
+            {waterDiff <= 0 ? `${waterDiff} m³ Water Conserved` : `+${waterDiff} m³ Water`} • +{yieldDiff} Q/ac Yield
+          </div>
+        </div>
+
+        <div className="bg-[#EBF3ED] p-5 rounded-2xl border border-[#D0DEC0] space-y-2">
+          <span className="text-[10px] font-extrabold uppercase text-[#164A34] tracking-wider block">
+            Optimized Recommendation
+          </span>
+          <h3 className="font-bold text-[#164A34] text-base">{targetScenario?.name || "Drip Precision Wheat"}</h3>
+          <div className="space-y-1 text-xs pt-2 text-[#1E2924]">
+            <div className="flex justify-between"><span>Profit:</span><span className="font-bold text-[#164A34]">₹{targetProfit.toLocaleString("en-IN")}</span></div>
+            <div className="flex justify-between"><span>Water:</span><span className="font-bold">{targetWater.toLocaleString()} m³</span></div>
+            <div className="flex justify-between"><span>Yield:</span><span className="font-bold">{targetYield} Q/ac</span></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Attribution Cards via ExpandableCard */}
+      <div className="space-y-4">
+        <h2 className="text-base font-extrabold text-[#164A34]">Main Reasons for Difference</h2>
+
+        <ExpandableCard
+          title="Sowing Date Shift (Nov 18 → Nov 02)"
+          badge="+₹12,400 Profit"
+          summaryContent={
+            <p className="text-xs text-[#1E2924]">
+              Shifting sowing date to Nov 02 captures peak soil moisture window and reduces terminal heat risk during grain filling.
             </p>
-          </div>
-
-          <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap">
-            {/* Optional onNavigate Back to Comparison */}
-            {onNavigate && (
-              <button
-                type="button"
-                onClick={() => onNavigate("comparison")}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs"
-              >
-                ← Back to Comparison
-              </button>
-            )}
-
-            {/* Language Selector */}
-            <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg p-1.5 shadow-2xs">
-              <span className="text-xs font-semibold text-slate-500 pl-1.5">Language:</span>
-              {supportedLanguages.map((lang) => (
-                <button
-                  key={lang.code}
-                  type="button"
-                  onClick={() => setLanguage(lang.code)}
-                  className={`px-2.5 py-1 rounded text-xs font-bold transition-colors ${
-                    language === lang.code
-                      ? "bg-emerald-600 text-white shadow-2xs"
-                      : "text-slate-700 hover:bg-slate-100"
-                  }`}
-                >
-                  {lang.label}
-                </button>
-              ))}
+          }
+          detailsContent={
+            <div className="space-y-2 text-xs text-[#596A61]">
+              <p>Soil Moisture Satellite Telemetry: 82% field capacity recorded on Nov 02.</p>
+              <p>Aphid Risk Factor: Decreased by 64% by completing flowering prior to late-February heat waves.</p>
             </div>
-          </div>
-        </header>
+          }
+        />
 
-        {/* Pair Selection Controls Card */}
-        <section
-          aria-label="Scenario Comparison Selectors"
-          className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 sm:p-5"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Target Scenario Selector */}
-            <div>
-              <label
-                htmlFor="target-scenario-select"
-                className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
-              >
-                Simulated Plan to Explain (Target)
-              </label>
-              <select
-                id="target-scenario-select"
-                value={targetId}
-                onChange={(e) => setTargetId(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
-              >
-                {allScenarios.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} ({s.inputs?.irrigation?.toUpperCase()} • {s.inputs?.weather} weather)
-                  </option>
-                ))}
-              </select>
+        <ExpandableCard
+          title="Micro-Drip Fertigation System"
+          badge="+₹18,800 Profit"
+          summaryContent={
+            <p className="text-xs text-[#1E2924]">
+              Replacing traditional flood irrigation with targeted drip fertigation reduces nitrogen fertilizer leaching and saves 1,200 m³ water.
+            </p>
+          }
+          detailsContent={
+            <div className="space-y-2 text-xs text-[#596A61]">
+              <p>Water Efficiency Gain: From 45% (flood) to 92% (micro-drip).</p>
+              <p>Fertilizer Runoff Reduction: 38% reduction in applied urea loss.</p>
             </div>
+          }
+        />
 
-            {/* Reference Baseline Selector */}
-            <div>
-              <label
-                htmlFor="baseline-scenario-select"
-                className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
-              >
-                Baseline Reference Plan
-              </label>
-              <select
-                id="baseline-scenario-select"
-                value={referenceId}
-                onChange={(e) => setReferenceId(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
-              >
-                {allScenarios.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name} (Baseline)
-                  </option>
-                ))}
-              </select>
+        <ExpandableCard
+          title="Certified Seed Rate (HD-2967 Rust Resistant)"
+          badge="+₹7,000 Profit"
+          summaryContent={
+            <p className="text-xs text-[#1E2924]">
+              Upgrading to certified HD-2967 seed increases germination rate to 96% and guarantees resistance against yellow rust.
+            </p>
+          }
+          detailsContent={
+            <div className="space-y-2 text-xs text-[#596A61]">
+              <p>Germination Rate: 96% certified vs 78% saved farm seed.</p>
+              <p>Yield Resilience: Zero loss from yellow rust spore outbreaks.</p>
             </div>
-          </div>
-
-          {/* Quick Scenario Preset Chips */}
-          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2 flex-wrap text-xs">
-            <span className="text-slate-500 font-medium">Quick Compare Against Baseline:</span>
-            {allScenarios
-              .filter((s) => s.id !== referenceId)
-              .map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => setTargetId(s.id)}
-                  className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${
-                    targetId === s.id
-                      ? "bg-slate-900 text-white border-slate-900"
-                      : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
-                  }`}
-                >
-                  {s.name}
-                </button>
-              ))}
-          </div>
-        </section>
-
-        {/* Core WhyPanel Component */}
-        <WhyPanel
-          targetScenario={targetScenario}
-          referenceScenario={referenceScenario}
-          explanation={explanation}
+          }
         />
       </div>
     </div>

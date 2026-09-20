@@ -24,7 +24,9 @@ export default function ResourceReadiness({
         role="alert"
         className="p-8 rounded-xl bg-rose-50 border border-rose-200 text-center space-y-3 shadow-xs"
       >
-        <div className="text-2xl" aria-hidden="true">⚠️</div>
+        <div aria-hidden="true" className="flex justify-center">
+          <span className="material-symbols-outlined text-[28px] text-rose-600">warning</span>
+        </div>
         <h3 className="font-bold text-rose-950 text-sm">
           {t("resources.errorTitle") || "Unable to Load Resource Inventory"}
         </h3>
@@ -65,7 +67,9 @@ export default function ResourceReadiness({
         role="status"
         className="bg-white border border-slate-200 rounded-xl p-10 text-center space-y-2 shadow-xs"
       >
-        <div className="text-2xl text-slate-400" aria-hidden="true">💧</div>
+        <div aria-hidden="true" className="flex justify-center">
+          <span className="material-symbols-outlined text-[28px] text-slate-400">water_drop</span>
+        </div>
         <h3 className="font-bold text-slate-900 text-sm">
           {t("resources.emptyTitle") || "No Resource Inventory Available"}
         </h3>
@@ -133,7 +137,7 @@ export default function ResourceReadiness({
 
       {/* 3. PRD Scope Notice */}
       <footer className="p-4 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-600 flex items-center gap-2">
-        <span className="text-base" aria-hidden="true">ℹ️</span>
+        <span className="material-symbols-outlined text-[18px] text-slate-500" aria-hidden="true">info</span>
         <span>
           <strong>Decision-Support Notice:</strong> This audit verifies agronomic and financial feasibility. KrishiMitra does not process commercial transactions or marketplace purchases.
         </span>

@@ -1,199 +1,170 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { getScenarioHistory } from "../../services/history.service";
-import ScenarioHistoryTable from "../../components/history/ScenarioHistoryTable";
-import { useScenarioActions } from "../../components/history/useScenarioActions";
+import ExpandableCard from "../../components/common/ExpandableCard";
 
-/**
- * HistoryPage - Member 4 (Section 16 of Task_Distribution.md)
- * Full scenario history screen using the extracted useScenarioActions hook for
- * optimistic updates, rollback management, compare selections, and lifecycle states.
- */
 export default function HistoryPage({ onNavigate = null }) {
-  const { t, language, setLanguage, supportedLanguages } = useLanguage();
+  const navigate = useNavigate();
+  const { t } = useLanguage();
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [fetchError, setFetchError] = useState(null);
+  const [selectedSeason, setSelectedSeason] = useState("all");
 
-  const {
-    scenarios,
-    setScenarios,
-    selectedIds,
-    toggleSelectScenario,
-    handleRename,
-    handleDelete,
-    actionError,
-    clearError,
-  } = useScenarioActions({
-    initialScenarios: [],
-    defaultSelectedIds: ["sc-001", "sc-002"],
-  });
+  const historyRecords = [
+    {
+      id: "rec-2025-rabi",
+      season: "rabi-2425",
+      title: "Rabi 2024-25 • Drip Wheat Precision",
+      crop: "Sonalika HD-2967 Wheat",
+      acres: "8.5 Acres",
+      status: "Active Sowing (Nov 02)",
+      statusClass: "bg-[#EBF3ED] text-[#164A34] border-[#D0DEC0]",
+      predictedProfit: "₹1,84,500",
+      realizedProfit: "Pending Harvest",
+      waterUsed: "3,450 m³",
+      yieldRate: "21.2 Q / ac",
+      fidelity: "96.2%",
+      uid: "MH-HNG-2025-901",
+    },
+    {
+      id: "rec-2025-kharif",
+      season: "kharif-2025",
+      title: "Kharif 2025 • Hybrid Bt Cotton & Tur",
+      crop: "Bt Cotton + Tur Intercrop",
+      acres: "8.5 Acres",
+      status: "APMC Mandi Audited",
+      statusClass: "bg-[#EBF3ED] text-[#164A34] border-[#D0DEC0]",
+      predictedProfit: "₹1,62,000",
+      realizedProfit: "₹1,58,400",
+      waterUsed: "5,100 m³",
+      yieldRate: "14.8 Q / ac",
+      fidelity: "97.7%",
+      uid: "MH-HNG-2025-412",
+    },
+    {
+      id: "rec-2024-rabi",
+      season: "rabi-2324",
+      title: "Rabi 2023-24 • Desi Gram / Chickpea",
+      crop: "Vijay Gram (Chickpea)",
+      acres: "8.5 Acres",
+      status: "PMFBY Settled",
+      statusClass: "bg-[#FAF9F5] text-[#596A61] border-[#D9D6C7]",
+      predictedProfit: "₹1,12,000",
+      realizedProfit: "₹1,14,200",
+      waterUsed: "2,800 m³",
+      yieldRate: "9.4 Q / ac",
+      fidelity: "98.0%",
+      uid: "MH-HNG-2024-884",
+    },
+    {
+      id: "rec-2024-kharif",
+      season: "kharif-2024",
+      title: "Kharif 2024 • Soybean Rainfed Baseline",
+      crop: "JS-335 Soybean (Flood)",
+      acres: "8.5 Acres",
+      status: "Baseline Record",
+      statusClass: "bg-[#FAF9F5] text-[#596A61] border-[#D9D6C7]",
+      predictedProfit: "₹95,000",
+      realizedProfit: "₹88,000",
+      waterUsed: "4,650 m³",
+      yieldRate: "8.2 Q / ac",
+      fidelity: "92.6%",
+      uid: "MH-HNG-2024-102",
+    },
+  ];
 
-  const fetchHistory = () => {
-    setIsLoading(true);
-    setFetchError(null);
-    clearError();
-
-    getScenarioHistory()
-      .then((data) => {
-        setScenarios(data || []);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setFetchError(err?.message || "Failed to load saved scenario history.");
-        setIsLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    fetchHistory();
-  }, []);
-
-  const handleOpenScenario = (scenario) => {
-    if (onNavigate) {
-      onNavigate("report", { scenarioId: scenario.id });
-    }
-  };
-
-  const handleLaunchCompare = (idsToCompare) => {
-    if (onNavigate) {
-      onNavigate("comparison", { selectedIds: idsToCompare });
-    }
-  };
+  const filteredRecords = selectedSeason === "all"
+    ? historyRecords
+    : historyRecords.filter((r) => r.season === selectedSeason);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 p-4 sm:p-6 lg:p-8 font-sans">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Top Navigation Header */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-widest mb-1">
-              <span>PRARAMBHA 2.0</span> • <span>Simulation Records</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              {t("history.title")}
-            </h1>
-            <p className="text-sm text-slate-600 mt-1 max-w-2xl">
-              {t("history.subtitle")}
-            </p>
-          </div>
+    <div className="w-full space-y-6 animate-fadeIn pb-12">
+      {/* Level 1 Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#D0DEC0] pb-4">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-[#164A34] tracking-tight">
+            Scenario History & Saved Plans
+          </h1>
+          <p className="text-xs text-[#596A61] font-medium mt-0.5">
+            Historical farm performance records across 4 cropping cycles for Shivaji Patil Farm
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => (onNavigate ? onNavigate("report") : navigate("/report"))}
+            className="px-4 py-2 bg-[#164A34] hover:bg-[#196C3E] text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer flex items-center gap-1.5"
+          >
+            <span className="material-symbols-outlined text-base">description</span>
+            <span>Export Printable Report</span>
+          </button>
+        </div>
+      </div>
 
-          <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap">
-            {onNavigate && (
+      {/* Filter Toolbar */}
+      <div className="flex items-center gap-3">
+        <span className="text-xs font-bold text-[#164A34] uppercase">Filter Cycle:</span>
+        <select
+          value={selectedSeason}
+          onChange={(e) => setSelectedSeason(e.target.value)}
+          className="bg-white border border-[#D0DEC0] px-3.5 py-1.5 rounded-xl text-xs font-bold text-[#1E2924] outline-none cursor-pointer"
+        >
+          <option value="all">All Available Cycles (2023 - 2025)</option>
+          <option value="rabi-2425">Rabi 2024-25 (Wheat Precision • Active)</option>
+          <option value="kharif-2025">Kharif 2025 (Cotton & Tur • Harvested)</option>
+          <option value="rabi-2324">Rabi 2023-24 (Desi Gram • Audited)</option>
+          <option value="kharif-2024">Kharif 2024 (Soybean • Baseline)</option>
+        </select>
+      </div>
+
+      {/* History Records via ExpandableCard */}
+      <div className="space-y-4">
+        {filteredRecords.map((item) => (
+          <ExpandableCard
+            key={item.id}
+            title={item.title}
+            badge={item.status}
+            actionButton={
               <button
                 type="button"
-                onClick={() => onNavigate("comparison")}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer"
+                onClick={() => (onNavigate ? onNavigate("report") : navigate("/report"))}
+                className="px-3.5 py-1.5 bg-[#EBF3ED] hover:bg-[#D0DEC0] text-[#164A34] text-xs font-bold rounded-xl border border-[#3D8B5A]/30 transition-colors cursor-pointer"
               >
-                ← Back to Comparison
+                View Dossier
               </button>
-            )}
-
-            {/* Language Selector */}
-            <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg p-1.5 shadow-2xs">
-              <span className="text-xs font-semibold text-slate-500 pl-1.5">Language:</span>
-              {supportedLanguages.map((lang) => (
-                <button
-                  key={lang.code}
-                  type="button"
-                  onClick={() => setLanguage(lang.code)}
-                  className={`px-2.5 py-1 rounded text-xs font-bold transition-colors ${
-                    language === lang.code
-                      ? "bg-emerald-600 text-white shadow-2xs"
-                      : "text-slate-700 hover:bg-slate-100 cursor-pointer"
-                  }`}
-                >
-                  {lang.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </header>
-
-        {/* Action / Rollback Notification Banner */}
-        {actionError && (
-          <div
-            role="alert"
-            className="p-4 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 flex items-center justify-between gap-4 shadow-xs"
-          >
-            <div className="flex items-center gap-2">
-              <span className="text-lg" aria-hidden="true">⚠️</span>
-              <p className="text-xs font-semibold">{actionError}</p>
-            </div>
-            <button
-              type="button"
-              onClick={clearError}
-              className="text-xs font-bold text-amber-800 hover:text-amber-950 underline cursor-pointer"
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs space-y-4 animate-pulse">
-            <div className="h-10 bg-slate-200 rounded-lg w-1/3" />
-            <div className="h-64 bg-slate-100 rounded-lg" />
-          </div>
-        )}
-
-        {/* Fetch Error State with Retry Button */}
-        {!isLoading && fetchError && (
-          <div
-            role="alert"
-            className="p-5 rounded-xl bg-rose-50 border border-rose-200 text-rose-950 flex items-center justify-between gap-4 shadow-xs"
-          >
-            <div>
-              <p className="font-bold text-xs uppercase tracking-wide">
-                {t("history.errorTitle") || "Unable to Load Scenario History"}
-              </p>
-              <p className="text-xs text-rose-900 mt-0.5">{fetchError}</p>
-            </div>
-            <button
-              type="button"
-              onClick={fetchHistory}
-              className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:outline-hidden"
-            >
-              {t("history.retry") || "Retry"}
-            </button>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!isLoading && !fetchError && scenarios.length === 0 && (
-          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center shadow-xs space-y-3">
-            <span className="text-4xl block" aria-hidden="true">🌱</span>
-            <h3 className="text-base font-bold text-slate-900">
-              {t("history.emptyTitle") || "No saved scenarios yet"}
-            </h3>
-            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-              {t("history.empty") || "Simulate a season in the Scenario Builder and save your strategy to build your farm record history."}
-            </p>
-            {onNavigate && (
-              <button
-                type="button"
-                onClick={() => onNavigate("builder")}
-                className="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer shadow-2xs"
-              >
-                Create New Scenario
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Table View with 8 columns */}
-        {!isLoading && !fetchError && scenarios.length > 0 && (
-          <ScenarioHistoryTable
-            scenarios={scenarios}
-            selectedIds={selectedIds}
-            onToggleSelect={toggleSelectScenario}
-            onOpen={handleOpenScenario}
-            onRename={handleRename}
-            onDelete={handleDelete}
-            onLaunchCompare={handleLaunchCompare}
+            }
+            summaryContent={
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div>
+                  <span className="text-[#596A61] block text-[10px] font-semibold">PREDICTED PROFIT</span>
+                  <span className="font-bold text-[#164A34]">{item.predictedProfit}</span>
+                </div>
+                <div>
+                  <span className="text-[#596A61] block text-[10px] font-semibold">REALIZED MANDI</span>
+                  <span className="font-bold text-[#1E2924]">{item.realizedProfit}</span>
+                </div>
+                <div>
+                  <span className="text-[#596A61] block text-[10px] font-semibold">WATER DRAW</span>
+                  <span className="font-bold text-[#1E2924]">{item.waterUsed}</span>
+                </div>
+                <div>
+                  <span className="text-[#596A61] block text-[10px] font-semibold">FIDELITY</span>
+                  <span className="font-bold text-[#164A34]">{item.fidelity}</span>
+                </div>
+              </div>
+            }
+            detailsContent={
+              <div className="space-y-3 text-xs text-[#596A61]">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D0DEC0]/60 pb-2">
+                  <span className="font-mono text-emerald-800 font-bold">UID Hash: {item.uid}</span>
+                  <span className="font-semibold text-[#1E2924]">Yield Rate: {item.yieldRate}</span>
+                </div>
+                <p>
+                  Forensic agronomic accountability log verified against APMC mandi returns, soil moisture sensor logs, and seasonal rainfall records.
+                </p>
+              </div>
+            }
           />
-        )}
+        ))}
       </div>
     </div>
   );

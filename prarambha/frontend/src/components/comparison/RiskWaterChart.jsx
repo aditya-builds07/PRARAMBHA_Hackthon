@@ -33,7 +33,10 @@ export default function RiskWaterChart({ scenarios = [] }) {
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            💧 Water Efficiency
+            <span className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[16px]">water_drop</span>
+              <span>Water Efficiency</span>
+            </span>
           </button>
           <button
             type="button"
@@ -44,7 +47,10 @@ export default function RiskWaterChart({ scenarios = [] }) {
                 : "text-slate-600 hover:text-slate-900"
             }`}
           >
-            ⚠️ Risk Profile
+            <span className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[16px]">warning</span>
+              <span>Risk Profile</span>
+            </span>
           </button>
         </div>
       </div>

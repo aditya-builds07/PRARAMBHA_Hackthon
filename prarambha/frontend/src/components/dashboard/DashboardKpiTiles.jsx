@@ -11,38 +11,34 @@ function getRiskInfo(level) {
     case "low":
       return {
         label: "Low Risk",
-        icon: "✓",
-        dot: "🟢",
-        className: "bg-emerald-50 text-emerald-950 border-emerald-300",
+        iconName: "check_circle",
+        className: "bg-[#EBF3ED] text-[#164A34] border-[#D0DEC0]",
       };
     case "high":
       return {
         label: "High Risk",
-        icon: "⚠",
-        dot: "🟠",
-        className: "bg-amber-50 text-amber-950 border-amber-300",
+        iconName: "warning",
+        className: "bg-[#FDF5EA] text-[#D9902F] border-[#F7D8B5]",
       };
     case "critical":
       return {
         label: "Critical Risk",
-        icon: "🚨",
-        dot: "🔴",
-        className: "bg-rose-50 text-rose-950 border-rose-300",
+        iconName: "error",
+        className: "bg-[#FDF0EE] text-[#C85A45] border-[#F5C2BA]",
       };
     case "medium":
     default:
       return {
         label: "Medium Risk",
-        icon: "ℹ",
-        dot: "🟡",
-        className: "bg-yellow-50 text-yellow-950 border-yellow-300",
+        iconName: "info",
+        className: "bg-[#FDF5EA] text-[#D9902F] border-[#F7D8B5]",
       };
   }
 }
 
 /**
- * DashboardKpiTiles Component - Member 4
- * Card/tile layout displaying 5 core scenario KPIs computed client-side from history.
+ * DashboardKpiTiles Component — PRARAMBHA 2.0 Visual Restoration
+ * Card/tile layout displaying 5 core scenario KPIs.
  */
 export default function DashboardKpiTiles({ kpis, onNavigateToHistory }) {
   const { t } = useLanguage();
@@ -65,67 +61,67 @@ export default function DashboardKpiTiles({ kpis, onNavigateToHistory }) {
       {/* 5 KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* KPI 1: Total Saved Scenarios */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:border-slate-300 transition-all">
+        <div className="bg-white rounded-2xl border border-[#D0DEC0] p-5 shadow-xs hover:border-[#86C39C] transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#596A61]">
               {t("dashboard.totalScenarios") || "Total Saved Scenarios"}
             </span>
-            <span className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm">
-              📁
+            <span className="w-9 h-9 rounded-xl bg-[#EBF3ED] text-[#164A34] flex items-center justify-center font-bold text-sm border border-[#D0DEC0]">
+              <span className="material-symbols-outlined text-[20px]">folder</span>
             </span>
           </div>
           <div className="mt-3">
-            <span className="text-3xl sm:text-4xl font-black text-slate-900 tabular-nums">
+            <span className="text-3xl sm:text-4xl font-black text-[#1E2924] tabular-nums">
               {totalScenarios}
             </span>
-            <span className="text-xs text-slate-500 block mt-1">
+            <span className="text-xs text-[#596A61] block mt-1">
               Simulated seasonal strategies on record
             </span>
           </div>
         </div>
 
         {/* KPI 2: Average Profit Across Scenarios */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:border-slate-300 transition-all">
+        <div className="bg-white rounded-2xl border border-[#D0DEC0] p-5 shadow-xs hover:border-[#86C39C] transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#596A61]">
               {t("dashboard.avgProfit") || "Average Projected Profit"}
             </span>
-            <span className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm">
-              💰
+            <span className="w-9 h-9 rounded-xl bg-[#EBF3ED] text-[#164A34] flex items-center justify-center font-bold text-sm border border-[#D0DEC0]">
+              <span className="material-symbols-outlined text-[20px]">payments</span>
             </span>
           </div>
           <div className="mt-3">
-            <span className="text-3xl sm:text-4xl font-black text-emerald-700 tabular-nums">
+            <span className="text-3xl sm:text-4xl font-black text-[#164A34] tabular-nums">
               {formatCurrency(averageProfit)}
             </span>
-            <span className="text-xs text-slate-500 block mt-1">
+            <span className="text-xs text-[#596A61] block mt-1">
               Mean net profit across all tested scenarios
             </span>
           </div>
         </div>
 
         {/* KPI 3: Average Risk Across Scenarios */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:border-slate-300 transition-all">
+        <div className="bg-white rounded-2xl border border-[#D0DEC0] p-5 shadow-xs hover:border-[#86C39C] transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#596A61]">
               {t("dashboard.avgRisk") || "Average Risk Index"}
             </span>
-            <span className="w-8 h-8 rounded-lg bg-slate-50 text-slate-700 flex items-center justify-center font-bold text-sm">
-              🛡️
+            <span className="w-9 h-9 rounded-xl bg-[#EBF3ED] text-[#1E2924] flex items-center justify-center font-bold text-sm border border-[#D0DEC0]">
+              <span className="material-symbols-outlined text-[20px]">shield</span>
             </span>
           </div>
           <div className="mt-3">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl sm:text-4xl font-black text-slate-900 tabular-nums">
+              <span className="text-3xl sm:text-4xl font-black text-[#1E2924] tabular-nums">
                 {averageRiskScore}
               </span>
-              <span className="text-xs font-bold text-slate-400">/ 100</span>
+              <span className="text-xs font-bold text-[#596A61]">/ 100</span>
             </div>
             <div className="mt-2">
               <span
-                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border ${riskBadge.className}`}
+                className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold border ${riskBadge.className}`}
               >
-                <span aria-hidden="true">{riskBadge.dot}</span>
+                <span className="material-symbols-outlined text-[14px]" aria-hidden="true">{riskBadge.iconName}</span>
                 <span>{riskBadge.label}</span>
               </span>
             </div>
@@ -133,74 +129,74 @@ export default function DashboardKpiTiles({ kpis, onNavigateToHistory }) {
         </div>
 
         {/* KPI 4: Highest-Profit Scenario */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:border-slate-300 transition-all">
+        <div className="bg-white rounded-2xl border border-[#D0DEC0] p-5 shadow-xs hover:border-[#86C39C] transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#596A61]">
               {t("dashboard.highestProfit") || "Highest-Profit Scenario"}
             </span>
-            <span className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-sm">
-              🏆
+            <span className="w-9 h-9 rounded-xl bg-[#FDF5EA] text-[#D9902F] flex items-center justify-center font-bold text-sm border border-[#F7D8B5]">
+              <span className="material-symbols-outlined text-[20px]">military_tech</span>
             </span>
           </div>
           <div className="mt-3">
             {highestProfitScenario ? (
               <>
-                <span className="text-2xl sm:text-3xl font-black text-emerald-900 tabular-nums block">
+                <span className="text-2xl sm:text-3xl font-black text-[#164A34] tabular-nums block">
                   {formatCurrency(highestProfitScenario.value)}
                 </span>
-                <span className="text-xs font-bold text-slate-900 mt-1 block truncate">
+                <span className="text-xs font-bold text-[#1E2924] mt-1 block truncate">
                   {highestProfitScenario.name}
                 </span>
-                <span className="text-[11px] text-slate-500 block mt-0.5">
+                <span className="text-[11px] text-[#596A61] block mt-0.5">
                   Crop: {highestProfitScenario.crop || "Target Variety"}
                 </span>
               </>
             ) : (
-              <span className="text-sm text-slate-400">None</span>
+              <span className="text-sm text-[#596A61]">None</span>
             )}
           </div>
         </div>
 
         {/* KPI 5: Count of Scenarios by Risk Level */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:border-slate-300 transition-all sm:col-span-2 lg:col-span-2">
+        <div className="bg-white rounded-2xl border border-[#D0DEC0] p-5 shadow-xs hover:border-[#86C39C] transition-all sm:col-span-2 lg:col-span-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#596A61]">
               {t("dashboard.riskDistribution") || "Scenarios by Risk Category"}
             </span>
-            <span className="w-8 h-8 rounded-lg bg-slate-50 text-slate-700 flex items-center justify-center font-bold text-sm">
-              📊
+            <span className="w-9 h-9 rounded-xl bg-[#EBF3ED] text-[#1E2924] flex items-center justify-center font-bold text-sm border border-[#D0DEC0]">
+              <span className="material-symbols-outlined text-[20px]">analytics</span>
             </span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mt-3">
-            <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200">
-              <span className="text-[11px] font-bold text-emerald-950 flex items-center gap-1">
-                <span>🟢</span> <span>Low Risk</span>
+            <div className="p-3 rounded-xl bg-[#EBF3ED] border border-[#D0DEC0]">
+              <span className="text-[11px] font-bold text-[#164A34] flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">check_circle</span> <span>Low Risk</span>
               </span>
-              <span className="text-2xl font-black text-emerald-950 mt-1 block tabular-nums">
+              <span className="text-2xl font-black text-[#164A34] mt-1 block tabular-nums">
                 {riskLevelCounts.low}
               </span>
             </div>
-            <div className="p-3 rounded-xl bg-yellow-50/70 border border-yellow-200">
-              <span className="text-[11px] font-bold text-yellow-950 flex items-center gap-1">
-                <span>🟡</span> <span>Medium Risk</span>
+            <div className="p-3 rounded-xl bg-[#FDF5EA] border border-[#F7D8B5]">
+              <span className="text-[11px] font-bold text-[#D9902F] flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">info</span> <span>Medium Risk</span>
               </span>
-              <span className="text-2xl font-black text-yellow-950 mt-1 block tabular-nums">
+              <span className="text-2xl font-black text-[#D9902F] mt-1 block tabular-nums">
                 {riskLevelCounts.medium}
               </span>
             </div>
-            <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200">
-              <span className="text-[11px] font-bold text-amber-950 flex items-center gap-1">
-                <span>🟠</span> <span>High Risk</span>
+            <div className="p-3 rounded-xl bg-[#FDF5EA] border border-[#F7D8B5]">
+              <span className="text-[11px] font-bold text-[#D9902F] flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">warning</span> <span>High Risk</span>
               </span>
-              <span className="text-2xl font-black text-amber-950 mt-1 block tabular-nums">
+              <span className="text-2xl font-black text-[#D9902F] mt-1 block tabular-nums">
                 {riskLevelCounts.high}
               </span>
             </div>
-            <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200">
-              <span className="text-[11px] font-bold text-rose-950 flex items-center gap-1">
-                <span>🔴</span> <span>Critical Risk</span>
+            <div className="p-3 rounded-xl bg-[#FDF0EE] border border-[#F5C2BA]">
+              <span className="text-[11px] font-bold text-[#C85A45] flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">error</span> <span>Critical Risk</span>
               </span>
-              <span className="text-2xl font-black text-rose-950 mt-1 block tabular-nums">
+              <span className="text-2xl font-black text-[#C85A45] mt-1 block tabular-nums">
                 {riskLevelCounts.critical}
               </span>
             </div>
@@ -209,25 +205,26 @@ export default function DashboardKpiTiles({ kpis, onNavigateToHistory }) {
       </div>
 
       {/* Navigation Link to Full History Page */}
-      <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="p-5 bg-white rounded-2xl border border-[#D0DEC0] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h4 className="text-sm font-bold text-slate-900">
+          <h4 className="text-sm font-bold text-[#1E2924]">
             {t("dashboard.viewHistoryHeading") || "Detailed Scenario Management"}
           </h4>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-[#596A61] mt-0.5">
             {t("dashboard.viewHistoryDesc") || "Open, rename, delete, or compare historical farm scenarios side-by-side."}
           </p>
         </div>
         <button
           type="button"
           onClick={onNavigateToHistory}
-          className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors shadow-2xs flex items-center gap-2 cursor-pointer shrink-0"
+          className="px-4 py-2.5 bg-[#164A34] hover:bg-[#196C3E] text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-2 cursor-pointer shrink-0"
         >
-          <span>📋</span>
+          <span className="material-symbols-outlined text-[16px]">history</span>
           <span>{t("dashboard.viewHistoryButton") || "Go to Scenario History"}</span>
-          <span aria-hidden="true">→</span>
+          <span className="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_forward</span>
         </button>
       </div>
     </div>
   );
 }
+

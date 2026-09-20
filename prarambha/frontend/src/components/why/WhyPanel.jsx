@@ -45,7 +45,9 @@ export default function WhyPanel({
   if (targetScenario.id === referenceScenario.id) {
     return (
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-8 text-center space-y-2">
-        <div className="text-3xl">🎯</div>
+        <div className="text-3xl text-blue-900 flex justify-center">
+          <span className="material-symbols-outlined text-4xl">track_changes</span>
+        </div>
         <h3 className="font-bold text-blue-900 text-base">
           Identical Scenario Comparison
         </h3>
@@ -206,7 +208,7 @@ export default function WhyPanel({
       {/* 4. Transparency & Audit Notice */}
       <footer className="p-4 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-600 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-base">🔬</span>
+          <span className="material-symbols-outlined text-[18px]">science</span>
           <span>
             <strong>Deterministic Attribution:</strong> Factors reconcile to exact scenario differences using crop water/temperature benchmarks. No generative AI estimation.
           </span>

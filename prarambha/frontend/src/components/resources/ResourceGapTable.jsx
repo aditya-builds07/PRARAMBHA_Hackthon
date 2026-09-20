@@ -23,16 +23,16 @@ export default function ResourceGapTable({ readinessData }) {
       const isCurr = item.unit === "₹" || item.isCurrency || item.resourceType?.toLowerCase().includes("budget");
 
       const iconMap = {
-        budget: "💰",
-        water: "💧",
-        seed: "🌱",
-        fertilizer: "🧪",
-        machinery: "🚜",
-        labor: "👨‍🌾",
+        budget: "payments",
+        water: "water_drop",
+        seed: "grain",
+        fertilizer: "science",
+        machinery: "agriculture",
+        labor: "engineering",
       };
 
       const matchedKey = Object.keys(iconMap).find((k) => item.resourceType?.toLowerCase().includes(k)) || "other";
-      const icon = iconMap[matchedKey] || "📦";
+      const icon = iconMap[matchedKey] || "inventory_2";
 
       return {
         key: `res-${idx}-${item.resourceType}`,
@@ -53,7 +53,7 @@ export default function ResourceGapTable({ readinessData }) {
       {
         key: "budget",
         name: t("resources.budget") || "Budget",
-        icon: "💰",
+        icon: "payments",
         req: budget?.required ?? 0,
         avail: budget?.available ?? 0,
         gap: budget?.gap !== undefined ? budget.gap : Math.max(0, (budget?.required ?? 0) - (budget?.available ?? 0)),
@@ -65,7 +65,7 @@ export default function ResourceGapTable({ readinessData }) {
       {
         key: "water",
         name: t("resources.water") || "Water",
-        icon: "💧",
+        icon: "water_drop",
         req: water?.required ?? 0,
         avail: water?.available ?? 0,
         gap: water?.gap !== undefined ? water.gap : Math.max(0, (water?.required ?? 0) - (water?.available ?? 0)),
@@ -77,7 +77,7 @@ export default function ResourceGapTable({ readinessData }) {
       {
         key: "seed",
         name: t("resources.seed") || "Seed",
-        icon: "🌱",
+        icon: "grain",
         req: seed?.required ?? 0,
         avail: seed?.available ?? 0,
         gap: seed?.gap !== undefined ? seed.gap : Math.max(0, (seed?.required ?? 0) - (seed?.available ?? 0)),
@@ -89,7 +89,7 @@ export default function ResourceGapTable({ readinessData }) {
       {
         key: "fertilizer",
         name: t("resources.fertilizer") || "Fertilizer / Inputs",
-        icon: "🧪",
+        icon: "science",
         req: fertilizer?.required ?? 0,
         avail: fertilizer?.available ?? 0,
         gap: fertilizer?.gap !== undefined ? fertilizer.gap : Math.max(0, (fertilizer?.required ?? 0) - (fertilizer?.available ?? 0)),
@@ -101,7 +101,7 @@ export default function ResourceGapTable({ readinessData }) {
       ...otherInputs.map((item, idx) => ({
         key: `other-${idx}`,
         name: item.name || item.resourceType || `Input #${idx + 1}`,
-        icon: "🚜",
+        icon: "agriculture",
         req: item.required ?? 0,
         avail: item.available ?? 0,
         gap: item.gap !== undefined ? item.gap : Math.max(0, (item.required ?? 0) - (item.available ?? 0)),
@@ -118,7 +118,7 @@ export default function ResourceGapTable({ readinessData }) {
       {/* Mobile Horizontal Scroll Indicator */}
       <div className="px-4 py-2 bg-slate-100/90 border-b border-slate-200 text-[11px] text-slate-600 flex items-center justify-between sm:hidden">
         <span>← Swipe to inspect resource deficits →</span>
-        <span aria-hidden="true">💧</span>
+        <span className="material-symbols-outlined text-[14px]">water_drop</span>
       </div>
 
       <div className="overflow-x-auto max-w-full touch-pan-x">
@@ -144,7 +144,7 @@ export default function ResourceGapTable({ readinessData }) {
               <tr key={row.key} className="hover:bg-slate-50/60 transition-colors">
                 {/* Resource Name */}
                 <th scope="row" className="p-4 font-bold text-slate-900 flex items-center gap-2.5">
-                  <span className="text-base" aria-hidden="true">{row.icon}</span>
+                  <span className="material-symbols-outlined text-[18px] text-emerald-800" aria-hidden="true">{row.icon}</span>
                   <span>{row.name}</span>
                 </th>
 
@@ -166,7 +166,7 @@ export default function ResourceGapTable({ readinessData }) {
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
-                      <span>✓ Covered</span>
+                      <span>Covered</span>
                     </span>
                   )}
                 </td>

@@ -61,10 +61,9 @@ export default function ComparisonTable({
         </div>
       </div>
 
-      {/* Mobile Horizontal Scroll Indicator */}
       <div className="px-4 py-2 bg-slate-100/90 border-b border-slate-200 text-[11px] text-slate-600 flex items-center justify-between sm:hidden">
         <span>← Swipe to compare all plans →</span>
-        <span aria-hidden="true">👉</span>
+        <span className="material-symbols-outlined text-[14px]" aria-hidden="true">swipe</span>
       </div>
 
       {/* Responsive Horizontal Scroll Table */}
