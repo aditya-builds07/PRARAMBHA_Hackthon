@@ -1,0 +1,62 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 142 28% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 142 28% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 142 28% 12%;
+    --primary: 142 72% 29%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 142 15% 94%;
+    --secondary-foreground: 142 28% 12%;
+    --muted: 142 10% 95%;
+    --muted-foreground: 142 12% 45%;
+    --accent: 35 85% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 142 15% 88%;
+    --input: 142 15% 88%;
+    --ring: 142 72% 29%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    min-height: 100dvh;
+  }
+
+  /* Accessible focus rings */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2;
+  }
+}
+
+@layer components {
+  /* Touch-target safety helper */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    @apply flex items-center justify-center;
+  }
+}
+
+@layer components {
+  /* Shared input/select styles */
+  .input-base {
+    @apply w-full rounded-md border border-input bg-background px-3 py-2 text-sm
+           text-foreground placeholder:text-muted-foreground
+           focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent
+           disabled:opacity-50 disabled:cursor-not-allowed
+           min-h-[44px];
+  }
+}

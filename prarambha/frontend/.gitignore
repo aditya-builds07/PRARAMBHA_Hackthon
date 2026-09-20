@@ -1,0 +1,22 @@
+﻿# --- build outputs ---
+dist/
+dist-ssr/
+
+# --- env files (never commit secrets) ---
+.env
+.env.local
+.env.*.local
+
+# --- deps ---
+node_modules/
+
+# --- editor ---
+.vscode/
+.idea/
+
+# --- logs ---
+*.log
+npm-debug.log*
+
+# --- test output ---
+coverage/
