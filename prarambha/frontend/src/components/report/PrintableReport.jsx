@@ -144,7 +144,7 @@ export default function PrintableReport({ reportData }) {
   return (
     <article
       aria-label="Executive Decision Report"
-      className="report-printable-sheet bg-white rounded-2xl border border-slate-300 shadow-md p-6 sm:p-10 space-y-7 font-sans text-slate-900"
+      className="report-printable-sheet bg-white rounded-2xl border border-slate-300 shadow-md p-4 sm:p-8 md:p-10 space-y-7 font-sans text-slate-900"
     >
       {/* Explicit Print Stylesheet for flawless paper layout */}
       <style>{`
@@ -209,7 +209,7 @@ export default function PrintableReport({ reportData }) {
         <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 pb-1 border-b border-slate-200">
           1. {t("report.sectionFarm") || "Farm Profile"}
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
             <span className="text-slate-400 font-bold block text-[10px] uppercase">Farm Name</span>
             <span className="font-bold text-slate-900 mt-0.5 block">{farm.name || "—"}</span>
@@ -234,7 +234,7 @@ export default function PrintableReport({ reportData }) {
         <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 pb-1 border-b border-slate-200">
           2. {t("report.sectionScenario") || "Scenario Specifications"}
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
             <span className="text-slate-400 font-bold block text-[10px] uppercase">Scenario ID</span>
             <span className="font-mono font-bold text-slate-900 mt-0.5 block">{scenario.id || "—"}</span>
@@ -259,9 +259,9 @@ export default function PrintableReport({ reportData }) {
       {/* SECTION 3: Inputs */}
       <section aria-label="3. Key Inputs" className="space-y-2">
         <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 pb-1 border-b border-slate-200">
-          3. {t("report.sectionInputs") || "Key Scenario Input Parameters"}
+          3. {t("report.sectionInputs") || "Key Production Inputs"}
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
           {Object.entries(inputs).map(([key, val]) => (
             <div key={key} className="p-2.5 bg-slate-50 rounded border border-slate-200">
               <span className="text-slate-500 font-bold block text-[10px] uppercase tracking-wide">
@@ -297,7 +297,7 @@ export default function PrintableReport({ reportData }) {
         <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 pb-1 border-b border-slate-200">
           5. {t("report.sectionEconomics") || "Financial Economics & Return on Investment"}
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
             <span className="text-slate-400 font-bold block text-[10px] uppercase">Cost of Cultivation</span>
             <span className="text-base font-bold text-slate-900 mt-0.5 block tabular-nums">
@@ -326,11 +326,11 @@ export default function PrintableReport({ reportData }) {
       </section>
 
       {/* SECTION 6: Water */}
-      <section aria-label="6. Water Consumption" className="space-y-2">
+      <section aria-label="6. Water Metrics" className="space-y-2">
         <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 pb-1 border-b border-slate-200">
-          6. {t("report.sectionWater") || "Water Consumption & Irrigation Productivity"}
+          6. {t("report.sectionWater") || "Water Balance & Irrigation Utilization"}
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-xs">
           <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
             <span className="text-slate-400 font-bold block text-[10px] uppercase">Water Allocated / Drawn</span>
             <span className="text-base font-bold text-slate-900 mt-0.5 block tabular-nums">
@@ -449,8 +449,8 @@ export default function PrintableReport({ reportData }) {
             No resource inventory records available.
           </p>
         ) : (
-          <div className="overflow-x-auto border border-slate-200 rounded-lg">
-            <table className="w-full text-left border-collapse text-xs">
+          <div className="overflow-x-auto max-w-full touch-pan-x border border-slate-200 rounded-lg">
+            <table className="w-full text-left border-collapse text-xs min-w-[480px]">
               <thead>
                 <tr className="bg-slate-100/70 border-b border-slate-200 text-[10px] font-bold uppercase text-slate-600">
                   <th scope="col" className="p-2.5">Resource</th>

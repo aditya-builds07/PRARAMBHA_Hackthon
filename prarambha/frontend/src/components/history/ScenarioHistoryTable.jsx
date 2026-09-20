@@ -206,7 +206,13 @@ export default function ScenarioHistoryTable({
 
       {/* 8-Column Desktop & Tablet Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Mobile Horizontal Scroll Indicator */}
+        <div className="px-4 py-2 bg-slate-100/90 border-b border-slate-200 text-[11px] text-slate-600 flex items-center justify-between sm:hidden">
+          <span>← Swipe to view all table columns →</span>
+          <span aria-hidden="true">📊</span>
+        </div>
+
+        <div className="overflow-x-auto max-w-full touch-pan-x">
           <table className="w-full text-left border-collapse min-w-[850px]">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">

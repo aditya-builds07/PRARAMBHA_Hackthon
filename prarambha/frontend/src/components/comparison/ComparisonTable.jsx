@@ -61,9 +61,15 @@ export default function ComparisonTable({
         </div>
       </div>
 
+      {/* Mobile Horizontal Scroll Indicator */}
+      <div className="px-4 py-2 bg-slate-100/90 border-b border-slate-200 text-[11px] text-slate-600 flex items-center justify-between sm:hidden">
+        <span>← Swipe to compare all plans →</span>
+        <span aria-hidden="true">👉</span>
+      </div>
+
       {/* Responsive Horizontal Scroll Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[700px]">
+      <div className="overflow-x-auto max-w-full touch-pan-x">
+        <table className="w-full text-left border-collapse min-w-[640px] sm:min-w-[700px]">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-100/70">
               <th scope="col" className="p-4 text-xs font-bold uppercase tracking-wider text-slate-600 w-1/4">
