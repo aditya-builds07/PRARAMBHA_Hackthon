@@ -29,6 +29,10 @@ export default function ResourceCheckPage({
       });
   }, [farmId, scenarioId]);
 
+  const currentUserName = typeof window !== "undefined"
+    ? (localStorage.getItem("user_name") || "Your")
+    : "Your";
+
   return (
     <div className="w-full space-y-6 animate-fadeIn pb-12">
       {/* Level 1 Simple Header */}
@@ -38,7 +42,7 @@ export default function ResourceCheckPage({
             Resource Readiness
           </h1>
           <p className="text-xs text-[#596A61] font-medium mt-0.5">
-            Shivaji Patil Farm (8.5 Acres) • Target Sowing: Nov 02
+            {currentUserName}'s Farm • Target Sowing: Nov 02
           </p>
         </div>
         <div className="flex items-center gap-2">

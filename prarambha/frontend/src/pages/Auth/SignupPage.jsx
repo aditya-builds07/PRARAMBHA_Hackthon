@@ -72,6 +72,9 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
       localStorage.setItem("farmer_id", newFarmer.farmer_id);
       localStorage.setItem("user_name", newFarmer.full_name);
       localStorage.setItem("user_email", newFarmer.email);
+      localStorage.setItem("farmer_district", newFarmer.district || "Pune");
+      localStorage.setItem("farmer_village", newFarmer.village || "");
+      localStorage.setItem("farmer_land_acres", String(newFarmer.total_land_acres));
       localStorage.setItem("supabase_token", mockToken);
 
       if (onLoginSuccess) {

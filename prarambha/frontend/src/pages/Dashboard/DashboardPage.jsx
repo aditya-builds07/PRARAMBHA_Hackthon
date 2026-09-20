@@ -37,6 +37,28 @@ export default function DashboardPage({ onNavigate = null }) {
 
   const kpis = computeDashboardKpis(scenarios);
 
+  // Dynamic logged in / registered farmer details
+  const currentUserName = typeof window !== "undefined"
+    ? (localStorage.getItem("user_name") || localStorage.getItem("farmer_id") || "Farmer")
+    : "Farmer";
+  const currentFarmerId = typeof window !== "undefined"
+    ? (localStorage.getItem("farmer_id") || localStorage.getItem("user_id") || "MH-PUN-042")
+    : "MH-PUN-042";
+  const currentDistrict = typeof window !== "undefined"
+    ? (localStorage.getItem("farmer_district") || "Sangli")
+    : "Sangli";
+  const currentLand = typeof window !== "undefined"
+    ? (localStorage.getItem("farmer_land_acres") || "5.0")
+    : "5.0";
+  const firstName = currentUserName.split(" ")[0] || currentUserName;
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  };
+
   return (
     <div className="space-y-6 page-transition">
       {/* ── STITCH EXECUTIVE HEADER BANNER ── */}
@@ -44,14 +66,14 @@ export default function DashboardPage({ onNavigate = null }) {
         <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#3D8B5A_1px,transparent_1px)] [background-size:16px_16px]" />
         <div className="relative z-10">
           <div className="flex items-center gap-2 text-xs font-bold text-[#86C39C] uppercase tracking-wider mb-1">
-            <span>Desai Farm (Plot A1)</span> • <span>5.0 Acres</span> • <span>Rabi 2026-27</span>
+            <span>{currentUserName}'s Farm ({currentFarmerId})</span> • <span>{currentLand} Acres</span> • <span>Rabi 2026-27</span>
           </div>
           <h1 className="text-3xl font-black text-white tracking-tight">
-            Good morning, Shivaji
+            {getGreeting()}, {firstName}
           </h1>
           <p className="text-xs text-emerald-100/80 mt-1 flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px] text-[#D9902F]">wb_sunny</span>
-            <span>Sangli Region • Weather: 28°C • Moderate Humidity • Optimal Sowing Window</span>
+            <span>{currentDistrict} Region • Weather: 28°C • Moderate Humidity • Optimal Sowing Window</span>
           </p>
         </div>
 

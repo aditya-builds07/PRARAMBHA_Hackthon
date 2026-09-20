@@ -97,6 +97,10 @@ export default function RecommendationsPage({ scenarioId = "sc-003", onNavigate 
     ? items
     : items.filter((i) => i.category === activeFilter);
 
+  const currentUserName = typeof window !== "undefined"
+    ? (localStorage.getItem("user_name") || "Your")
+    : "Your";
+
   return (
     <div className="w-full space-y-6 animate-fadeIn pb-12">
       {/* Level 1 Header — Simple 5-Second Scan */}
@@ -106,7 +110,7 @@ export default function RecommendationsPage({ scenarioId = "sc-003", onNavigate 
             Recommendations
           </h1>
           <p className="text-xs text-[#596A61] mt-0.5 font-medium">
-            5 recommendations for Shivaji Patil Farm • 2 need attention, 2 can improve, 1 helpful advice
+            5 recommendations for {currentUserName}'s Farm • 2 need attention, 2 can improve, 1 helpful advice
           </p>
         </div>
         <div className="flex items-center gap-2">

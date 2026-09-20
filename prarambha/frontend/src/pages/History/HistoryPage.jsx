@@ -76,6 +76,10 @@ export default function HistoryPage({ onNavigate = null }) {
     ? historyRecords
     : historyRecords.filter((r) => r.season === selectedSeason);
 
+  const currentUserName = typeof window !== "undefined"
+    ? (localStorage.getItem("user_name") || "Your")
+    : "Your";
+
   return (
     <div className="w-full space-y-6 animate-fadeIn pb-12">
       {/* Level 1 Header */}
@@ -85,7 +89,7 @@ export default function HistoryPage({ onNavigate = null }) {
             Scenario History & Saved Plans
           </h1>
           <p className="text-xs text-[#596A61] font-medium mt-0.5">
-            Historical farm performance records across 4 cropping cycles for Shivaji Patil Farm
+            Historical farm performance records across 4 cropping cycles for {currentUserName}'s Farm
           </p>
         </div>
         <div className="flex items-center gap-2">

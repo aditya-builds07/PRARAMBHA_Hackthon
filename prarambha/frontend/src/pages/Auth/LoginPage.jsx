@@ -23,16 +23,27 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
 
     try {
       // Simulate authenticating the Farmer ID and password
-      const mockToken = "km_auth_" + Date.now();
-      const farmerName = userId.includes("OFFICER")
-        ? "Dr. Rajesh Kulkarni (Agri Officer)"
-        : "Farmer " + userId.trim();
+      // Resolve registered farmer account details
+      const registered = JSON.parse(localStorage.getItem("km_registered_accounts") || "[]");
+      const matched = registered.find(
+        (a) => a.farmer_id.toLowerCase() === userId.trim().toLowerCase() ||
+               (a.email && a.email.toLowerCase() === userId.trim().toLowerCase())
+      );
 
-      localStorage.setItem("user_id", userId.trim());
-      localStorage.setItem("farmer_id", userId.trim());
+      const farmerName = matched
+        ? matched.full_name
+        : (userId.toUpperCase() === "MH-PUN-042" ? "Shivaji Patil" : (userId.toUpperCase().includes("OFFICER") ? "Dr. Rajesh Kulkarni (Agri Officer)" : `Farmer ${userId.trim()}`));
+
+      const farmerDistrict = matched?.district || "Pune";
+      const farmerLand = matched?.total_land_acres || 5.0;
+
+      localStorage.setItem("user_id", userId.trim().toUpperCase());
+      localStorage.setItem("farmer_id", userId.trim().toUpperCase());
       localStorage.setItem("user_name", farmerName);
+      localStorage.setItem("farmer_district", farmerDistrict);
+      localStorage.setItem("farmer_land_acres", String(farmerLand));
       localStorage.setItem("supabase_token", mockToken);
-      localStorage.setItem("user_email", userId.includes("@") ? userId : `${userId.toLowerCase()}@krishimitra.in`);
+      localStorage.setItem("user_email", matched?.email || (userId.includes("@") ? userId : `${userId.toLowerCase()}@krishimitra.in`));
 
       if (onLoginSuccess) {
         onLoginSuccess({
