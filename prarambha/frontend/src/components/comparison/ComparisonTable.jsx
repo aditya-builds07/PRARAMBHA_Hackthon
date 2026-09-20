@@ -70,6 +70,7 @@ export default function ComparisonTable({
       {/* Responsive Horizontal Scroll Table */}
       <div className="overflow-x-auto max-w-full touch-pan-x">
         <table className="w-full text-left border-collapse min-w-[640px] sm:min-w-[700px]">
+          <caption className="sr-only">Detailed Metric Comparison and Trade-offs across Scenarios</caption>
           <thead>
             <tr className="border-b border-slate-200 bg-slate-100/70">
               <th scope="col" className="p-4 text-xs font-bold uppercase tracking-wider text-slate-600 w-1/4">

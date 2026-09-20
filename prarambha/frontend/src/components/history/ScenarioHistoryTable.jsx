@@ -158,6 +158,7 @@ export default function ScenarioHistoryTable({
         <div
           role="dialog"
           aria-modal="true"
+          aria-labelledby="confirm-delete-title"
           className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4"
         >
           <div className="bg-white rounded-2xl border border-slate-200 p-6 max-w-md w-full shadow-xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
@@ -166,9 +167,9 @@ export default function ScenarioHistoryTable({
                 ⚠️
               </span>
               <div>
-                <h4 className="text-base font-black text-slate-900">
+                <h2 id="confirm-delete-title" className="text-base font-black text-slate-900">
                   {t("history.confirmDeleteTitle") || "Delete Scenario?"}
-                </h4>
+                </h2>
                 <p className="text-xs text-slate-500 mt-0.5">
                   {t("history.confirmDeletePrompt") || "Are you sure you want to delete this scenario?"}
                 </p>
@@ -188,14 +189,14 @@ export default function ScenarioHistoryTable({
               <button
                 type="button"
                 onClick={() => setConfirmDeleteId(null)}
-                className="px-3.5 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+                className="px-3.5 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-hidden"
               >
                 {t("history.cancel") || "Cancel"}
               </button>
               <button
                 type="button"
                 onClick={confirmDelete}
-                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-colors shadow-2xs cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-colors shadow-2xs cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:outline-hidden"
               >
                 {t("history.confirmDeleteAction") || "Yes, Delete Scenario"}
               </button>
@@ -214,6 +215,7 @@ export default function ScenarioHistoryTable({
 
         <div className="overflow-x-auto max-w-full touch-pan-x">
           <table className="w-full text-left border-collapse min-w-[850px]">
+            <caption className="sr-only">Historical Scenario Simulations and Management Table</caption>
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-bold uppercase tracking-wider text-slate-600">
                 <th scope="col" className="p-3.5 w-12 text-center">
@@ -251,7 +253,7 @@ export default function ScenarioHistoryTable({
                         checked={isSelected}
                         onChange={() => onToggleSelect && onToggleSelect(sc.id)}
                         aria-label={`Select ${sc.name} for comparison`}
-                        className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                        className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-2 focus:ring-emerald-500 focus-visible:outline-hidden cursor-pointer"
                       />
                     </td>
 
@@ -262,10 +264,15 @@ export default function ScenarioHistoryTable({
                           onSubmit={(e) => handleRenameSubmit(e, sc.id)}
                           className="flex items-center gap-1.5"
                         >
+                          <label htmlFor={`rename-input-${sc.id}`} className="sr-only">
+                            Rename scenario {sc.name}
+                          </label>
                           <input
+                            id={`rename-input-${sc.id}`}
                             type="text"
                             value={editingName}
                             onChange={(e) => setEditingName(e.target.value)}
+                            aria-label={`Rename scenario ${sc.name}`}
                             className="bg-white border border-slate-300 rounded px-2 py-1 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
                             autoFocus
                           />

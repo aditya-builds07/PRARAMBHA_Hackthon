@@ -123,7 +123,8 @@ export default function ResourceGapTable({ readinessData }) {
 
       <div className="overflow-x-auto max-w-full touch-pan-x">
         <table className="w-full text-left border-collapse min-w-[640px] sm:min-w-[700px]">
-        <thead>
+          <caption className="sr-only">Farm Resource Requirements, Current Availability and Net Deficits</caption>
+          <thead>
           <tr className="border-b border-slate-200 bg-slate-100/70 text-[11px] font-bold uppercase tracking-wider text-slate-600">
             <th scope="col" className="p-4 w-1/4">Resource</th>
             <th scope="col" className="p-4">{t("resources.required") || "Required"}</th>

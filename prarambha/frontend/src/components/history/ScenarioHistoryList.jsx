@@ -57,6 +57,7 @@ export default function ScenarioHistoryList({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search saved scenarios by crop, name, or strategy..."
+              aria-label="Search saved scenarios by crop, name, or strategy"
               className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2 text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
             />
           </div>

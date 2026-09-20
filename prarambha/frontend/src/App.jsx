@@ -57,7 +57,12 @@ function AppShell() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-4">
             {/* Logo & Brand Identity */}
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavigate("comparison")}>
+            <button
+              type="button"
+              className="flex items-center gap-3 cursor-pointer text-left focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-hidden rounded-lg p-1 -m-1"
+              onClick={() => handleNavigate("comparison")}
+              aria-label="KrishiMitra home - scenario comparison"
+            >
               <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center font-black text-white text-lg shadow-sm">
                 KM
               </div>
@@ -69,7 +74,7 @@ function AppShell() {
                   Agri Decision Simulator
                 </span>
               </div>
-            </div>
+            </button>
 
             {/* Desktop Navigation Links */}
             <div className="hidden lg:flex items-center gap-1">
