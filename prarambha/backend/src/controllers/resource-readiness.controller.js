@@ -1,20 +1,20 @@
 import { getResourceReadiness } from "../services/resource-readiness.service.js";
+import { sendError, sendSuccess } from '../utils/response.js';
 
 export async function getReadiness(request, response, next) {
   try {
     const farmId = typeof request.params.farmId === "string" ? request.params.farmId.trim() : "";
     const scenarioId = typeof request.query.scenarioId === "string" ? request.query.scenarioId.trim() : "";
     if (!farmId || !scenarioId) {
-      response.status(400).json({
-        error: { code: "VALIDATION_ERROR", message: "farmId and scenarioId are required." },
-      });
-      return;
+      return sendError(response, 400, 'VALIDATION_ERROR', 'farmId and scenarioId are required.');
     }
-    response.status(200).json({ data: await getResourceReadiness(farmId, scenarioId) });
+    sendSuccess(response, 200, await getResourceReadiness(farmId, scenarioId, request.user.id));
   } catch (error) {
     if (error.message.startsWith("No saved simulation")) {
-      response.status(404).json({ error: { code: "RESULT_NOT_FOUND", message: error.message } });
-      return;
+      return sendError(response, 404, 'NOT_FOUND', error.message);
+    }
+    if (error.message === 'Farm not found.') {
+      return sendError(response, 404, 'NOT_FOUND', error.message);
     }
     next(error);
   }

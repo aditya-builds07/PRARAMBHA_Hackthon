@@ -13,7 +13,15 @@ function overallStatus(statuses) {
   return "available";
 }
 
-export async function getResourceReadiness(farmId, scenarioId) {
+async function assertFarmOwnership(farmId, userId) {
+  const { data, error } = await getSupabaseClient()
+    .from('farms').select('id').eq('id', farmId).eq('auth_user_id', userId).maybeSingle();
+  if (error) throw new Error(`Unable to verify farm ownership: ${error.message}`);
+  if (!data) throw new Error('Farm not found.');
+}
+
+export async function getResourceReadiness(farmId, scenarioId, userId) {
+  await assertFarmOwnership(farmId, userId);
   const supabase = getSupabaseClient();
   const [{ data: resources, error: resourcesError }, { data: result, error: resultError }] = await Promise.all([
     supabase.from("resources").select("resource_type, available_quantity").eq("farm_id", farmId),
@@ -42,5 +50,17 @@ export async function getResourceReadiness(farmId, scenarioId) {
   const budget = createStatus(Number(result.cost_inr), available.budget ?? 0, "INR");
   const water = createStatus(Number(result.water_drawn_m3), available.water ?? 0, "m3");
 
-  return { budget, water, overallStatus: overallStatus([budget, water]) };
+  const statuses = { budget, water };
+  const status = overallStatus(Object.values(statuses));
+
+  return {
+    ...statuses,
+    // The maps make the read API convenient for clients that compare resource types directly.
+    required: Object.fromEntries(Object.entries(statuses).map(([type, value]) => [type, value.required])),
+    available: Object.fromEntries(Object.entries(statuses).map(([type, value]) => [type, value.available])),
+    gap: Object.fromEntries(Object.entries(statuses).map(([type, value]) => [type, value.gap])),
+    status,
+    overallStatus: status,
+    resources: Object.entries(statuses).map(([resourceType, value]) => ({ resourceType, ...value })),
+  };
 }
