@@ -1,5 +1,6 @@
 {
   "app": {
+    "name": "PRARAMBHA 2.0",
     "title": "PRARAMBHA 2.0",
     "tagline": "Agri Scenario & Decision Simulator",
     "subtitle": "Test the season before you sow it.",
@@ -9,6 +10,7 @@
     "farms": "My Farms",
     "scenarios": "Scenario Builder",
     "results": "Scenario Results",
+    "dashboard": "Dashboard",
     "comparison": "Scenario Comparison",
     "why": "Why Did It Change?",
     "recommendations": "Recommendations",
