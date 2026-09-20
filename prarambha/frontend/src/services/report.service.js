@@ -1,10 +1,151 @@
 /**
- * Report Service - Member 4
+ * Report Service - Member 4 (Frontend UX / Reporting)
  * Aggregates scenario outputs into a clean 12-section printable decision document.
  * Adheres strictly to Section 17 of Task_Distribution.md.
+ *
+ * Pattern: Real fetch to GET /api/reports/:scenarioId with robust mock fallback.
  */
 
 import { formatCurrency, formatNumber, getRiskLevelInfo } from "./comparison.service.js";
+
+const API_BASE_URL = "/api";
+
+export const MOCK_REPORT_DATA = {
+  farm: {
+    name: "Shivneri Farm (Plot 1)",
+    location: "Baramati, Pune",
+    area: 4,
+    unit: "Acres",
+  },
+  scenario: {
+    id: "sc-001",
+    name: "Baseline Precision Drip Plan",
+    crop: "Wheat (HD-2967)",
+    timestamp: "2026-03-15T10:30:00Z",
+  },
+  inputs: {
+    crop: "Wheat (HD-2967)",
+    areaAcres: 4,
+    irrigation: "Drip Irrigation",
+    sowingDate: "2026-10-15",
+    weather: "Normal Monsoonal",
+    waterAvailability: "100%",
+  },
+  yield: {
+    value: 24.5,
+    unit: "Quintals / Acre",
+  },
+  economics: {
+    cost: 105000,
+    revenue: 250000,
+    profit: 145000,
+    roi: 138.1,
+  },
+  water: {
+    used: 3200,
+    unit: "m³",
+    waterProductivity: 0.0076,
+  },
+  risk: {
+    score: 28,
+    level: "low",
+  },
+  whyExplanation: [
+    { factor: "Irrigation Technology (Drip)", impact: 42000, direction: "positive" },
+    { factor: "Optimal Sowing Date", impact: 18000, direction: "positive" },
+    { factor: "Market MSP Escalation", impact: -8000, direction: "negative" },
+  ],
+  recommendations: [
+    {
+      id: "rec-001",
+      trigger: "Water Stress",
+      condition: "Water availability is within optimal crop demand buffer.",
+      impact: "Yield stabilized with zero moisture deficit penalty.",
+      action: "Maintain scheduled 4-day drip intervals.",
+      reason: "Moisture monitoring indicates adequate root zone hydration.",
+      severity: "info",
+    },
+    {
+      id: "rec-002",
+      trigger: "Fertilizer Stock",
+      condition: "Nitrogen top-dressing scheduled in 10 days.",
+      impact: "Grain filling potential increased by 8%.",
+      action: "Procure 150 kg urea before second irrigation.",
+      reason: "Critical growth stage requires nitrogen availability.",
+      severity: "warning",
+    },
+  ],
+  resources: [
+    {
+      resourceType: "Budget",
+      required: 105000,
+      available: 140000,
+      gap: 0,
+      unit: "₹",
+      status: "available",
+      explanation: "Farm working capital is sufficient.",
+    },
+    {
+      resourceType: "Water",
+      required: 3200,
+      available: 3500,
+      gap: 0,
+      unit: "m³",
+      status: "available",
+      explanation: "Farm pond and borewell cover required volume.",
+    },
+  ],
+  assumptions: {
+    modelVersion: "v2.1.0-deterministic",
+    assumptionVersion: "ICAR-2025.04",
+  },
+  disclaimer: "Estimated values are model-based and are not guaranteed future results.",
+};
+
+/**
+ * Fetch complete decision report for a scenario.
+ * @param {string} scenarioId - Scenario ID to generate report for
+ * @returns {Promise<Object>} Aggregated report document
+ */
+export async function getReport(scenarioId = "sc-001") {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/reports/${scenarioId}`, {
+      signal: controller.signal,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data === "object") {
+        return data;
+      }
+    }
+    // Mock fallback with requested scenario id
+    return {
+      ...MOCK_REPORT_DATA,
+      scenario: {
+        ...MOCK_REPORT_DATA.scenario,
+        id: scenarioId,
+      },
+    };
+  } catch (_err) {
+    clearTimeout(timeoutId);
+    return {
+      ...MOCK_REPORT_DATA,
+      scenario: {
+        ...MOCK_REPORT_DATA.scenario,
+        id: scenarioId,
+      },
+    };
+  }
+}
 
 /**
  * Compile a structured report model combining all domain aspects
@@ -108,7 +249,7 @@ export function generateReportModel({
       assumptionVersion: assumptions?.assumptionVersion || "2026.09-kharif-rabi-1",
       disclaimer:
         assumptions?.disclaimer ||
-        "Estimated values are model-based approximations for agricultural planning and trade-off exploration. They do not constitute guaranteed agronomic or financial outcomes.",
+        "Estimated values are model-based and are not guaranteed future results.",
     },
   };
 }
@@ -133,44 +274,37 @@ export function generatePlainTextReport(model) {
     "KRISHIMITRA — AGRI SCENARIO & DECISION SIMULATOR",
     "EXECUTIVE DECISION SUMMARY REPORT",
     "============================================================",
-    `Date Generated: ${new Date(model.metadata.generatedAt).toLocaleString()}`,
-    `Model Version:  ${model.metadata.modelVersion}`,
+    `Date Generated: ${new Date(model.metadata?.generatedAt || Date.now()).toLocaleString()}`,
+    `Model Version:  ${model.metadata?.modelVersion || model.assumptions?.modelVersion}`,
     "",
     "1. FARM & SCENARIO PROFILE",
-    `   Farm:             ${model.farm.name} (${model.farm.id})`,
-    `   Scenario:         ${model.scenario.name}`,
-    `   Crop & Land:      ${model.inputs.crop} • ${model.inputs.areaAcres} Acres`,
-    `   Irrigation:       ${model.inputs.irrigation}`,
-    `   Weather Setting:  ${model.inputs.weatherCondition}`,
+    `   Farm:             ${model.farm?.name} (${model.farm?.id || model.farm?.location || ""})`,
+    `   Scenario:         ${model.scenario?.name}`,
+    `   Crop & Land:      ${model.inputs?.crop} • ${model.inputs?.areaAcres || model.farm?.area} Acres`,
+    `   Irrigation:       ${model.inputs?.irrigation}`,
+    `   Weather Setting:  ${model.inputs?.weatherCondition || model.inputs?.weather}`,
     "",
     "2. FINANCIAL & YIELD PERFORMANCE",
-    `   Total Yield:      ${formatNumber(model.yield.total, 1)} ${model.yield.unit} (Range: ${model.yield.range})`,
-    `   Yield Per Acre:   ${formatNumber(model.yield.perAcre, 1)} ${model.yield.unit}/Acre`,
-    `   Estimated Cost:   ${formatCurrency(model.economics.cost)}`,
-    `   Gross Revenue:    ${formatCurrency(model.economics.revenue)}`,
-    `   Net Profit:       ${formatCurrency(model.economics.profit)}`,
-    `   Projected ROI:    ${formatNumber(model.economics.roi, 1)}%`,
+    `   Estimated Cost:   ${formatCurrency(model.economics?.cost ?? 0)}`,
+    `   Gross Revenue:    ${formatCurrency(model.economics?.revenue ?? 0)}`,
+    `   Net Profit:       ${formatCurrency(model.economics?.profit ?? 0)}`,
+    `   Projected ROI:    ${formatNumber(model.economics?.roi ?? 0, 1)}%`,
     "",
     "3. RESOURCE & WATER EFFICIENCY",
-    `   Water Drawn:      ${formatNumber(model.water.drawnM3, 0)} m³`,
-    `   Water Prod:       ${formatNumber(model.water.productivity, 1)} Qtl/m³`,
-    `   Overall Risk:     ${model.risk.overall}/100 (${model.risk.levelLabel})`,
-    `   Decision Score:   ${model.decisionScore}/100`,
+    `   Water Drawn:      ${formatNumber(model.water?.used || model.water?.drawnM3 || 0, 0)} m³`,
+    `   Overall Risk:     ${model.risk?.score || model.risk?.overall || 0}/100 (${model.risk?.level?.toUpperCase()})`,
     "",
   ];
 
-  if (model.why && model.why.factors.length > 0) {
+  if (model.whyExplanation && model.whyExplanation.length > 0) {
     lines.push("4. WHY DID THIS PLAN CHANGE? (ATTRIBUTION)");
-    lines.push(`   Compared Against: ${model.why.baselineName}`);
-    lines.push(`   Net Impact:       ${formatCurrency(model.why.totalChange?.value ?? 0)}`);
-    model.why.factors.forEach((f) => {
-      lines.push(`   • ${f.factor}: ${formatCurrency(f.contribution)} [${f.controllability}]`);
-      lines.push(`     "${f.explanation}"`);
+    model.whyExplanation.forEach((f) => {
+      lines.push(`   • ${f.factor}: ${formatCurrency(f.impact)} [${f.direction}]`);
     });
     lines.push("");
   }
 
-  if (model.recommendations.length > 0) {
+  if (model.recommendations && model.recommendations.length > 0) {
     lines.push("5. PRIORITY ACTION RECOMMENDATIONS");
     model.recommendations.forEach((r, idx) => {
       lines.push(`   ${idx + 1}. [${r.trigger}] ${r.action}`);
@@ -180,7 +314,7 @@ export function generatePlainTextReport(model) {
   }
 
   lines.push("6. TRANSPARENCY & GUIDANCE");
-  lines.push(`   ${model.assumptions.disclaimer}`);
+  lines.push(`   ${model.disclaimer || model.assumptions?.disclaimer}`);
   lines.push("============================================================");
 
   return lines.join("\n");
