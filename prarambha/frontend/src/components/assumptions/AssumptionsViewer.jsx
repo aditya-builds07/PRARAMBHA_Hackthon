@@ -6,7 +6,9 @@ import FormulasList from "./FormulasList";
 
 /**
  * AssumptionsViewer Component - Member 4
- * Full transparency view displaying model assumptions, risk weights, formulas, and legal guidance.
+ * Full transparency view displaying model assumptions, crop parameters, risk weights,
+ * priority weights, mathematical formulas, and data sources.
+ * Strictly read-only reference display with mandatory disclaimer.
  */
 export default function AssumptionsViewer({ assumptionsData, isLoading = false }) {
   const { t } = useLanguage();
@@ -14,7 +16,8 @@ export default function AssumptionsViewer({ assumptionsData, isLoading = false }
   if (isLoading) {
     return (
       <div className="space-y-4 animate-pulse" aria-busy="true">
-        <div className="h-32 bg-slate-200 rounded-xl" />
+        <div className="h-28 bg-slate-200 rounded-xl" />
+        <div className="h-48 bg-slate-200 rounded-xl" />
         <div className="h-64 bg-slate-200 rounded-xl" />
       </div>
     );
@@ -23,198 +26,269 @@ export default function AssumptionsViewer({ assumptionsData, isLoading = false }
   if (!assumptionsData) {
     return (
       <div className="bg-slate-50 border border-slate-200 rounded-xl p-8 text-center text-slate-500 text-xs">
-        No simulation assumption metadata available.
+        {t("assumptions.empty") || "No simulation assumption metadata available."}
       </div>
     );
   }
 
   const {
-    modelVersion,
-    assumptionVersion,
-    lastUpdated,
+    modelVersion = "v2.1.0-deterministic",
+    assumptionVersion = "ICAR-2025.04",
+    lastUpdated = "April 2025",
     disclaimer,
-    cropParameters,
-    riskWeights = {},
+    cropParameters = [],
+    riskWeights = [],
+    priorityWeights = [],
     priorityProfiles = {},
     formulas = [],
+    dataSources = [],
     sources = [],
   } = assumptionsData;
 
+  // Normalize risk weights to array of { factor, weight }
+  const normalizedRiskWeights = Array.isArray(riskWeights)
+    ? riskWeights
+    : Object.entries(riskWeights).map(([key, weight]) => {
+        const labels = {
+          waterStress: "Water Deficit Stress Weight",
+          weatherAnomaly: "Weather / Temperature Anomaly",
+          sowingDelay: "Sowing Window Delay Penalty",
+          financialExposure: "Working Capital Exposure",
+        };
+        return { factor: labels[key] || key, weight };
+      });
+
+  // Normalize priority weights to array of { factor, weight }
+  const normalizedPriorityWeights = Array.isArray(priorityWeights) && priorityWeights.length > 0
+    ? priorityWeights
+    : Object.entries(priorityProfiles).map(([key, val]) => ({
+        factor: key.replace(/_/g, " ").toUpperCase(),
+        weight: typeof val === "number" ? val : null,
+        description: typeof val === "string" ? val : null,
+      }));
+
+  // Normalize data sources
+  const normalizedSources = Array.isArray(dataSources) && dataSources.length > 0
+    ? dataSources
+    : sources.map((s) => (typeof s === "string" ? { name: s, description: "" } : s));
+
+  const disclaimerText =
+    t("assumptions.disclaimerText") ||
+    disclaimer ||
+    "Estimated values are model-based and are not guaranteed future results.";
+
   return (
     <div className="space-y-6">
-      {/* 1. Mandatory Non-Guarantee Disclaimer Banner */}
+      {/* MANDATORY Non-Guarantee Disclaimer Banner - Always Visible, Styled Distinctly */}
       <section
         aria-label="Simulation Guidance and Disclaimer"
-        className="p-5 rounded-xl bg-amber-50 border border-amber-300 text-amber-950 space-y-2 shadow-xs"
+        className="p-5 rounded-xl bg-amber-50 border-2 border-amber-300 text-amber-950 space-y-2 shadow-xs"
       >
-        <div className="flex items-center gap-2">
-          <span className="text-xl" aria-hidden="true">⚠️</span>
-          <h2 className="font-black text-amber-950 text-sm uppercase tracking-wider">
-            {t("assumptions.disclaimerTitle") || "Mandatory Simulation Guidance & Disclaimer"}
-          </h2>
+        <div className="flex items-center gap-2.5">
+          <span className="text-2xl" aria-hidden="true">⚠️</span>
+          <div>
+            <h2 className="font-black text-amber-950 text-sm uppercase tracking-wider">
+              {t("assumptions.disclaimerTitle") || "Simulation Transparency & Disclaimer"}
+            </h2>
+            <p className="text-xs text-amber-900 font-bold mt-0.5 leading-relaxed">
+              {disclaimerText}
+            </p>
+          </div>
         </div>
-        <p className="text-xs text-amber-900 leading-relaxed font-medium">
-          {disclaimer}
-        </p>
       </section>
 
-      {/* 2. Model Version & Provenance Card */}
+      {/* SECTION 1: Model & Assumption Version Metadata */}
       <section
         aria-label="Model Version Metadata"
-        className="bg-white rounded-xl border border-slate-200 shadow-sm p-5"
+        className="bg-white rounded-xl border border-slate-200 shadow-xs p-5"
       >
+        <h3 className="font-bold text-slate-900 text-sm mb-3">
+          1. {t("assumptions.versionSection") || "Model & Assumption Version Specification"}
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-          <div className="p-3 rounded-lg bg-slate-50 border border-slate-100">
-            <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
+          <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px] block">
               {t("assumptions.modelVersion") || "Model Version"}
             </span>
-            <span className="text-sm font-black font-mono text-slate-900 mt-0.5 block">
+            <span className="text-sm font-black font-mono text-emerald-800 mt-1 block">
               {modelVersion}
             </span>
+            <span className="text-[10px] text-slate-400 mt-0.5 block">Deterministic Agronomic Engine</span>
           </div>
 
-          <div className="p-3 rounded-lg bg-slate-50 border border-slate-100">
-            <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
+          <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px] block">
               {t("assumptions.assumptionVersion") || "Assumption Dataset"}
             </span>
-            <span className="text-sm font-black font-mono text-slate-900 mt-0.5 block">
+            <span className="text-sm font-black font-mono text-slate-900 mt-1 block">
               {assumptionVersion}
             </span>
+            <span className="text-[10px] text-slate-400 mt-0.5 block">ICAR / CACP Benchmark Package</span>
           </div>
 
-          <div className="p-3 rounded-lg bg-slate-50 border border-slate-100">
-            <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px] block">
+          <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
+            <span className="text-slate-500 font-bold uppercase tracking-wider text-[10px] block">
               {t("assumptions.lastUpdated") || "Last Reviewed"}
             </span>
-            <span className="text-sm font-bold text-slate-900 mt-0.5 block">
+            <span className="text-sm font-bold text-slate-900 mt-1 block">
               {lastUpdated}
             </span>
+            <span className="text-[10px] text-slate-400 mt-0.5 block">Annual Empirical Audit</span>
           </div>
         </div>
       </section>
 
-      {/* 3. Crop Baseline Parameters */}
+      {/* SECTION 2: Crop Baseline Parameters */}
       <section
-        aria-label="Baseline Agronomic Parameters"
-        className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden"
+        aria-label="Crop Baseline Parameters"
+        className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden"
       >
-        <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+        <div className="p-4 border-b border-slate-100 bg-slate-50/70">
           <h3 className="font-bold text-slate-900 text-sm">
-            {t("assumptions.cropParameters") || "Crop Baseline Parameters"}
+            2. {t("assumptions.cropParameters") || "Crop Baseline Parameters"}
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            Verified agronomic thresholds governing potential yield and water draw.
+            Verified agronomic thresholds governing potential yield and crop water demands across agro-climatic zones.
           </p>
         </div>
 
         <CropParametersTable cropParameters={cropParameters} />
       </section>
 
-      {/* 4. Risk Weights & Priority Profiles Grid */}
+      {/* SECTION 3 & SECTION 4: Risk Weights & Priority Weights Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Risk Model Weights */}
+        {/* SECTION 3: Risk Model Weights */}
         <section
           aria-label="Risk Weight Factors"
-          className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-3"
+          className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4"
         >
           <div>
             <h3 className="font-bold text-slate-900 text-sm">
-              {t("assumptions.riskWeights") || "Risk Model Weights"}
+              3. {t("assumptions.riskWeights") || "Risk Model Weights"}
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Factor contribution weights composing the 0-100 composite risk index.
+              Factor contribution weights composing the 0-100 composite risk scoring model.
             </p>
           </div>
 
-          <div className="space-y-2.5 pt-1 text-xs">
-            {Object.entries(riskWeights).map(([key, weight]) => {
-              const formattedPct = formatRiskWeightPercent(weight);
-              const widthPct = (weight * 100).toFixed(0);
-              const labels = {
-                waterStress: "Water Deficit Stress Weight",
-                weatherAnomaly: "Weather / Temperature Anomaly",
-                sowingDelay: "Sowing Window Delay Penalty",
-                financialExposure: "Working Capital Exposure",
-              };
-              return (
-                <div key={key} className="space-y-1">
-                  <div className="flex justify-between font-bold text-slate-800">
-                    <span>{labels[key] || key}</span>
-                    <span className="tabular-nums text-slate-900">{formattedPct}</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="bg-emerald-600 h-full rounded-full"
-                      style={{ width: `${widthPct}%` }}
-                      aria-hidden="true"
-                    />
-                  </div>
-                </div>
-              );
-            })}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                  <th scope="col" className="p-2.5">Risk Factor</th>
+                  <th scope="col" className="p-2.5 text-right">Contribution Weight</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {normalizedRiskWeights.map((item, idx) => {
+                  const weightNum = typeof item.weight === "number" ? item.weight : parseFloat(item.weight) || 0;
+                  const formattedPct = formatRiskWeightPercent(weightNum);
+                  return (
+                    <tr key={idx} className="hover:bg-slate-50/50">
+                      <td className="p-2.5 font-medium text-slate-800">{item.factor}</td>
+                      <td className="p-2.5 text-right font-bold font-mono text-emerald-800 tabular-nums">
+                        {formattedPct}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </section>
 
-        {/* Priority Profiles */}
+        {/* SECTION 4: Priority Weights */}
         <section
-          aria-label="Priority Profile Presets"
-          className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-3"
+          aria-label="Priority Weights and Optimization Profiles"
+          className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4"
         >
           <div>
             <h3 className="font-bold text-slate-900 text-sm">
-              Decision Priority Profiles
+              4. {t("assumptions.priorityWeights") || "Priority Weights & Objectives"}
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              Optimization priorities selectable during scenario creation.
+              Multi-objective optimization criteria and relative evaluation weights.
             </p>
           </div>
 
-          <div className="space-y-2.5 pt-1 text-xs">
-            {Object.entries(priorityProfiles).map(([profile, desc]) => (
-              <div key={profile} className="p-3 rounded-lg bg-slate-50 border border-slate-100 space-y-1">
-                <span className="font-bold uppercase tracking-wider text-[10px] text-slate-700 bg-white border border-slate-200 px-2 py-0.5 rounded inline-block">
-                  {profile.replace("_", " ")}
-                </span>
-                <p className="text-slate-600 text-[11px] leading-relaxed">
-                  {desc}
-                </p>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                  <th scope="col" className="p-2.5">Optimization Factor</th>
+                  <th scope="col" className="p-2.5 text-right">Weight / Allocation</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {normalizedPriorityWeights.map((item, idx) => {
+                  const weightDisplay = item.weight !== null
+                    ? formatRiskWeightPercent(item.weight)
+                    : item.description || "Active Profile";
+                  return (
+                    <tr key={idx} className="hover:bg-slate-50/50">
+                      <td className="p-2.5 font-medium text-slate-800">{item.factor}</td>
+                      <td className="p-2.5 text-right font-bold font-mono text-slate-900 tabular-nums">
+                        {weightDisplay}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </section>
       </div>
 
-      {/* 5. Core Formulas */}
+      {/* SECTION 5: Core Mathematical Formulations */}
       <section
         aria-label="Core Mathematical Formulations"
-        className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4"
+        className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4"
       >
         <div>
           <h3 className="font-bold text-slate-900 text-sm">
-            {t("assumptions.formulas") || "Core Mathematical Formulations"}
+            5. {t("assumptions.formulas") || "Core Mathematical Formulations"}
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            Transparent agronomic and financial equations used across the simulator.
+            Deterministic agronomic and financial equations governing all simulation outputs.
           </p>
         </div>
 
         <FormulasList formulas={formulas} />
       </section>
 
-      {/* 6. Scientific Sources */}
-      {sources.length > 0 && (
-        <footer className="p-5 rounded-xl bg-slate-100/80 border border-slate-200 space-y-2 text-xs text-slate-600">
-          <h4 className="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+      {/* SECTION 6: Data Sources & Research References */}
+      <section
+        aria-label="Agronomic Research Data Sources"
+        className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 space-y-4"
+      >
+        <div>
+          <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
             <span>📚</span>
-            <span>{t("assumptions.sources") || "Agronomic Research Sources"}</span>
-          </h4>
-          <ul className="list-disc list-inside space-y-1 text-[11px] text-slate-600 pl-1">
-            {sources.map((src, idx) => (
-              <li key={idx}>{src}</li>
-            ))}
-          </ul>
-        </footer>
-      )}
+            <span>6. {t("assumptions.sources") || "Agronomic Research Sources & Data References"}</span>
+          </h3>
+          <p className="text-xs text-slate-500 mt-0.5">
+            All benchmark thresholds are calibrated against published institutional agricultural datasets.
+          </p>
+        </div>
+
+        <div className="divide-y divide-slate-100 text-xs">
+          {normalizedSources.map((src, idx) => (
+            <div key={idx} className="py-3 first:pt-0 last:pb-0 space-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-bold text-slate-900">{src.name}</span>
+                {src.url && (
+                  <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    {src.url}
+                  </span>
+                )}
+              </div>
+              {src.description && (
+                <p className="text-slate-600 text-xs leading-relaxed">{src.description}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
