@@ -1,0 +1,6 @@
+PRARAMBHA 2.0
+Agri Scenario & Decision Simulator
+
+This is a simple test file for the hackathon GitHub repository.
+Team: PRARAMBHA Hackathon Team
+Branch: main
