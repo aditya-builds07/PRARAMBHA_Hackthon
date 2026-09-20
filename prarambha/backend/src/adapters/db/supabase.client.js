@@ -55,3 +55,24 @@ export function getUserScopedClient(userJwt) {
     },
   });
 }
+
+let _defaultClient = null;
+
+/**
+ * Fallback/default Supabase client configured with the public ANON key.
+ * Maintains backward compatibility across service layers while respecting RLS.
+ *
+ * @returns {import('@supabase/supabase-js').SupabaseClient}
+ */
+export function getSupabaseClient() {
+  if (_defaultClient) return _defaultClient;
+  const { url, anonKey } = getAnonConfig();
+  _defaultClient = createClient(url, anonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+  return _defaultClient;
+}
+

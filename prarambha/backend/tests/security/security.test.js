@@ -14,6 +14,37 @@
  */
 
 import http from "node:http";
+import "../../src/config/loadEnv.js";
+
+// Ensure required environment configuration for standalone test execution
+process.env.SUPABASE_URL = process.env.SUPABASE_URL || "https://mock-test-auth.supabase.co";
+process.env.SUPABASE_ANON_KEY =
+  process.env.SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.mock-anon-key";
+
+// Intercept Auth calls so tests run reliably offline without hitting remote network
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async (input, init) => {
+  const urlStr = typeof input === "string" ? input : input?.url ? input.url : "";
+  if (urlStr.includes("/auth/v1/user")) {
+    const authHeader =
+      init?.headers?.Authorization ||
+      init?.headers?.authorization ||
+      (typeof input === "object" && input?.headers?.get ? input.headers.get("authorization") : null);
+
+    if (authHeader === "Bearer valid-test-token") {
+      return new Response(
+        JSON.stringify({ id: "valid-user-uuid", email: "user@example.com" }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    return new Response(
+      JSON.stringify({ message: "Invalid JWT token", error: "invalid_jwt" }),
+      { status: 401, headers: { "Content-Type": "application/json" } }
+    );
+  }
+  return originalFetch(input, init);
+};
+
 import { createApp } from "../../src/app.js";
 import { isDatabaseError, sanitizeErrorMessage } from "../../src/utils/response.js";
 
@@ -223,8 +254,9 @@ console.log(`📊 TEST RESULTS: ${passed} PASSED, ${failed} FAILED`);
 console.log("=======================================================\n");
 
 if (failed > 0) {
-  process.exit(1);
+  process.exitCode = 1;
 } else {
   console.log("🎯 ALL SECURITY REGRESSION TESTS PASSED SUCCESSFULLY!\n");
-  process.exit(0);
+  process.exitCode = 0;
 }
+

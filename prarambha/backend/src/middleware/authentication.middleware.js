@@ -1,12 +1,11 @@
-import { getUserScopedClient } from '../adapters/db/supabase.client.js';
-import { getAdminClient } from '../adapters/db/supabase.admin.client.js';
+import { getUserScopedClient, getSupabaseClient } from '../adapters/db/supabase.client.js';
 import { sendError } from '../utils/response.js';
 
 /**
  * requireAuthenticatedUser — Express middleware (D1).
  *
  * 1. Extracts the Bearer JWT from the Authorization header.
- * 2. Verifies it against Supabase Auth (using admin client for the getUser call).
+ * 2. Verifies it against Supabase Auth (using anon client for the getUser call).
  * 3. Attaches req.user = { id, email } for downstream handlers.
  * 4. Attaches req.supabaseClient = getUserScopedClient(jwt) so all downstream
  *    DB queries run as the authenticated user, subject to RLS.
@@ -27,9 +26,7 @@ export async function requireAuthenticatedUser(request, response, next) {
   }
 
   try {
-    // Use admin client for getUser() — the anon client also works but admin is
-    // already a singleton and avoids creating a Supabase client just for verification.
-    const { data, error } = await getAdminClient().auth.getUser(token);
+    const { data, error } = await getSupabaseClient().auth.getUser(token);
     if (error || !data?.user?.id) {
       return sendError(response, 401, 'UNAUTHORIZED', 'The access token is invalid or expired.');
     }
