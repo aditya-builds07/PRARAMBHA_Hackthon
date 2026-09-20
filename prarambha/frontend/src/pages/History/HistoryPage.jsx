@@ -1,24 +1,97 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_SCENARIOS } from "../../services/mockData";
-import ScenarioHistoryList from "../../components/history/ScenarioHistoryList";
+import {
+  getScenarioHistory,
+  renameScenario,
+  deleteScenario,
+} from "../../services/history.service";
+import ScenarioHistoryTable from "../../components/history/ScenarioHistoryTable";
 
 /**
  * HistoryPage - Member 4 (Section 16 of Task_Distribution.md)
- * Full page presenting historical saved simulations with search, renaming, deletion, and comparison.
+ * Full scenario history screen with 8-column table, async fetch, loading, empty, and error states.
  */
 export default function HistoryPage({ onNavigate = null }) {
   const { t, language, setLanguage, supportedLanguages } = useLanguage();
 
-  const handleLaunchCompare = (selectedIds) => {
-    if (onNavigate) {
-      onNavigate("comparison", { selectedIds });
-    }
+  const [scenarios, setScenarios] = useState([]);
+  const [selectedIds, setSelectedIds] = useState(["sc-001", "sc-002"]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchHistory = () => {
+    setIsLoading(true);
+    setError(null);
+
+    getScenarioHistory()
+      .then((data) => {
+        setScenarios(data || []);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setError(err?.message || "Failed to load saved scenario history.");
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
+  const handleToggleSelect = (id) => {
+    setSelectedIds((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((item) => item !== id);
+      }
+      if (prev.length >= 4) {
+        return prev;
+      }
+      return [...prev, id];
+    });
   };
 
   const handleOpenScenario = (scenario) => {
     if (onNavigate) {
       onNavigate("results", { scenarioId: scenario.id });
+    }
+  };
+
+  const handleLaunchCompare = (idsToCompare) => {
+    if (onNavigate) {
+      onNavigate("comparison", { selectedIds: idsToCompare });
+    }
+  };
+
+  const handleRename = async (id, newName) => {
+    const previous = [...scenarios];
+    // Optimistic update
+    setScenarios((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, name: newName } : s))
+    );
+
+    try {
+      await renameScenario(id, newName);
+    } catch (err) {
+      // Rollback on failure
+      setScenarios(previous);
+      alert(`Rename failed: ${err.message}`);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const previous = [...scenarios];
+    const previousSelected = [...selectedIds];
+    // Optimistic update
+    setScenarios((prev) => prev.filter((s) => s.id !== id));
+    setSelectedIds((prev) => prev.filter((item) => item !== id));
+
+    try {
+      await deleteScenario(id);
+    } catch (err) {
+      // Rollback on failure
+      setScenarios(previous);
+      setSelectedIds(previousSelected);
+      alert(`Delete failed: ${err.message}`);
     }
   };
 
@@ -44,7 +117,7 @@ export default function HistoryPage({ onNavigate = null }) {
               <button
                 type="button"
                 onClick={() => onNavigate("comparison")}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs"
+                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer"
               >
                 ← Back to Comparison
               </button>
@@ -61,7 +134,7 @@ export default function HistoryPage({ onNavigate = null }) {
                   className={`px-2.5 py-1 rounded text-xs font-bold transition-colors ${
                     language === lang.code
                       ? "bg-emerald-600 text-white shadow-2xs"
-                      : "text-slate-700 hover:bg-slate-100"
+                      : "text-slate-700 hover:bg-slate-100 cursor-pointer"
                   }`}
                 >
                   {lang.label}
@@ -71,12 +144,70 @@ export default function HistoryPage({ onNavigate = null }) {
           </div>
         </header>
 
-        {/* History List Component */}
-        <ScenarioHistoryList
-          scenarios={MOCK_SCENARIOS}
-          onOpenScenario={handleOpenScenario}
-          onLaunchCompare={handleLaunchCompare}
-        />
+        {/* Loading State */}
+        {isLoading && (
+          <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs space-y-4 animate-pulse">
+            <div className="h-10 bg-slate-200 rounded-lg w-1/3" />
+            <div className="h-64 bg-slate-100 rounded-lg" />
+          </div>
+        )}
+
+        {/* Error State with Retry Button */}
+        {!isLoading && error && (
+          <div
+            role="alert"
+            className="p-5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center justify-between gap-4 shadow-xs"
+          >
+            <div>
+              <p className="font-bold text-xs uppercase tracking-wide">
+                {t("history.errorTitle") || "Unable to Load Scenario History"}
+              </p>
+              <p className="text-xs text-rose-700 mt-0.5">{error}</p>
+            </div>
+            <button
+              type="button"
+              onClick={fetchHistory}
+              className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer"
+            >
+              {t("history.retry") || "Retry"}
+            </button>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !error && scenarios.length === 0 && (
+          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center shadow-xs space-y-3">
+            <span className="text-4xl block" aria-hidden="true">🌱</span>
+            <h3 className="text-base font-bold text-slate-900">
+              {t("history.emptyTitle") || "No saved scenarios yet"}
+            </h3>
+            <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+              {t("history.empty") || "Simulate a season in the Scenario Builder and save your strategy to build your farm record history."}
+            </p>
+            {onNavigate && (
+              <button
+                type="button"
+                onClick={() => onNavigate("builder")}
+                className="mt-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer shadow-2xs"
+              >
+                Create New Scenario
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Table View with 8 columns */}
+        {!isLoading && !error && scenarios.length > 0 && (
+          <ScenarioHistoryTable
+            scenarios={scenarios}
+            selectedIds={selectedIds}
+            onToggleSelect={handleToggleSelect}
+            onOpen={handleOpenScenario}
+            onRename={handleRename}
+            onDelete={handleDelete}
+            onLaunchCompare={handleLaunchCompare}
+          />
+        )}
       </div>
     </div>
   );
