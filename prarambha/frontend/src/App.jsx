@@ -40,17 +40,15 @@ function AppContent() {
 
   // Determine active page ID directly from URL location
   const pathname = location.pathname;
-  let currentPage = "home";
-  if (pathname === "/" || pathname === "") {
-    currentPage = "home";
+  let currentPage = "dashboard";
+  if (pathname === "/" || pathname === "" || pathname.startsWith("/dashboard")) {
+    currentPage = "dashboard";
   } else if (pathname === "/login") {
     currentPage = "login";
   } else if (pathname === "/signup") {
     currentPage = "signup";
   } else if (pathname === "/forgot-password") {
     currentPage = "forgot-password";
-  } else if (pathname.startsWith("/dashboard")) {
-    currentPage = "dashboard";
   } else if (pathname.startsWith("/farms")) {
     currentPage = "farms";
   } else if (pathname.includes("/results")) {
@@ -86,7 +84,8 @@ function AppContent() {
 
     switch (page) {
       case "home":
-        navigate("/");
+      case "dashboard":
+        navigate("/dashboard");
         break;
       case "login":
         navigate("/login");
@@ -149,18 +148,7 @@ function AppContent() {
   // Check if session token exists
   const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("supabase_token") || localStorage.getItem("sb-access-token"));
 
-  // Auth Guard: Redirect unauthenticated users visiting protected pages to /login
-  const isPublicPage = ["home", "login", "signup", "forgot-password"].includes(currentPage);
-  useEffect(() => {
-    if (!isPublicPage && !hasToken) {
-      navigate("/login");
-    }
-  }, [currentPage, hasToken, isPublicPage, navigate]);
-
-  // Standalone page rendering for Auth & Landing
-  if (currentPage === "home") {
-    return <EntryPage onNavigate={handleNavigate} isAuthenticated={hasToken} onLogout={handleLogout} />;
-  }
+  // Standalone page rendering for Auth if explicitly navigated to /login, /signup, etc.
   if (currentPage === "login") {
     return <LoginPage onNavigate={handleNavigate} />;
   }
@@ -171,14 +159,8 @@ function AppContent() {
     return <ForgotPasswordPage onNavigate={handleNavigate} />;
   }
 
-  // If visiting protected route without token, render login page as fallback
-  if (!isPublicPage && !hasToken) {
-    return <LoginPage onNavigate={handleNavigate} />;
-  }
-
-  // Navigation Items for AppShell Sidebar
+  // Navigation Items for AppShell Sidebar — Direct Web App Modules
   const navItems = [
-    { id: "home", label: "Home Landing", icon: "home" },
     { id: "dashboard", label: t("nav.dashboard") || "Dashboard", icon: "dashboard" },
     { id: "farms", label: t("nav.farms") || "My Farms", icon: "agriculture" },
     { id: "builder", label: "Scenario Builder", icon: "edit_note" },
@@ -199,7 +181,7 @@ function AppContent() {
         {/* Brand Header */}
         <button
           type="button"
-          onClick={() => handleNavigate("home")}
+          onClick={() => handleNavigate("dashboard")}
           className="p-5 border-b border-[#164A34]/60 flex items-center gap-3 text-left hover:bg-[#164A34]/30 transition-colors cursor-pointer"
         >
           <div className="w-10 h-10 rounded-2xl bg-[#164A34] border border-[#3D8B5A] flex items-center justify-center font-black text-white text-lg shadow-sm shrink-0">
@@ -442,13 +424,13 @@ function AppContent() {
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#003320] text-white border-t border-[#164A34] z-40 px-2 py-1.5 flex items-center justify-around shadow-lg print:hidden">
         <button
           type="button"
-          onClick={() => handleNavigate("home")}
+          onClick={() => handleNavigate("dashboard")}
           className={`flex flex-col items-center gap-0.5 p-1 text-[10px] font-bold ${
-            currentPage === "home" ? "text-white" : "text-emerald-200/70"
+            currentPage === "dashboard" ? "text-white" : "text-emerald-200/70"
           }`}
         >
-          <span className="material-symbols-outlined text-[20px]">home</span>
-          <span>Home</span>
+          <span className="material-symbols-outlined text-[20px]">dashboard</span>
+          <span>Dashboard</span>
         </button>
 
         <button
