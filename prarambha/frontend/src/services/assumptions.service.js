@@ -10,33 +10,26 @@ const API_BASE_URL = "/api";
 export const MOCK_ASSUMPTIONS_DATA = {
   modelVersion: "v2.1.0-deterministic",
   assumptionVersion: "ICAR-2025.04",
-  lastUpdated: "April 2025",
-  disclaimer: "Estimated values are model-based and are not guaranteed future results.",
-  cropParameters: [
-    { crop: "Wheat (HD-2967)", parameter: "Baseline Yield Potential", value: "22.5", unit: "Quintals / Acre" },
-    { crop: "Wheat (HD-2967)", parameter: "Optimal Water Requirement", value: "3,800", unit: "m³ / Acre" },
-    { crop: "Wheat (HD-2967)", parameter: "Min Survival Water Threshold", value: "1,800", unit: "m³ / Acre" },
-    { crop: "Wheat (HD-2967)", parameter: "Reference MSP Price", value: "₹2,275", unit: "per Quintal" },
-    { crop: "Rice (Paddy PR-126)", parameter: "Baseline Yield Potential", value: "28.0", unit: "Quintals / Acre" },
-    { crop: "Rice (Paddy PR-126)", parameter: "Optimal Water Requirement", value: "6,200", unit: "m³ / Acre" },
-    { crop: "Rice (Paddy PR-126)", parameter: "Min Survival Water Threshold", value: "3,500", unit: "m³ / Acre" },
-    { crop: "Rice (Paddy PR-126)", parameter: "Reference MSP Price", value: "₹2,320", unit: "per Quintal" },
-    { crop: "Cotton (Bt Hybrid)", parameter: "Baseline Yield Potential", value: "12.0", unit: "Quintals / Acre" },
-    { crop: "Cotton (Bt Hybrid)", parameter: "Optimal Water Requirement", value: "4,500", unit: "m³ / Acre" },
-    { crop: "Cotton (Bt Hybrid)", parameter: "Reference MSP Price", value: "₹7,120", unit: "per Quintal" }
-  ],
-  riskWeights: [
-    { factor: "Water Deficit Stress Weight", weight: 0.40 },
-    { factor: "Weather / Temperature Anomaly", weight: 0.25 },
-    { factor: "Sowing Window Delay Penalty", weight: 0.20 },
-    { factor: "Working Capital Exposure", weight: 0.15 }
-  ],
-  priorityWeights: [
-    { factor: "Balanced Multi-Objective", weight: 0.35 },
-    { factor: "Profit Maximization Focus", weight: 0.30 },
-    { factor: "Water Conservation Priority", weight: 0.20 },
-    { factor: "Risk Aversion Buffer", weight: 0.15 }
-  ],
+  lastUpdated: "2025-04-01T00:00:00Z",
+  disclaimer: "Estimated values are model-based approximations for scenario planning and do not constitute guaranteed future results.",
+  cropParameters: {
+    crop: "Wheat (HD-2967)",
+    baseYieldPerAcreQuintals: 22.5,
+    minWaterRequirementM3PerAcre: 1800,
+    optimalWaterRequirementM3PerAcre: 3800,
+    mspPricePerQuintal: 2275,
+  },
+  riskWeights: {
+    waterStress: 0.40,
+    weatherAnomaly: 0.25,
+    sowingDelay: 0.20,
+    financialExposure: 0.15,
+  },
+  priorityProfiles: {
+    balanced: { name: "Balanced Strategy", yieldWeight: 0.35, profitWeight: 0.35, safetyWeight: 0.30 },
+    max_profit: { name: "Profit Maximization", yieldWeight: 0.25, profitWeight: 0.55, safetyWeight: 0.20 },
+    play_safe: { name: "Risk Aversion Buffer", yieldWeight: 0.30, profitWeight: 0.20, safetyWeight: 0.50 },
+  },
   formulas: [
     {
       name: "Net Profit Formulation",
@@ -82,6 +75,43 @@ export const MOCK_ASSUMPTIONS_DATA = {
 export function formatRiskWeightPercent(weight) {
   if (typeof weight !== "number" || isNaN(weight)) return "0%";
   return `${Math.round(weight * 100)}%`;
+}
+
+/**
+ * Validate assumptions dataset structure and invariants.
+ */
+export function validateAssumptions(data) {
+  const errors = [];
+
+  if (!data || typeof data !== "object") {
+    return { isValid: false, errors: ["Assumptions data must be a non-null object."] };
+  }
+
+  if (!data.disclaimer) {
+    errors.push("Missing mandatory disclaimer statement.");
+  }
+
+  if (data.riskWeights && typeof data.riskWeights === "object") {
+    const weights = Object.values(data.riskWeights).map((w) => Number(w) || 0);
+    const sum = weights.reduce((acc, w) => acc + w, 0);
+    if (Math.abs(sum - 1.0) > 1e-4) {
+      errors.push(`Risk weights sum invariant failed: expected 1.0, received ${sum.toFixed(2)}`);
+    }
+  } else {
+    errors.push("Missing riskWeights section.");
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Get active assumptions data (async API with mock fallback).
+ */
+export async function getActiveAssumptions() {
+  return getAssumptions();
 }
 
 /**

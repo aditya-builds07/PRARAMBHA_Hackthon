@@ -1,6 +1,6 @@
 /**
  * History Service - Member 4 (Frontend UX / Scenario Management)
- * Provides saved simulation history, renaming, and deletion.
+ * Provides saved simulation history, renaming, deletion, cloning, filtering, and sorting.
  *
  * Pattern: Real fetch to backend endpoints with robust in-memory mock fallback.
  */
@@ -12,6 +12,7 @@ export const MOCK_HISTORY_SCENARIOS = [
     id: "sc-001",
     name: "Baseline Precision Drip Plan",
     timestamp: "2026-03-15T10:30:00Z",
+    createdAt: "2026-03-15T10:30:00Z",
     crop: "Wheat (HD-2967)",
     area: 4.0,
     profit: 145000,
@@ -22,6 +23,7 @@ export const MOCK_HISTORY_SCENARIOS = [
     id: "sc-002",
     name: "Canal Flood Irrigation Alternative",
     timestamp: "2026-03-18T14:15:00Z",
+    createdAt: "2026-03-18T14:15:00Z",
     crop: "Wheat (HD-2967)",
     area: 4.0,
     profit: 108000,
@@ -32,6 +34,7 @@ export const MOCK_HISTORY_SCENARIOS = [
     id: "sc-003",
     name: "High-Yield Intensive Input Strategy",
     timestamp: "2026-03-22T09:45:00Z",
+    createdAt: "2026-03-22T09:45:00Z",
     crop: "Rice (Paddy PR-126)",
     area: 5.0,
     profit: 192000,
@@ -42,6 +45,7 @@ export const MOCK_HISTORY_SCENARIOS = [
     id: "sc-004",
     name: "Deficit Irrigation Drought Contingency",
     timestamp: "2026-04-02T16:20:00Z",
+    createdAt: "2026-04-02T16:20:00Z",
     crop: "Wheat (HD-2967)",
     area: 4.0,
     profit: 94000,
@@ -52,6 +56,7 @@ export const MOCK_HISTORY_SCENARIOS = [
     id: "sc-005",
     name: "Organic Low-Cost Resilient Sowing",
     timestamp: "2026-04-10T11:00:00Z",
+    createdAt: "2026-04-10T11:00:00Z",
     crop: "Cotton (Bt Hybrid)",
     area: 3.5,
     profit: 135000,
@@ -64,115 +69,107 @@ export const MOCK_HISTORY_SCENARIOS = [
 let localHistoryStore = JSON.parse(JSON.stringify(MOCK_HISTORY_SCENARIOS));
 
 /**
- * Fetch all saved scenario simulations.
- * @returns {Promise<Array>} List of historical scenarios
+ * Filter scenarios by query (name, crop, tagline).
  */
-export async function getScenarioHistory() {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/scenarios/history`, {
-      signal: controller.signal,
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        return data;
-      }
-      if (data?.scenarios && Array.isArray(data.scenarios)) {
-        return data.scenarios;
-      }
-    }
-    return JSON.parse(JSON.stringify(localHistoryStore));
-  } catch (_err) {
-    clearTimeout(timeoutId);
-    return JSON.parse(JSON.stringify(localHistoryStore));
-  }
-}
-
 export function filterScenarios(scenarios, query) {
   if (!Array.isArray(scenarios)) return [];
-  const q = (query || "").trim().toLowerCase();
-  if (!q) return scenarios;
+  if (!query || typeof query !== "string" || !query.trim()) return [...scenarios];
+
+  const cleanQuery = query.toLowerCase().trim();
   return scenarios.filter((s) => {
-    const name = (s.name || s.label || "").toLowerCase();
-    const rawCrop = s.crop || s.inputs?.crop || s.cropCode || "";
-    const crop = (typeof rawCrop === "string" ? rawCrop : rawCrop?.name || "").toLowerCase();
-    const tagline = (s.tagline || s.notes || s.description || "").toLowerCase();
-    return name.includes(q) || crop.includes(q) || tagline.includes(q);
+    const nameMatch = s?.name && s.name.toLowerCase().includes(cleanQuery);
+    const cropText = s?.crop || s?.cropName || s?.inputs?.crop || "";
+    const cropMatch = cropText.toLowerCase().includes(cleanQuery);
+    const taglineMatch = s?.tagline && s.tagline.toLowerCase().includes(cleanQuery);
+    return nameMatch || cropMatch || taglineMatch;
   });
 }
 
-export function toggleCompareSelection(currentSelection, scenarioId, max = 4) {
-  if (!Array.isArray(currentSelection)) currentSelection = [];
-  if (!scenarioId) return currentSelection;
-  if (currentSelection.includes(scenarioId)) {
-    return currentSelection.filter((id) => id !== scenarioId);
+/**
+ * Toggle scenario selection for comparison up to maxLimit.
+ */
+export function toggleCompareSelection(selectedIds, id, maxLimit = 4) {
+  const current = Array.isArray(selectedIds) ? [...selectedIds] : [];
+  if (!id) return current;
+
+  if (current.includes(id)) {
+    return current.filter((item) => item !== id);
   }
-  if (currentSelection.length >= max) {
-    return currentSelection;
+  if (current.length >= maxLimit) {
+    return current;
   }
-  return [...currentSelection, scenarioId];
+  return [...current, id];
 }
 
-export function validateCompareSelection(selection) {
-  if (!Array.isArray(selection) || selection.length < 2) {
+/**
+ * Validate compare selection count (2 to 4).
+ */
+export function validateCompareSelection(selectedIds) {
+  const count = Array.isArray(selectedIds) ? selectedIds.length : 0;
+  if (count < 2) {
     return { isValid: false, message: "Select at least 2 scenarios to compare." };
   }
-  if (selection.length > 4) {
-    return { isValid: false, message: "You can compare a maximum of 4 scenarios." };
+  if (count > 4) {
+    return { isValid: false, message: "Maximum 4 scenarios can be compared." };
   }
-  return { isValid: true, message: null };
+  return { isValid: true, message: "Selection valid." };
 }
 
+/**
+ * Clone scenario in list (pure helper).
+ */
 export function cloneScenario(scenarios, id) {
   if (!Array.isArray(scenarios)) return [];
   const target = scenarios.find((s) => s.id === id);
-  if (!target) return scenarios;
+  if (!target) return [...scenarios];
+
   const cloned = {
-    ...target,
-    id: `sc-clone-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-    name: `${target.name} (Copy)`,
-    createdAt: new Date().toISOString(),
+    ...JSON.parse(JSON.stringify(target)),
+    id: `sc-copy-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    name: `${target.name || "Scenario"} (Copy)`,
     timestamp: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
     modelVersion: target.modelVersion || "v2.0-deterministic",
     assumptionVersion: target.assumptionVersion || "2026.1",
   };
+
   return [cloned, ...scenarios];
 }
 
-export function sortScenarios(scenarios, sortBy = "newest") {
+/**
+ * Sort scenarios by sortBy key.
+ */
+export function sortScenarios(scenarios, sortBy) {
   if (!Array.isArray(scenarios)) return [];
   const list = [...scenarios];
-  switch (sortBy) {
-    case "newest":
-      return list.sort((a, b) => new Date(b.createdAt || b.timestamp || 0) - new Date(a.createdAt || a.timestamp || 0));
-    case "oldest":
-      return list.sort((a, b) => new Date(a.createdAt || a.timestamp || 0) - new Date(b.createdAt || b.timestamp || 0));
-    case "profit_high":
-      return list.sort((a, b) => {
-        const pA = a.results?.economics?.profit ?? a.profit ?? 0;
-        const pB = b.results?.economics?.profit ?? b.profit ?? 0;
-        return pB - pA;
-      });
-    case "risk_low":
-      return list.sort((a, b) => {
-        const rA = a.results?.risk?.overall ?? (typeof a.risk === "number" ? a.risk : a.risk === "Low" ? 20 : a.risk === "Medium" ? 50 : 80);
-        const rB = b.results?.risk?.overall ?? (typeof b.risk === "number" ? b.risk : b.risk === "Low" ? 20 : b.risk === "Medium" ? 50 : 80);
-        return rA - rB;
-      });
-    default:
-      return list;
-  }
+
+  return list.sort((a, b) => {
+    const timeA = new Date(a.createdAt || a.timestamp || 0).getTime();
+    const timeB = new Date(b.createdAt || b.timestamp || 0).getTime();
+
+    const profitA = a.results?.economics?.profit ?? a.profit ?? 0;
+    const profitB = b.results?.economics?.profit ?? b.profit ?? 0;
+
+    const riskA = a.results?.risk?.overall ?? (typeof a.risk === "number" ? a.risk : a.risk === "Low" ? 20 : a.risk === "Medium" ? 50 : 80);
+    const riskB = b.results?.risk?.overall ?? (typeof b.risk === "number" ? b.risk : b.risk === "Low" ? 20 : b.risk === "Medium" ? 50 : 80);
+
+    switch (sortBy) {
+      case "oldest":
+        return timeA - timeB;
+      case "profit_high":
+        return profitB - profitA;
+      case "risk_low":
+        return riskA - riskB;
+      case "newest":
+      default:
+        return timeB - timeA;
+    }
+  });
 }
 
+/**
+ * Internal API call for scenario renaming.
+ */
 async function renameScenarioApi(id, newName) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -219,13 +216,15 @@ export function renameScenario(targetOrList, newNameOrId, maybeNewName) {
   if (Array.isArray(targetOrList)) {
     const id = newNameOrId;
     const newName = maybeNewName;
-    if (!newName || !newName.trim()) return targetOrList;
+    if (!id || !newName || typeof newName !== "string" || !newName.trim()) return [...targetOrList];
     return targetOrList.map((sc) => (sc.id === id ? { ...sc, name: newName.trim() } : sc));
   }
   return renameScenarioApi(targetOrList, newNameOrId);
 }
 
 /**
+ * Internal API call for scenario deletion.
+ */
 async function deleteScenarioApi(id) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -261,13 +260,47 @@ async function deleteScenarioApi(id) {
 export function deleteScenario(targetOrList, maybeId) {
   if (Array.isArray(targetOrList)) {
     const id = maybeId;
+    if (!id) return [...targetOrList];
     return targetOrList.filter((sc) => sc.id !== id);
   }
   return deleteScenarioApi(targetOrList);
 }
 
 /**
- * Helper to reset in-memory mock store for testing.
+ * Async API method to fetch history.
+ */
+export async function getScenarioHistory() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/scenarios/history`, {
+      signal: controller.signal,
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        return data;
+      }
+      if (data?.scenarios && Array.isArray(data.scenarios)) {
+        return data.scenarios;
+      }
+    }
+    return JSON.parse(JSON.stringify(localHistoryStore));
+  } catch (_err) {
+    clearTimeout(timeoutId);
+    return JSON.parse(JSON.stringify(localHistoryStore));
+  }
+}
+
+/**
+ * Reset in-memory mock store for testing.
  */
 export function resetMockHistoryStore() {
   localHistoryStore = JSON.parse(JSON.stringify(MOCK_HISTORY_SCENARIOS));
