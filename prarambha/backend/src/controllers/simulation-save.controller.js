@@ -1,14 +1,15 @@
 import { simulateAndSave } from "../services/simulation-save.service.js";
 import { recordAuditSafely } from "../services/audit.service.js";
+import { sendError, sendSuccess } from "../utils/response.js";
 
 export async function postSimulateAndSave(request, response, next) {
   try {
     const scenarioId = typeof request.body?.scenarioId === "string" ? request.body.scenarioId.trim() : "";
     if (!scenarioId) {
-      response.status(400).json({ error: { code: "VALIDATION_ERROR", message: "scenarioId is required." } });
+      sendError(response, 400, "VALIDATION_ERROR", "scenarioId is required.");
       return;
     }
-    const saved = await simulateAndSave(scenarioId);
+    const saved = await simulateAndSave(scenarioId, request.user?.id);
     await recordAuditSafely({
       farmId: saved.farmId,
       scenarioId,
@@ -16,10 +17,14 @@ export async function postSimulateAndSave(request, response, next) {
       modelVersion: saved.simulation.modelVersion,
       outputSnapshot: saved.savedResult,
     });
-    response.status(201).json({ data: saved });
+    sendSuccess(response, 201, saved);
   } catch (error) {
     if (error.message === "Scenario not found.") {
-      response.status(404).json({ error: { code: "SCENARIO_NOT_FOUND", message: error.message } });
+      sendError(response, 404, "SCENARIO_NOT_FOUND", error.message);
+      return;
+    }
+    if (error.message === "Farm not found.") {
+      sendError(response, 404, "NOT_FOUND", error.message);
       return;
     }
     next(error);

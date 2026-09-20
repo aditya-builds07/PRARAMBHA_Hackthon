@@ -41,7 +41,7 @@ export async function putFarm(request, response, next) {
   try {
     const id = farmId(request.params.id);
     const updated = await updateFarm(id, validateFarmInput(request.body), request.user.id);
-    await writeAuditLogSafely({ action: 'CREATE_FARM', userId: request.user.id, farmId: updated.id, inputSnapshot: request.body, outputSnapshot: updated });
+    await writeAuditLogSafely({ action: 'UPDATE_FARM', userId: request.user.id, farmId: updated.id, inputSnapshot: request.body, outputSnapshot: updated });
     sendSuccess(response, 200, updated);
   } catch (error) {
     if (error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
@@ -54,7 +54,7 @@ export async function deleteFarm(request, response, next) {
   try {
     const id = farmId(request.params.id);
     const existing = await getFarmById(id);
-    if (existing) await writeAuditLogSafely({ action: 'DELETE_SCENARIO', userId: request.user.id, farmId: id, inputSnapshot: existing });
+    if (existing) await writeAuditLogSafely({ action: 'DELETE_FARM', userId: request.user.id, farmId: id, inputSnapshot: existing });
     const deleted = await deleteFarmById(id, request.user.id);
     sendSuccess(response, 200, deleted);
   } catch (error) {

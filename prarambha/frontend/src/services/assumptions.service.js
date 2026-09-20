@@ -114,3 +114,36 @@ export async function getAssumptions() {
     return MOCK_ASSUMPTIONS_DATA;
   }
 }
+
+/**
+ * Validate assumptions metadata and invariants.
+ */
+export function validateAssumptions(data) {
+  const errors = [];
+  if (!data || typeof data !== "object") {
+    return { isValid: false, errors: ["Data must be an object."] };
+  }
+  if (!data.disclaimer || typeof data.disclaimer !== "string" || data.disclaimer.trim().length === 0) {
+    errors.push("Missing required non-guarantee agricultural disclaimer.");
+  }
+  if (data.riskWeights) {
+    const weights = Array.isArray(data.riskWeights)
+      ? data.riskWeights.map((w) => (typeof w === "number" ? w : w.weight ?? 0))
+      : Object.values(data.riskWeights);
+    const sum = weights.reduce((acc, curr) => acc + (typeof curr === "number" ? curr : 0), 0);
+    if (Math.abs(sum - 1.0) > 0.01) {
+      errors.push(`Risk weights sum invariant must equal 1.0 (100%), got ${sum.toFixed(2)}.`);
+    }
+  }
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
+}
+
+/**
+ * Alias for getAssumptions to retrieve active assumptions.
+ */
+export async function getActiveAssumptions() {
+  return getAssumptions();
+}

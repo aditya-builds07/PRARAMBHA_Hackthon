@@ -1,12 +1,14 @@
 import { runSimulation } from "../services/simulation.service.js";
 import { recordAuditSafely } from "../services/audit.service.js";
 import { validateSimulationInput } from "../validators/simulation.validator.js";
+import { sendError, sendSuccess } from "../utils/response.js";
 
 export async function postSimulation(request, response, next) {
   try {
     const validation = validateSimulationInput(request.body);
     if (!validation.valid) {
-      response.status(400).json({ error: { code: "VALIDATION_ERROR", details: validation.errors } });
+      const message = validation.errors?.map((e) => e.message).join("; ") || "Invalid simulation input.";
+      sendError(response, 400, "VALIDATION_ERROR", message);
       return;
     }
 
@@ -18,10 +20,10 @@ export async function postSimulation(request, response, next) {
       inputSnapshot: request.body,
       outputSnapshot: result,
     });
-    response.status(200).json({ data: result, warnings: validation.warnings });
+    sendSuccess(response, 200, result);
   } catch (error) {
     if (error.message.startsWith("No active crop")) {
-      response.status(404).json({ error: { code: "CROP_NOT_FOUND", message: error.message } });
+      sendError(response, 404, "CROP_NOT_FOUND", error.message);
       return;
     }
     next(error);

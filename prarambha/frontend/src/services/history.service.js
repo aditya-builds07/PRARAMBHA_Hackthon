@@ -97,13 +97,83 @@ export async function getScenarioHistory() {
   }
 }
 
-/**
- * Rename a historical scenario.
- * @param {string} id - Scenario ID
- * @param {string} newName - Updated scenario title
- * @returns {Promise<Object>} Updated scenario record
- */
-export async function renameScenario(id, newName) {
+export function filterScenarios(scenarios, query) {
+  if (!Array.isArray(scenarios)) return [];
+  const q = (query || "").trim().toLowerCase();
+  if (!q) return scenarios;
+  return scenarios.filter((s) => {
+    const name = (s.name || s.label || "").toLowerCase();
+    const rawCrop = s.crop || s.inputs?.crop || s.cropCode || "";
+    const crop = (typeof rawCrop === "string" ? rawCrop : rawCrop?.name || "").toLowerCase();
+    const tagline = (s.tagline || s.notes || s.description || "").toLowerCase();
+    return name.includes(q) || crop.includes(q) || tagline.includes(q);
+  });
+}
+
+export function toggleCompareSelection(currentSelection, scenarioId, max = 4) {
+  if (!Array.isArray(currentSelection)) currentSelection = [];
+  if (!scenarioId) return currentSelection;
+  if (currentSelection.includes(scenarioId)) {
+    return currentSelection.filter((id) => id !== scenarioId);
+  }
+  if (currentSelection.length >= max) {
+    return currentSelection;
+  }
+  return [...currentSelection, scenarioId];
+}
+
+export function validateCompareSelection(selection) {
+  if (!Array.isArray(selection) || selection.length < 2) {
+    return { isValid: false, message: "Select at least 2 scenarios to compare." };
+  }
+  if (selection.length > 4) {
+    return { isValid: false, message: "You can compare a maximum of 4 scenarios." };
+  }
+  return { isValid: true, message: null };
+}
+
+export function cloneScenario(scenarios, id) {
+  if (!Array.isArray(scenarios)) return [];
+  const target = scenarios.find((s) => s.id === id);
+  if (!target) return scenarios;
+  const cloned = {
+    ...target,
+    id: `sc-clone-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    name: `${target.name} (Copy)`,
+    createdAt: new Date().toISOString(),
+    timestamp: new Date().toISOString(),
+    modelVersion: target.modelVersion || "v2.0-deterministic",
+    assumptionVersion: target.assumptionVersion || "2026.1",
+  };
+  return [cloned, ...scenarios];
+}
+
+export function sortScenarios(scenarios, sortBy = "newest") {
+  if (!Array.isArray(scenarios)) return [];
+  const list = [...scenarios];
+  switch (sortBy) {
+    case "newest":
+      return list.sort((a, b) => new Date(b.createdAt || b.timestamp || 0) - new Date(a.createdAt || a.timestamp || 0));
+    case "oldest":
+      return list.sort((a, b) => new Date(a.createdAt || a.timestamp || 0) - new Date(b.createdAt || b.timestamp || 0));
+    case "profit_high":
+      return list.sort((a, b) => {
+        const pA = a.results?.economics?.profit ?? a.profit ?? 0;
+        const pB = b.results?.economics?.profit ?? b.profit ?? 0;
+        return pB - pA;
+      });
+    case "risk_low":
+      return list.sort((a, b) => {
+        const rA = a.results?.risk?.overall ?? (typeof a.risk === "number" ? a.risk : a.risk === "Low" ? 20 : a.risk === "Medium" ? 50 : 80);
+        const rB = b.results?.risk?.overall ?? (typeof b.risk === "number" ? b.risk : b.risk === "Low" ? 20 : b.risk === "Medium" ? 50 : 80);
+        return rA - rB;
+      });
+    default:
+      return list;
+  }
+}
+
+async function renameScenarioApi(id, newName) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000);
 
@@ -122,7 +192,6 @@ export async function renameScenario(id, newName) {
 
     if (res.ok) {
       const updated = await res.json();
-      // Update local mock store as well
       localHistoryStore = localHistoryStore.map((sc) =>
         sc.id === id ? { ...sc, name: newName } : sc
       );
@@ -131,7 +200,6 @@ export async function renameScenario(id, newName) {
     throw new Error(`Failed to rename scenario with status: ${res.status}`);
   } catch (_err) {
     clearTimeout(timeoutId);
-    // Mock fallback: update local store and return updated record
     const target = localHistoryStore.find((sc) => sc.id === id);
     if (!target) {
       throw new Error(`Scenario with ID ${id} not found.`);
@@ -143,11 +211,22 @@ export async function renameScenario(id, newName) {
 }
 
 /**
- * Delete a historical scenario.
- * @param {string} id - Scenario ID
- * @returns {Promise<Object>} Success status
+ * Rename a historical scenario.
+ * Supports both pure list modification renameScenario(list, id, newName)
+ * and async API call renameScenario(id, newName).
  */
-export async function deleteScenario(id) {
+export function renameScenario(targetOrList, newNameOrId, maybeNewName) {
+  if (Array.isArray(targetOrList)) {
+    const id = newNameOrId;
+    const newName = maybeNewName;
+    if (!newName || !newName.trim()) return targetOrList;
+    return targetOrList.map((sc) => (sc.id === id ? { ...sc, name: newName.trim() } : sc));
+  }
+  return renameScenarioApi(targetOrList, newNameOrId);
+}
+
+/**
+async function deleteScenarioApi(id) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000);
 
@@ -169,10 +248,22 @@ export async function deleteScenario(id) {
     throw new Error(`Failed to delete scenario with status: ${res.status}`);
   } catch (_err) {
     clearTimeout(timeoutId);
-    // Mock fallback: remove from local store
     localHistoryStore = localHistoryStore.filter((sc) => sc.id !== id);
     return { success: true, id };
   }
+}
+
+/**
+ * Delete a historical scenario.
+ * Supports both pure list modification deleteScenario(list, id)
+ * and async API call deleteScenario(id).
+ */
+export function deleteScenario(targetOrList, maybeId) {
+  if (Array.isArray(targetOrList)) {
+    const id = maybeId;
+    return targetOrList.filter((sc) => sc.id !== id);
+  }
+  return deleteScenarioApi(targetOrList);
 }
 
 /**

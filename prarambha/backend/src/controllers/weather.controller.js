@@ -1,16 +1,14 @@
 import { getOpenMeteoWeather } from '../adapters/weather/openMeteo.adapter.js';
+import { sendError, sendSuccess } from '../utils/response.js';
 
 export async function getWeather(request, response, next) {
   try {
     const { latitude, longitude } = request.query;
     if (latitude === undefined || longitude === undefined) {
-      response.status(400).json({
-        error: { code: 'VALIDATION_ERROR', message: 'latitude and longitude query parameters are required.' },
-      });
-      return;
+      return sendError(response, 400, 'VALIDATION_ERROR', 'latitude and longitude query parameters are required.');
     }
 
-    response.status(200).json({ data: await getOpenMeteoWeather({ latitude, longitude }) });
+    sendSuccess(response, 200, await getOpenMeteoWeather({ latitude, longitude }));
   } catch (error) {
     next(error);
   }

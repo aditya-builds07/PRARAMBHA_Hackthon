@@ -1,4 +1,5 @@
 import { compareScenarios } from "../services/comparison.service.js";
+import { sendError, sendSuccess } from "../utils/response.js";
 
 function parseScenarioIds(value) {
   if (value === undefined) return [];
@@ -20,14 +21,18 @@ export async function getComparison(request, response, next) {
     const farmId = typeof request.query.farmId === "string" ? request.query.farmId.trim() : "";
     if (!farmId) throw new Error("farmId query parameter is required.");
     const scenarioIds = parseScenarioIds(request.query.scenarioIds);
-    response.status(200).json({ data: await compareScenarios(farmId, scenarioIds) });
+    sendSuccess(response, 200, await compareScenarios(farmId, scenarioIds, request.user?.id));
   } catch (error) {
     if (error.message.includes("required") || error.message.includes("must") || error.message.includes("requires")) {
-      response.status(400).json({ error: { code: "VALIDATION_ERROR", message: error.message } });
+      sendError(response, 400, "VALIDATION_ERROR", error.message);
       return;
     }
     if (error.message.includes("has no saved")) {
-      response.status(409).json({ error: { code: "RESULT_MISSING", message: error.message } });
+      sendError(response, 409, "RESULT_MISSING", error.message);
+      return;
+    }
+    if (error.message === "Farm not found.") {
+      sendError(response, 404, "NOT_FOUND", error.message);
       return;
     }
     next(error);
@@ -39,14 +44,18 @@ export async function postComparison(request, response, next) {
     const farmId = typeof request.body?.farmId === "string" ? request.body.farmId.trim() : "";
     if (!farmId) throw new Error("farmId is required.");
     const scenarioIds = parseScenarioIdArray(request.body?.scenarioIds);
-    response.status(200).json({ data: await compareScenarios(farmId, scenarioIds) });
+    sendSuccess(response, 200, await compareScenarios(farmId, scenarioIds, request.user?.id));
   } catch (error) {
     if (error.message.includes("required") || error.message.includes("must") || error.message.includes("array")) {
-      response.status(400).json({ error: { code: "VALIDATION_ERROR", message: error.message } });
+      sendError(response, 400, "VALIDATION_ERROR", error.message);
       return;
     }
     if (error.message.includes("has no saved")) {
-      response.status(409).json({ error: { code: "RESULT_MISSING", message: error.message } });
+      sendError(response, 409, "RESULT_MISSING", error.message);
+      return;
+    }
+    if (error.message === "Farm not found.") {
+      sendError(response, 404, "NOT_FOUND", error.message);
       return;
     }
     next(error);

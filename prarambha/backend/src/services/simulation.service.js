@@ -1,5 +1,6 @@
 import { getSupabaseClient } from "../adapters/db/supabase.client.js";
 import { calculateSimulation } from "../simulation/simulation.engine.js";
+import { DEFAULT_CROP_PARAMETERS } from "../simulation/crop.parameters.js";
 
 function mapCropParameters(row) {
   return {
@@ -14,19 +15,29 @@ function mapCropParameters(row) {
 }
 
 export async function runSimulation(input) {
-  const { data: crop, error } = await getSupabaseClient()
-    .from("crop_params")
-    .select("*")
-    .eq("crop_code", input.crop)
-    .eq("active", true)
-    .maybeSingle();
+  let customCropParams = null;
+  try {
+    const { data: crop, error } = await getSupabaseClient()
+      .from("crop_params")
+      .select("*")
+      .eq("crop_code", input.crop)
+      .eq("active", true)
+      .maybeSingle();
 
-  if (error) throw new Error(`Unable to load crop parameters: ${error.message}`);
-  if (!crop) throw new Error(`No active crop parameters exist for '${input.crop}'.`);
+    if (!error && crop) {
+      customCropParams = mapCropParameters(crop);
+    }
+  } catch (_err) {
+    // Rely on authoritative deterministic baseline
+  }
+
+  if (!customCropParams && !DEFAULT_CROP_PARAMETERS[input.crop]) {
+    throw new Error(`No active crop parameters exist for '${input.crop}'.`);
+  }
 
   const result = calculateSimulation({
     ...input,
-    customCropParams: mapCropParameters(crop),
+    ...(customCropParams ? { customCropParams } : {}),
   });
 
   if (!result) throw new Error("The simulation engine could not produce a result.");

@@ -1,4 +1,5 @@
 import { listAuditByFarm } from "../services/audit.service.js";
+import { sendError, sendSuccess } from "../utils/response.js";
 
 export async function getAudit(request, response, next) {
   try {
@@ -6,16 +7,17 @@ export async function getAudit(request, response, next) {
     const limit = Number(request.query.limit ?? 100);
 
     if (!farmId) {
-      response.status(400).json({ error: { code: "VALIDATION_ERROR", message: "farmId query parameter is required." } });
-      return;
+      return sendError(response, 400, "VALIDATION_ERROR", "farmId query parameter is required.");
     }
     if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
-      response.status(400).json({ error: { code: "VALIDATION_ERROR", message: "limit must be an integer between 1 and 100." } });
-      return;
+      return sendError(response, 400, "VALIDATION_ERROR", "limit must be an integer between 1 and 100.");
     }
 
-    response.status(200).json({ data: await listAuditByFarm(farmId, limit) });
+    sendSuccess(response, 200, await listAuditByFarm(farmId, limit, request.user?.id));
   } catch (error) {
+    if (error.message === "Farm not found.") {
+      return sendError(response, 404, "NOT_FOUND", error.message);
+    }
     next(error);
   }
 }

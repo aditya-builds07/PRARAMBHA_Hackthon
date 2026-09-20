@@ -1,14 +1,19 @@
 import { listScenarioHistory } from "../services/history.service.js";
+import { sendError, sendSuccess } from "../utils/response.js";
 
 export async function getHistory(request, response, next) {
   try {
     const farmId = typeof request.query.farmId === "string" ? request.query.farmId.trim() : "";
     if (!farmId) {
-      response.status(400).json({ error: { code: "VALIDATION_ERROR", message: "farmId query parameter is required." } });
+      sendError(response, 400, "VALIDATION_ERROR", "farmId query parameter is required.");
       return;
     }
-    response.status(200).json({ data: await listScenarioHistory(farmId) });
+    sendSuccess(response, 200, await listScenarioHistory(farmId, request.user?.id));
   } catch (error) {
+    if (error.message === "Farm not found.") {
+      sendError(response, 404, "NOT_FOUND", error.message);
+      return;
+    }
     next(error);
   }
 }

@@ -7,11 +7,15 @@ import { getSupabaseClient } from "../adapters/db/supabase.client.js";
  */
 const ALLOWED_ACTIONS = new Set([
   "CREATE_FARM",
+  "UPDATE_FARM",
+  "DELETE_FARM",
   "CREATE_SCENARIO",
   "SIMULATE",
   "SAVE_SCENARIO",
   "UPDATE_SCENARIO",
   "DELETE_SCENARIO",
+  "CREATE_RESOURCE",
+  "UPDATE_RESOURCE",
   "GENERATE_REPORT",
 ]);
 

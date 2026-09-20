@@ -10,11 +10,15 @@ create table if not exists audit_logs (
   scenario_id uuid references scenarios(id) on delete set null,
   action text not null check (action in (
     'CREATE_FARM',
+    'UPDATE_FARM',
+    'DELETE_FARM',
     'CREATE_SCENARIO',
     'SIMULATE',
     'SAVE_SCENARIO',
     'UPDATE_SCENARIO',
     'DELETE_SCENARIO',
+    'CREATE_RESOURCE',
+    'UPDATE_RESOURCE',
     'GENERATE_REPORT'
   )),
   model_version text,
