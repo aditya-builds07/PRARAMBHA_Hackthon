@@ -13,21 +13,21 @@ function getRiskInfo(level) {
         label: "Low Risk",
         icon: "✓",
         dot: "🟢",
-        className: "bg-emerald-50 text-emerald-800 border-emerald-300",
+        className: "bg-emerald-50 text-emerald-950 border-emerald-300",
       };
     case "high":
       return {
         label: "High Risk",
         icon: "⚠",
         dot: "🟠",
-        className: "bg-amber-50 text-amber-800 border-amber-300",
+        className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "critical":
       return {
         label: "Critical Risk",
         icon: "🚨",
         dot: "🔴",
-        className: "bg-rose-50 text-rose-800 border-rose-300",
+        className: "bg-rose-50 text-rose-950 border-rose-300",
       };
     case "medium":
     default:
@@ -35,7 +35,7 @@ function getRiskInfo(level) {
         label: "Medium Risk",
         icon: "ℹ",
         dot: "🟡",
-        className: "bg-yellow-50 text-yellow-800 border-yellow-300",
+        className: "bg-yellow-50 text-yellow-950 border-yellow-300",
       };
   }
 }
@@ -145,7 +145,7 @@ export default function DashboardKpiTiles({ kpis, onNavigateToHistory }) {
           <div className="mt-3">
             {highestProfitScenario ? (
               <>
-                <span className="text-2xl sm:text-3xl font-black text-emerald-800 tabular-nums block">
+                <span className="text-2xl sm:text-3xl font-black text-emerald-900 tabular-nums block">
                   {formatCurrency(highestProfitScenario.value)}
                 </span>
                 <span className="text-xs font-bold text-slate-900 mt-1 block truncate">
@@ -173,34 +173,34 @@ export default function DashboardKpiTiles({ kpis, onNavigateToHistory }) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mt-3">
             <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200">
-              <span className="text-[11px] font-bold text-emerald-800 flex items-center gap-1">
+              <span className="text-[11px] font-bold text-emerald-950 flex items-center gap-1">
                 <span>🟢</span> <span>Low Risk</span>
               </span>
-              <span className="text-2xl font-black text-emerald-900 mt-1 block tabular-nums">
+              <span className="text-2xl font-black text-emerald-950 mt-1 block tabular-nums">
                 {riskLevelCounts.low}
               </span>
             </div>
             <div className="p-3 rounded-xl bg-yellow-50/70 border border-yellow-200">
-              <span className="text-[11px] font-bold text-yellow-800 flex items-center gap-1">
+              <span className="text-[11px] font-bold text-yellow-950 flex items-center gap-1">
                 <span>🟡</span> <span>Medium Risk</span>
               </span>
-              <span className="text-2xl font-black text-yellow-900 mt-1 block tabular-nums">
+              <span className="text-2xl font-black text-yellow-950 mt-1 block tabular-nums">
                 {riskLevelCounts.medium}
               </span>
             </div>
             <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200">
-              <span className="text-[11px] font-bold text-amber-800 flex items-center gap-1">
+              <span className="text-[11px] font-bold text-amber-950 flex items-center gap-1">
                 <span>🟠</span> <span>High Risk</span>
               </span>
-              <span className="text-2xl font-black text-amber-900 mt-1 block tabular-nums">
+              <span className="text-2xl font-black text-amber-950 mt-1 block tabular-nums">
                 {riskLevelCounts.high}
               </span>
             </div>
             <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200">
-              <span className="text-[11px] font-bold text-rose-800 flex items-center gap-1">
+              <span className="text-[11px] font-bold text-rose-950 flex items-center gap-1">
                 <span>🔴</span> <span>Critical Risk</span>
               </span>
-              <span className="text-2xl font-black text-rose-900 mt-1 block tabular-nums">
+              <span className="text-2xl font-black text-rose-950 mt-1 block tabular-nums">
                 {riskLevelCounts.critical}
               </span>
             </div>

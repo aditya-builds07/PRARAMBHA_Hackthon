@@ -142,13 +142,13 @@ export default function HistoryPage({ onNavigate = null }) {
         {!isLoading && fetchError && (
           <div
             role="alert"
-            className="p-5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center justify-between gap-4 shadow-xs"
+            className="p-5 rounded-xl bg-rose-50 border border-rose-200 text-rose-950 flex items-center justify-between gap-4 shadow-xs"
           >
             <div>
               <p className="font-bold text-xs uppercase tracking-wide">
                 {t("history.errorTitle") || "Unable to Load Scenario History"}
               </p>
-              <p className="text-xs text-rose-700 mt-0.5">{fetchError}</p>
+              <p className="text-xs text-rose-900 mt-0.5">{fetchError}</p>
             </div>
             <button
               type="button"

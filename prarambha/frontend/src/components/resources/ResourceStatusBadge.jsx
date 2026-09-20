@@ -10,25 +10,25 @@ export default function ResourceStatusBadge({ status = "available" }) {
 
   const configs = {
     available: {
-      bg: "bg-emerald-50 text-emerald-800 border-emerald-300",
+      bg: "bg-emerald-50 text-emerald-950 border-emerald-300",
       dot: "bg-emerald-600",
       label: t("resources.status.available") || "Sufficient",
       icon: "✓",
     },
     shortage: {
-      bg: "bg-amber-50 text-amber-800 border-amber-300",
+      bg: "bg-amber-50 text-amber-950 border-amber-300",
       dot: "bg-amber-600",
       label: t("resources.status.shortage") || "Deficit Identified",
       icon: "!",
     },
     critical: {
-      bg: "bg-rose-50 text-rose-800 border-rose-300",
+      bg: "bg-rose-50 text-rose-950 border-rose-300",
       dot: "bg-rose-600",
       label: t("resources.status.critical") || "Critical Shortage",
       icon: "✕",
     },
   }[status] || {
-    bg: "bg-slate-50 text-slate-800 border-slate-300",
+    bg: "bg-slate-50 text-slate-900 border-slate-300",
     dot: "bg-slate-500",
     label: status.toUpperCase(),
     icon: "•",

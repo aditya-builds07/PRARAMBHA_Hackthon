@@ -107,13 +107,13 @@ export default function DashboardPage({ onNavigate = null }) {
         {!isLoading && error && (
           <div
             role="alert"
-            className="p-5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center justify-between gap-4 shadow-xs"
+            className="p-5 rounded-xl bg-rose-50 border border-rose-200 text-rose-950 flex items-center justify-between gap-4 shadow-xs"
           >
             <div>
               <p className="font-bold text-xs uppercase tracking-wide">
                 {t("dashboard.errorTitle") || "Unable to Load Dashboard Data"}
               </p>
-              <p className="text-xs text-rose-700 mt-0.5">{error}</p>
+              <p className="text-xs text-rose-900 mt-0.5">{error}</p>
             </div>
             <button
               type="button"

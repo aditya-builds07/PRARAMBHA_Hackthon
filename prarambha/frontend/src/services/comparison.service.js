@@ -151,25 +151,25 @@ export function getRiskLevelInfo(level, score) {
     return {
       label: "LOW RISK",
       scoreText: `${score} / 100`,
-      colorClass: "text-emerald-700 bg-emerald-50 border-emerald-300",
-      borderClass: "border-emerald-500",
-      indicatorColor: "#059669",
+      colorClass: "text-emerald-900 bg-emerald-50 border-emerald-300",
+      borderClass: "border-emerald-600",
+      indicatorColor: "#047857",
     };
   } else if (level === "medium" || score <= 66) {
     return {
       label: "MEDIUM RISK",
       scoreText: `${score} / 100`,
-      colorClass: "text-amber-700 bg-amber-50 border-amber-300",
-      borderClass: "border-amber-500",
-      indicatorColor: "#d97706",
+      colorClass: "text-amber-950 bg-amber-50 border-amber-300",
+      borderClass: "border-amber-600",
+      indicatorColor: "#b45309",
     };
   } else {
     return {
       label: "HIGH RISK",
       scoreText: `${score} / 100`,
-      colorClass: "text-rose-700 bg-rose-50 border-rose-300",
-      borderClass: "border-rose-500",
-      indicatorColor: "#e11d48",
+      colorClass: "text-rose-950 bg-rose-50 border-rose-300",
+      borderClass: "border-rose-600",
+      indicatorColor: "#be123c",
     };
   }
 }

@@ -45,8 +45,8 @@ export default function FactorAttribution({
           <span
             className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
               isReconciled
-                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                : "bg-amber-50 text-amber-800 border-amber-200"
+                ? "bg-emerald-50 text-emerald-950 border-emerald-300"
+                : "bg-amber-50 text-amber-950 border-amber-300"
             }`}
           >
             <span
@@ -99,10 +99,10 @@ export default function FactorAttribution({
                   <span
                     className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded ${
                       isPositive
-                        ? "bg-emerald-100 text-emerald-800"
+                        ? "bg-emerald-100 text-emerald-950"
                         : isZero
-                        ? "bg-slate-200 text-slate-800"
-                        : "bg-rose-100 text-rose-800"
+                        ? "bg-slate-200 text-slate-900"
+                        : "bg-rose-100 text-rose-950"
                     }`}
                   >
                     {isPositive ? "▲ Gain" : isZero ? "• Neutral" : "▼ Impact"}
@@ -111,10 +111,10 @@ export default function FactorAttribution({
                   <span
                     className={`font-black text-sm tabular-nums ${
                       isPositive
-                        ? "text-emerald-700"
+                        ? "text-emerald-900"
                         : isZero
                         ? "text-slate-700"
-                        : "text-rose-700"
+                        : "text-rose-900"
                     }`}
                   >
                     {isPositive ? `+${formatCurrency(val)}` : formatCurrency(val)}

@@ -15,21 +15,21 @@ export function getRiskBadge(risk) {
         label: "Low Risk",
         icon: "✓",
         dot: "🟢",
-        className: "bg-emerald-50 text-emerald-800 border-emerald-200",
+        className: "bg-emerald-50 text-emerald-950 border-emerald-300",
       };
     case "high":
       return {
         label: "High Risk",
         icon: "⚠",
         dot: "🟠",
-        className: "bg-amber-50 text-amber-800 border-amber-200",
+        className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "critical":
       return {
         label: "Critical Risk",
         icon: "🚨",
         dot: "🔴",
-        className: "bg-rose-50 text-rose-800 border-rose-200",
+        className: "bg-rose-50 text-rose-950 border-rose-300",
       };
     case "medium":
     default:
@@ -37,7 +37,7 @@ export function getRiskBadge(risk) {
         label: "Medium Risk",
         icon: "ℹ",
         dot: "🟡",
-        className: "bg-yellow-50 text-yellow-800 border-yellow-200",
+        className: "bg-yellow-50 text-yellow-950 border-yellow-300",
       };
   }
 }
@@ -130,7 +130,7 @@ export default function ScenarioHistoryTable({
           <span className="text-xs font-bold text-slate-700">
             {t("history.selectedCount") || "Selected for Comparison"}:
           </span>
-          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black font-mono">
+          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-950 text-xs font-black font-mono">
             {selectedIds.length} / 4
           </span>
           <span className="text-[11px] text-slate-400">
@@ -321,7 +321,7 @@ export default function ScenarioHistoryTable({
                     </td>
 
                     {/* Column 5: Profit */}
-                    <td className="p-3.5 text-right font-black text-emerald-800 tabular-nums whitespace-nowrap">
+                    <td className="p-3.5 text-right font-black text-emerald-900 tabular-nums whitespace-nowrap">
                       {profitDisplay}
                     </td>
 
@@ -363,11 +363,11 @@ export default function ScenarioHistoryTable({
                           {t("history.rename") || "Rename"}
                         </button>
 
-                        <button
-                          type="button"
-                          onClick={() => requestDelete(sc.id)}
-                          className="px-2 py-1 rounded text-rose-600 hover:text-rose-800 hover:bg-rose-50 text-[11px] font-semibold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:outline-hidden"
-                        >
+                          <button
+                            type="button"
+                            onClick={() => requestDelete(sc.id)}
+                            className="px-2 py-1 rounded text-rose-700 hover:text-rose-950 hover:bg-rose-50 text-[11px] font-semibold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:outline-hidden"
+                          >
                           {t("history.delete") || "Delete"}
                         </button>
                       </div>

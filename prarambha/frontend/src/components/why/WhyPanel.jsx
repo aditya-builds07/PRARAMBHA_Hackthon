@@ -193,7 +193,7 @@ export default function WhyPanel({
           isReconciled={explanation.isReconciled}
         />
       ) : (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center text-xs text-amber-800">
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center text-xs text-amber-950 font-medium">
           Attribution model for this scenario pair is currently pending calculation from the domain engine.
         </div>
       )}

@@ -15,21 +15,21 @@ function getRiskBadge(riskLevel, riskScore) {
         label: `Low Risk (${riskScore ?? 0}/100)`,
         icon: "✓",
         dot: "🟢",
-        className: "bg-emerald-50 text-emerald-800 border-emerald-300",
+        className: "bg-emerald-50 text-emerald-950 border-emerald-300",
       };
     case "high":
       return {
         label: `High Risk (${riskScore ?? 0}/100)`,
         icon: "⚠",
         dot: "🟠",
-        className: "bg-amber-50 text-amber-800 border-amber-300",
+        className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "critical":
       return {
         label: `Critical Risk (${riskScore ?? 0}/100)`,
         icon: "🚨",
         dot: "🔴",
-        className: "bg-rose-50 text-rose-800 border-rose-300",
+        className: "bg-rose-50 text-rose-950 border-rose-300",
       };
     case "medium":
     default:
@@ -37,7 +37,7 @@ function getRiskBadge(riskLevel, riskScore) {
         label: `Medium Risk (${riskScore ?? 0}/100)`,
         icon: "ℹ",
         dot: "🟡",
-        className: "bg-yellow-50 text-yellow-800 border-yellow-300",
+        className: "bg-yellow-50 text-yellow-950 border-yellow-300",
       };
   }
 }
@@ -52,20 +52,20 @@ function getResourceStatusBadge(status) {
       return {
         label: "Sufficient",
         icon: "✓",
-        className: "bg-emerald-50 text-emerald-800 border-emerald-300",
+        className: "bg-emerald-50 text-emerald-950 border-emerald-300",
       };
     case "shortage":
       return {
         label: "Shortage",
         icon: "⚠️",
-        className: "bg-amber-50 text-amber-800 border-amber-300",
+        className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "critical":
     default:
       return {
         label: "Critical Shortage",
         icon: "✕",
-        className: "bg-rose-50 text-rose-800 border-rose-300",
+        className: "bg-rose-50 text-rose-950 border-rose-300",
       };
   }
 }
@@ -80,20 +80,20 @@ function getRecommendationSeverityBadge(severity) {
       return {
         label: "Critical Attention",
         icon: "🚨",
-        className: "bg-rose-50 text-rose-800 border-rose-300",
+        className: "bg-rose-50 text-rose-950 border-rose-300",
       };
     case "warning":
       return {
         label: "Optimization",
         icon: "⚠️",
-        className: "bg-amber-50 text-amber-800 border-amber-300",
+        className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "info":
     default:
       return {
         label: "Informational",
         icon: "💡",
-        className: "bg-sky-50 text-sky-800 border-sky-300",
+        className: "bg-sky-50 text-sky-950 border-sky-300",
       };
   }
 }
@@ -311,8 +311,8 @@ export default function PrintableReport({ reportData }) {
             </span>
           </div>
           <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-300">
-            <span className="text-emerald-800 font-bold block text-[10px] uppercase">Net Farm Profit</span>
-            <span className="text-lg font-black text-emerald-800 mt-0.5 block tabular-nums">
+            <span className="text-emerald-950 font-bold block text-[10px] uppercase">Net Farm Profit</span>
+            <span className="text-lg font-black text-emerald-950 mt-0.5 block tabular-nums">
               {formatCurrency(economics.profit ?? 0)}
             </span>
           </div>

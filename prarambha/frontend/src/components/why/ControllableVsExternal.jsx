@@ -48,7 +48,7 @@ export default function ControllableVsExternal({ factors = [] }) {
 
             <span
               className={`text-xs font-extrabold px-2 py-0.5 rounded ${
-                controllableSum >= 0 ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
+                controllableSum >= 0 ? "bg-emerald-100 text-emerald-950" : "bg-rose-100 text-rose-950"
               }`}
             >
               Net: {controllableSum >= 0 ? `+${formatCurrency(controllableSum)}` : formatCurrency(controllableSum)}
@@ -111,7 +111,7 @@ export default function ControllableVsExternal({ factors = [] }) {
 
             <span
               className={`text-xs font-extrabold px-2 py-0.5 rounded ${
-                externalSum >= 0 ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
+                externalSum >= 0 ? "bg-emerald-100 text-emerald-950" : "bg-rose-100 text-rose-950"
               }`}
             >
               Net: {externalSum >= 0 ? `+${formatCurrency(externalSum)}` : formatCurrency(externalSum)}
