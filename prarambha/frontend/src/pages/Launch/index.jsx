@@ -82,14 +82,14 @@ export default function LaunchPage({ onNavigate = null }) {
     <div className="relative h-screen w-full bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white overflow-hidden flex flex-col justify-between">
       
       {/* ========================================================================= */}
-      {/* 1. TOP NAVBAR */}
+      {/* 1. TOP NAVBAR (LOGO ONLY - NO AUTH PROMPT ON LOGO) */}
       {/* ========================================================================= */}
       <header className="relative z-20 w-full pt-6 pb-3 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-950/90 via-slate-950/50 to-transparent">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Brand Identity */}
+          {/* Brand Identity - Returns to Launch Home without triggering Sign In / Register */}
           <div
-            onClick={handleLaunchClick}
-            className="flex items-center gap-3 cursor-pointer group"
+            onClick={() => navigateTo("launch")}
+            className="flex items-center gap-3 select-none cursor-pointer group"
           >
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
               <Sprout className="h-6 w-6 text-slate-950" />
@@ -107,28 +107,6 @@ export default function LaunchPage({ onNavigate = null }) {
                 Agri Scenario & Decision Simulator
               </p>
             </div>
-          </div>
-
-          {/* Top Right Auth Actions */}
-          <div className="flex items-center gap-2.5">
-            <button
-              type="button"
-              id="launch-farmer-login-btn"
-              onClick={() => navigateTo("login")}
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-emerald-500/25 text-white hover:text-emerald-300 border border-white/20 hover:border-emerald-400/50 text-xs font-bold backdrop-blur-md transition-all cursor-pointer shadow-sm hover:scale-105"
-            >
-              <LogIn className="h-4 w-4" />
-              <span>Farmer Login</span>
-            </button>
-            <button
-              type="button"
-              id="launch-farmer-register-btn"
-              onClick={() => navigateTo("signup")}
-              className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 hover:text-white border border-emerald-500/40 text-xs font-bold backdrop-blur-md transition-all cursor-pointer shadow-sm hover:scale-105"
-            >
-              <UserPlus className="h-4 w-4" />
-              <span>Register</span>
-            </button>
           </div>
         </div>
       </header>
