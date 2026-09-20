@@ -1,6 +1,6 @@
 import React from "react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { formatCurrency, formatNumber } from "../../services/comparison.service";
+import { formatResourceValue } from "../../services/resource.service";
 import ResourceStatusBadge from "./ResourceStatusBadge";
 
 /**
@@ -88,10 +88,7 @@ export default function ResourceGapTable({ readinessData }) {
         <tbody className="divide-y divide-slate-100 text-xs">
           {rows.map((row) => {
             const hasDeficit = row.gap > 0;
-            const formatVal = (val) => {
-              if (row.isCurrency) return formatCurrency(val);
-              return `${formatNumber(val, 0)} ${row.unit}`;
-            };
+            const formatVal = (val) => formatResourceValue(val, row.unit, row.isCurrency);
 
             return (
               <tr key={row.key} className="hover:bg-slate-50/60 transition-colors">
