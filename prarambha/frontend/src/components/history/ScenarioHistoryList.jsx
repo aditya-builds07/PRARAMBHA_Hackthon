@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 import HistoryCard from "./HistoryCard";
+import {
+  filterScenarios,
+  toggleCompareSelection,
+  renameScenario,
+  deleteScenario,
+} from "../../services/history.service";
 
 /**
  * ScenarioHistoryList Component - Member 4
@@ -16,35 +22,19 @@ export default function ScenarioHistoryList({
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleRename = (id, newName) => {
-    setScenarioList((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, name: newName } : s))
-    );
+    setScenarioList((prev) => renameScenario(prev, id, newName));
   };
 
   const handleDelete = (id) => {
-    setScenarioList((prev) => prev.filter((s) => s.id !== id));
+    setScenarioList((prev) => deleteScenario(prev, id));
     setSelectedIds((prev) => prev.filter((item) => item !== id));
   };
 
   const handleToggleCompare = (id) => {
-    setSelectedIds((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((item) => item !== id);
-      } else {
-        if (prev.length >= 4) return prev;
-        return [...prev, id];
-      }
-    });
+    setSelectedIds((prev) => toggleCompareSelection(prev, id, 4));
   };
 
-  const filtered = scenarioList.filter((s) => {
-    const q = searchQuery.toLowerCase();
-    return (
-      s.name.toLowerCase().includes(q) ||
-      (s.inputs?.crop || "").toLowerCase().includes(q) ||
-      (s.tagline || "").toLowerCase().includes(q)
-    );
-  });
+  const filtered = filterScenarios(scenarioList, searchQuery);
 
   return (
     <div className={`space-y-5 ${className}`}>
