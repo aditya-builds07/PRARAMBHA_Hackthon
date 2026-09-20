@@ -338,5 +338,62 @@ The engine is strictly deterministic and does NOT use:
 }
 ```
 
+---
+
+## 9. Simulation Engine (`simulation.engine.js`)
+
+The Simulation Engine serves as the **deterministic domain orchestrator** for PRARAMBHA 2.0. It executes the individual domain engines in a strictly defined logical pipeline and assembles a unified, transparent simulation result.
+
+> **Orchestrator Responsibility**: The Simulation Engine does NOT contain mathematical calculation formulas itself. Each calculation is delegated to its respective owner engine.
+
+### 9.1 Execution Pipeline
+
+```text
+Scenario Input
+   │
+   ├── 1. Crop Resolution (crop.parameters.js -> getCropParameters)
+   │
+   ├── 2. Water Engine (water.engine.js -> calculateWater)
+   │
+   ├── 3. Yield Engine (yield.engine.js -> calculateYield using waterFactor)
+   │
+   ├── 4. Financial Engine (financial.engine.js -> calculateEconomics using totalYield)
+   │
+   ├── 5. Risk Engine (risk.engine.js -> calculateOverallRisk using economics & waterFactor)
+   │
+   └── 6. Decision Engine (decision.engine.js -> calculateDecision using yield, economics, risk)
+   │
+   ▼
+Complete Simulation Result Output
+```
+
+### 9.2 Versioning & Metadata
+Every simulation result incorporates version metadata imported directly from `model.version.js`:
+- `modelVersion`: `MODEL_VERSION` (`'2.0.0'`)
+- `assumptionsVersion`: `ASSUMPTIONS_VERSION` (`'2026.1'`)
+
+### 9.3 Determinism & Architectural Boundaries
+- **Determinism**: Given identical scenario inputs, `calculateSimulation()` always returns identical results. No timestamps (`Date.now()`), random numbers (`Math.random()`), or random UUIDs are generated during execution.
+- **Scenario Immutability**: The scenario input object and its nested structures (e.g. `planting`) are never mutated.
+- **Zero External Dependencies**: The orchestrator operates strictly as a pure domain layer with no database queries, HTTP endpoints, AI models, or weather APIs.
+
+### 9.4 Output Contract Structure
+`calculateSimulation(input)` returns a unified simulation output:
+```json
+{
+  "scenarioId": "scenario-001",
+  "modelVersion": "2.0.0",
+  "assumptionsVersion": "2026.1",
+  "scenario": { ... },
+  "crop": { ... },
+  "water": { ... },
+  "yield": { ... },
+  "economics": { ... },
+  "risk": { ... },
+  "decision": { ... }
+}
+```
+
+
 
 
