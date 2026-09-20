@@ -8,6 +8,7 @@ import { scenarioRouter } from "./routes/scenarios.routes.js";
 import { simulateRouter } from "./routes/simulate.routes.js";
 import { resourceRouter } from "./routes/resources.routes.js";
 import { recommendationRouter } from "./routes/recommendations.routes.js";
+import { reportRouter } from "./routes/reports.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
 
 export function createApp() {
@@ -24,6 +25,7 @@ export function createApp() {
   app.use("/api", simulateRouter);
   app.use("/api", resourceRouter);
   app.use("/api", recommendationRouter);
+  app.use("/api", reportRouter);
 
   app.use((_request, response) => {
     response.status(404).json({
