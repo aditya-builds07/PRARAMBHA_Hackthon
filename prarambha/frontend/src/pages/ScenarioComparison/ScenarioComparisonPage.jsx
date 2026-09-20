@@ -13,17 +13,27 @@ import WhyPanel from "../../components/why/WhyPanel";
  * Assembles scenario selection (2-4), neutral comparison matrix, dynamic charts,
  * and seamlessly integrates the Why Panel factor attribution view.
  */
-export default function ScenarioComparisonPage() {
+export default function ScenarioComparisonPage({
+  initialSelectedIds = null,
+  initialBaselineId = null,
+  onNavigate = null,
+}) {
   const { t, language, setLanguage, supportedLanguages } = useLanguage();
 
   // All available scenarios for this farm
   const allScenarios = MOCK_SCENARIOS;
 
-  // Selected scenario IDs (defaulting to first 3 scenarios)
-  const [selectedIds, setSelectedIds] = useState(["sc-001", "sc-002", "sc-003"]);
+  // Selected scenario IDs (defaulting to initialSelectedIds if valid or first 3 scenarios)
+  const [selectedIds, setSelectedIds] = useState(
+    initialSelectedIds && initialSelectedIds.length >= 2
+      ? initialSelectedIds
+      : ["sc-001", "sc-002", "sc-003"]
+  );
 
   // Designated baseline scenario
-  const [baselineId, setBaselineId] = useState("sc-001");
+  const [baselineId, setBaselineId] = useState(
+    initialBaselineId || (initialSelectedIds && initialSelectedIds[0]) || "sc-001"
+  );
 
   // Active view tab: "comparison" (matrix & charts) | "why" (attribution)
   const [activeTab, setActiveTab] = useState("comparison");

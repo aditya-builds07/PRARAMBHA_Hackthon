@@ -146,7 +146,11 @@ function AppShell() {
       {/* Main Content Area: Page Router */}
       <main className="flex-1">
         {currentPage === "comparison" && (
-          <ScenarioComparisonPage onNavigate={handleNavigate} />
+          <ScenarioComparisonPage
+            initialSelectedIds={navParams.selectedIds}
+            initialBaselineId={navParams.baselineId}
+            onNavigate={handleNavigate}
+          />
         )}
         {currentPage === "why" && (
           <WhyPage
