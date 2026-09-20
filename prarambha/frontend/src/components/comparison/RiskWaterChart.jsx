@@ -151,6 +151,31 @@ export default function RiskWaterChart({ scenarios = [] }) {
           </div>
         </div>
       )}
+
+      {/* Screen Reader Accessible Data Alternative */}
+      <table className="sr-only">
+        <caption>Water efficiency and risk profile comparison data table</caption>
+        <thead>
+          <tr>
+            <th scope="col">Scenario Plan</th>
+            <th scope="col">Water Drawn (m³)</th>
+            <th scope="col">Water Productivity (Qtl/m³)</th>
+            <th scope="col">Overall Risk Score</th>
+            <th scope="col">Risk Level</th>
+          </tr>
+        </thead>
+        <tbody>
+          {scenarios.map((s) => (
+            <tr key={s.id}>
+              <th scope="row">{s.name}</th>
+              <td>{formatNumber(s.results?.water?.drawnM3 ?? 0, 0)} m³</td>
+              <td>{formatNumber(s.results?.water?.productivity ?? 0, 1)} Qtl/m³</td>
+              <td>{s.results?.risk?.overall ?? 0}/100</td>
+              <td>{s.results?.risk?.level || "Medium"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

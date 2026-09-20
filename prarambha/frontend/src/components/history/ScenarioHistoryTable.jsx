@@ -328,6 +328,8 @@ export default function ScenarioHistoryTable({
                     {/* Column 6: Risk (icon + text + color) */}
                     <td className="p-3.5 text-center whitespace-nowrap">
                       <span
+                        role="status"
+                        aria-label={`Risk assessment: ${risk.label}`}
                         className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${risk.className}`}
                       >
                         <span aria-hidden="true">{risk.dot}</span>

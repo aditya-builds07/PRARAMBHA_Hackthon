@@ -36,6 +36,8 @@ export default function ResourceStatusBadge({ status = "available" }) {
 
   return (
     <span
+      role="status"
+      aria-label={`Resource status: ${configs.label}`}
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-2xs ${configs.bg}`}
     >
       <span aria-hidden="true" className="font-extrabold text-[11px]">{configs.icon}</span>

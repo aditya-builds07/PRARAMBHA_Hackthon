@@ -197,7 +197,28 @@ export default function EconomicsChart({ scenarios = [] }) {
             })()}
           </div>
         )}
-      </div>
+      {/* Screen Reader Accessible Data Alternative */}
+      <table className="sr-only">
+        <caption>Economics breakdown comparison data table</caption>
+        <thead>
+          <tr>
+            <th scope="col">Scenario Plan</th>
+            <th scope="col">Production Cost</th>
+            <th scope="col">Gross Revenue</th>
+            <th scope="col">Net Profit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {scenarios.map((s) => (
+            <tr key={s.id}>
+              <th scope="row">{s.name}</th>
+              <td>{formatCurrency(s.results?.economics?.cost ?? 0)}</td>
+              <td>{formatCurrency(s.results?.economics?.revenue ?? 0)}</td>
+              <td>{formatCurrency(s.results?.economics?.profit ?? 0)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
