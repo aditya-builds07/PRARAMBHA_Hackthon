@@ -56,13 +56,31 @@ export default function ResourceCheckPage({
 
           <div className="flex items-center gap-3 self-start sm:self-auto flex-wrap">
             {onNavigate && (
-              <button
-                type="button"
-                onClick={() => onNavigate("comparison")}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer"
-              >
-                ← Back to Comparison
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => onNavigate("recommendations", { farmId, scenarioId })}
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer flex items-center gap-1"
+                >
+                  <span>🌾</span>
+                  <span>Recommendations</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("report", { farmId, scenarioId })}
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer flex items-center gap-1"
+                >
+                  <span>📄</span>
+                  <span>View Report</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("comparison")}
+                  className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer"
+                >
+                  ← Back to Comparison
+                </button>
+              </div>
             )}
 
             {/* Language Selector */}

@@ -111,23 +111,46 @@ export default function RecommendationsPage({ scenarioId = "sc-003", onNavigate 
             </div>
           </div>
 
-          {/* Scenario Selector Dropdown */}
-          <div className="flex items-center gap-2">
-            <label htmlFor="rec-scenario-select" className="text-xs font-bold text-slate-600">
-              Switch Scenario:
-            </label>
-            <select
-              id="rec-scenario-select"
-              value={selectedScenarioId}
-              onChange={(e) => setSelectedScenarioId(e.target.value)}
-              className="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
-            >
-              {allScenarios.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name} ({s.results?.risk?.level?.toUpperCase()} RISK)
-                </option>
-              ))}
-            </select>
+          {/* Scenario Selector Dropdown and Cross-Module Links */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <label htmlFor="rec-scenario-select" className="text-xs font-bold text-slate-600">
+                Switch Scenario:
+              </label>
+              <select
+                id="rec-scenario-select"
+                value={selectedScenarioId}
+                onChange={(e) => setSelectedScenarioId(e.target.value)}
+                className="bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+              >
+                {allScenarios.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ({s.results?.risk?.level?.toUpperCase()} RISK)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {onNavigate && (
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => onNavigate("resources", { scenarioId: selectedScenarioId })}
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer flex items-center gap-1"
+                >
+                  <span>💧</span>
+                  <span>Check Resources</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("report", { scenarioId: selectedScenarioId })}
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer flex items-center gap-1"
+                >
+                  <span>📄</span>
+                  <span>View Report</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

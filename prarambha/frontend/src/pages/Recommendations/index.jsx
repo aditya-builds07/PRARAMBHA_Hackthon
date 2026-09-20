@@ -5,24 +5,35 @@ import RecommendationsPage from "./RecommendationsPage";
 
 /**
  * Recommendations Route Entry - Member 4
- * Replaces Member 3 placeholder stub with full Recommendations implementation.
+ * Wires route params (:farmId, :scenarioId) into RecommendationsPage.
  */
 export default function RecommendationsRoute() {
-  const { farmId } = useParams();
+  const { farmId, scenarioId } = useParams();
   const navigate = useNavigate();
 
-  const handleNavigate = (page) => {
+  const handleNavigate = (page, params = {}) => {
     const fId = farmId || "farm-001";
+    const scId = params.scenarioId || scenarioId || "sc-003";
+
     if (page === "comparison") {
       navigate(`/scenarios/${fId}/compare`);
     } else if (page === "history") {
       navigate(`/scenarios/${fId}/history`);
+    } else if (page === "resources") {
+      navigate(`/scenarios/${fId}/${scId}/resources`);
+    } else if (page === "report") {
+      navigate(`/scenarios/${fId}/${scId}/report`);
+    } else if (page === "why") {
+      navigate(`/scenarios/${fId}/${scId}/why`);
     }
   };
 
   return (
     <LanguageProvider>
-      <RecommendationsPage onNavigate={handleNavigate} />
+      <RecommendationsPage
+        scenarioId={scenarioId || "sc-003"}
+        onNavigate={handleNavigate}
+      />
     </LanguageProvider>
   );
 }
