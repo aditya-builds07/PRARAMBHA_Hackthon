@@ -175,7 +175,6 @@ function AppContent() {
     { id: "builder", label: "Scenario Builder", icon: "edit_note" },
     { id: "results", label: t("nav.results") || "Results", icon: "analytics" },
     { id: "comparison", label: t("nav.comparison") || "Scenario Compare", icon: "compare" },
-    { id: "why", label: t("nav.why") || "Why Did It Change?", icon: "help_outline" },
     { id: "recommendations", label: t("nav.recommendations") || "Recommendations", icon: "lightbulb" },
     { id: "resources", label: t("nav.resources") || "Resource Check", icon: "water_drop" },
     { id: "assumptions", label: t("nav.assumptions") || "Model Assumptions", icon: "article" },

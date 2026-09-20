@@ -6,7 +6,6 @@ const NAV_LINKS = [
   { to: "/farms", label: en.nav?.farms || "Farms" },
   { to: "/dashboard", label: en.nav?.dashboard || "Dashboard" },
   { to: "/scenarios/farm-001/compare", label: en.nav?.comparison || "Comparison" },
-  { to: "/scenarios/farm-001/sc-002/why", label: en.nav?.why || "Why" },
   { to: "/scenarios/farm-001/sc-003/recommendations", label: en.nav?.recommendations || "Recommendations" },
   { to: "/scenarios/farm-001/sc-001/resources", label: en.nav?.resources || "Resources" },
   { to: "/scenarios/farm-001/sc-001/assumptions", label: en.nav?.assumptions || "Assumptions" },
