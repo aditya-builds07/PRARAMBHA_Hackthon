@@ -1,7 +1,14 @@
 {
-  "appTitle": "KrishiMitra",
-  "appTagline": "Test the season before you sow it",
+  "app": {
+    "title": "PRARAMBHA 2.0",
+    "tagline": "Agri Scenario & Decision Simulator",
+    "subtitle": "Test the season before you sow it.",
+    "disclaimer": "Results are estimates based on scientific models — not financial guarantees."
+  },
   "nav": {
+    "farms": "My Farms",
+    "scenarios": "Scenario Builder",
+    "results": "Scenario Results",
     "comparison": "Scenario Comparison",
     "why": "Why Did It Change?",
     "recommendations": "Recommendations",
@@ -9,6 +16,54 @@
     "assumptions": "Model Assumptions",
     "history": "Scenario History",
     "report": "Printable Report"
+  },
+  "entry": {
+    "headline": "Test the season before you sow it.",
+    "subheadline": "Compare water, weather, sowing date, and crop plans to find your best strategy.",
+    "cta": "Get Started — Select Farm"
+  },
+  "farms": {
+    "title": "My Farms",
+    "subtitle": "Manage your farms to start simulating scenarios.",
+    "addFarm": "Add Farm",
+    "editFarm": "Edit Farm",
+    "deleteFarm": "Delete Farm",
+    "deleteConfirm": "Are you sure you want to delete this farm?",
+    "noFarms": "No farms found. Create your first farm to get started!",
+    "name": "Farm Name",
+    "village": "Village",
+    "district": "District",
+    "state": "State",
+    "totalAcres": "Total Area (acres)",
+    "soilType": "Soil Type",
+    "irrigationType": "Irrigation Source",
+    "waterReserve": "Water Available (m³)",
+    "selectFarm": "Select & Build Scenarios"
+  },
+  "builder": {
+    "title": "Scenario Builder",
+    "subtitle": "Adjust farming parameters and simulate expected outcomes.",
+    "baseline": "Baseline Plan",
+    "clone": "Clone Scenario",
+    "new": "New Scenario",
+    "presetRainfed": "Preset: Rainfed Only",
+    "presetDrip": "Preset: Drip + High Tech",
+    "presetDelayed": "Preset: Delayed Sowing (15d)",
+    "runSimulation": "Run Simulation",
+    "simulating": "Simulating...",
+    "autoReSimulating": "Re-simulating..."
+  },
+  "results": {
+    "title": "Scenario Results",
+    "subtitle": "Estimated yield, profit, water use, and risk assessment.",
+    "baselineTag": "Baseline",
+    "comparedToBaseline": "vs Baseline",
+    "yield": "Estimated Yield",
+    "netProfit": "Estimated Net Profit",
+    "waterUsed": "Water Requirement",
+    "riskLevel": "Overall Risk",
+    "decisionScore": "Decision Score",
+    "keyTakeaways": "Key Takeaways"
   },
   "comparison": {
     "title": "Scenario Comparison",
