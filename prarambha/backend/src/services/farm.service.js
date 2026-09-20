@@ -1,48 +1,56 @@
-import { getSupabaseClient } from "../adapters/db/supabase.client.js";
+/**
+ * farm.service.js — Data access for the farms table.
+ *
+ * All exported functions accept a `supabase` parameter (the per-request
+ * user-scoped client from req.supabaseClient). This ensures RLS policies
+ * are enforced — the client is bound to the caller's JWT (D2).
+ *
+ * NEVER call getSupabaseClient() or getAdminClient() here.
+ */
 
-export async function listFarms(userId) {
-  const { data, error } = await getSupabaseClient()
-    .from("farms")
-    .select("*")
+export async function listFarms(supabase, userId) {
+  const { data, error } = await supabase
+    .from('farms')
+    .select('*')
     .eq('auth_user_id', userId)
-    .order("created_at", { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) throw new Error(`Unable to load farms: ${error.message}`);
   return data;
 }
 
-export async function createFarm(farm, userId) {
-  const { data, error } = await getSupabaseClient()
-    .from("farms")
+export async function createFarm(supabase, farm, userId) {
+  const { data, error } = await supabase
+    .from('farms')
     .insert({ ...farm, auth_user_id: userId })
-    .select("*")
+    .select('*')
     .single();
 
   if (error) throw new Error(`Unable to create farm: ${error.message}`);
   return data;
 }
 
-export async function getFarmById(farmId) {
-  const { data, error } = await getSupabaseClient()
-    .from("farms")
-    .select("*")
-    .eq("id", farmId)
+export async function getFarmById(supabase, farmId) {
+  const { data, error } = await supabase
+    .from('farms')
+    .select('*')
+    .eq('id', farmId)
     .maybeSingle();
 
   if (error) throw new Error(`Unable to load farm: ${error.message}`);
   return data;
 }
 
-export async function updateFarm(id, farm, userId) {
-  const { data, error } = await getSupabaseClient()
+export async function updateFarm(supabase, id, farm, userId) {
+  const { data, error } = await supabase
     .from('farms').update(farm).eq('id', id).eq('auth_user_id', userId).select('*').maybeSingle();
   if (error) throw new Error(`Unable to update farm: ${error.message}`);
   if (!data) throw new Error('Farm not found.');
   return data;
 }
 
-export async function deleteFarmById(id, userId) {
-  const { data, error } = await getSupabaseClient()
+export async function deleteFarmById(supabase, id, userId) {
+  const { data, error } = await supabase
     .from('farms').delete().eq('id', id).eq('auth_user_id', userId).select('id').maybeSingle();
   if (error) throw new Error(`Unable to delete farm: ${error.message}`);
   if (!data) throw new Error('Farm not found.');

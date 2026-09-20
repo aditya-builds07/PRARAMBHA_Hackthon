@@ -1,4 +1,4 @@
-﻿import { cn } from "../../lib/utils.js"
+import { cn } from "../../lib/utils.js"
 
 /**
  * EstimateBadge — always visible on result screens.
@@ -104,3 +104,6 @@ export function Field({ label, htmlFor, error, hint, required, children, classNa
     </div>
   )
 }
+
+export { CustomSelect } from "./CustomSelect.jsx"
+

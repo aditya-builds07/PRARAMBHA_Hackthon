@@ -11,15 +11,41 @@ import {
 import { useSimulation } from "../../hooks/useSimulation.js"
 import { DEMO_PRESETS, WEATHER_OPTIONS, IRRIGATION_TYPES, PRIORITY_PROFILES } from "../../utils/constants.js"
 import en from "../../i18n/en.json"
+import { CustomSelect } from "../../components/common/CustomSelect.jsx"
 
 const CROP_OPTIONS = [
-  { id: "wheat", name: "Wheat (गहू / गेहूं)" },
-  { id: "rice", name: "Rice / Paddy (भात / धान)" },
-  { id: "cotton", name: "Cotton (कापूस / कपास)" },
-  { id: "soybean", name: "Soybean (सोयाबीन)" },
-  { id: "sugarcane", name: "Sugarcane (ऊस / गन्ना)" },
-  { id: "chickpea", name: "Gram / Chickpea (हरभरा / चना)" },
-  { id: "maize", name: "Maize (मका / मक्का)" }
+  { id: "wheat", name: "Wheat (गहू / गेहूं)", icon: "grain" },
+  { id: "rice", name: "Rice / Paddy (भात / धान)", icon: "grass" },
+  { id: "cotton", name: "Cotton (कापूस / कपास)", icon: "spa" },
+  { id: "soybean", name: "Soybean (सोयाबीन)", icon: "nutrition" },
+  { id: "sugarcane", name: "Sugarcane (ऊस / गन्ना)", icon: "forest" },
+  { id: "chickpea", name: "Gram / Chickpea (हरभरा / चना)", icon: "eco" },
+  { id: "maize", name: "Maize (मका / मक्का)", icon: "agriculture" }
+]
+
+const TIMING_OPTIONS = [
+  { value: "on_time", label: "On-time (Optimal window)", description: "Recommended optimal agronomic window", icon: "schedule" },
+  { value: "delayed", label: "Delayed Sowing (+14 Days)", description: "+14 Days — Potential heat/monsoon risk", icon: "update" },
+  { value: "early", label: "Early Sowing (-7 Days)", description: "-7 Days — Early soil preparation required", icon: "history" }
+]
+
+const IRRIGATION_OPTIONS = [
+  { value: "flood", label: "Flood / Furrow Irrigation", description: "Traditional furrow / basin method", icon: "water" },
+  { value: "drip", label: "Drip Irrigation (High Efficiency)", description: "Targeted root-zone drip system", icon: "water_drop" },
+  { value: "sprinkler", label: "Sprinkler Irrigation", description: "Overhead spray coverage", icon: "shower" },
+  { value: "rainfed", label: "Pure Rainfed (Zero Groundwater)", description: "100% dependent on seasonal rainfall", icon: "cloud" }
+]
+
+const PRIORITY_OPTIONS = [
+  { value: "balanced", label: "Balanced (Profit & Safety)", description: "Equal weight on yield profit & risk containment", icon: "balance" },
+  { value: "max_profit", label: "Maximum Profit Yield", description: "Optimizes for maximum projected net margin", icon: "trending_up" },
+  { value: "play_safe", label: "Play Safe (Minimize Downside Risk)", description: "Minimizes downside exposure under adversity", icon: "shield" }
+]
+
+const WEATHER_CHOICES = [
+  { value: "normal", label: "Normal Monsoon / Expected Weather", description: "Standard seasonal rainfall and temperatures", icon: "wb_sunny" },
+  { value: "poor", label: "Deficient Monsoon / High Heat (Poor)", description: "Lower rainfall, intermittent heatwaves", icon: "thermostat" },
+  { value: "good", label: "Abundant Rainfall / Favorable (Good)", description: "Optimal rainfall distribution", icon: "cloud_queue" }
 ]
 
 export default function ScenarioBuilderPage({ farmId, onNavigate }) {
@@ -289,15 +315,12 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-foreground">Selected Crop</label>
-                <select
+                <CustomSelect
+                  id="scenario-crop"
                   value={activeScenario.crop || "wheat"}
-                  onChange={(e) => handleFieldChange("crop", e.target.value)}
-                  className="input-base"
-                >
-                  {CROP_OPTIONS.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
-                  ))}
-                </select>
+                  onChange={(e) => handleFieldChange("crop", e.target?.value ?? e)}
+                  options={CROP_OPTIONS.map((c) => ({ value: c.id, label: c.name, icon: c.icon }))}
+                />
               </div>
 
               <div className="space-y-1.5">
@@ -318,18 +341,15 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-foreground">Sowing Timing</label>
-                <select
+                <CustomSelect
+                  id="scenario-timing"
                   value={activeScenario.planting?.type || "on_time"}
                   onChange={(e) => {
-                    const type = e.target.value
+                    const type = e.target?.value ?? e
                     handlePlantingChange({ type, delayDays: type === "delayed" ? 14 : 0 })
                   }}
-                  className="input-base"
-                >
-                  <option value="on_time">On-time (Optimal window)</option>
-                  <option value="delayed">Delayed Sowing (+14 Days)</option>
-                  <option value="early">Early Sowing (-7 Days)</option>
-                </select>
+                  options={TIMING_OPTIONS}
+                />
               </div>
             </div>
 
@@ -342,16 +362,12 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-foreground">Irrigation Method</label>
-                <select
+                <CustomSelect
+                  id="scenario-irrigation"
                   value={activeScenario.irrigation || "flood"}
-                  onChange={(e) => handleFieldChange("irrigation", e.target.value)}
-                  className="input-base"
-                >
-                  <option value="flood">Flood / Furrow Irrigation</option>
-                  <option value="drip">Drip Irrigation (High Efficiency)</option>
-                  <option value="sprinkler">Sprinkler Irrigation</option>
-                  <option value="rainfed">Pure Rainfed (Zero Groundwater)</option>
-                </select>
+                  onChange={(e) => handleFieldChange("irrigation", e.target?.value ?? e)}
+                  options={IRRIGATION_OPTIONS}
+                />
               </div>
 
               <div className="space-y-2">
@@ -377,15 +393,12 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
 
               <div className="space-y-1.5 pt-1">
                 <label className="text-xs font-medium text-foreground">Optimization Priority</label>
-                <select
+                <CustomSelect
+                  id="scenario-priority"
                   value={activeScenario.priorityProfile || "balanced"}
-                  onChange={(e) => handleFieldChange("priorityProfile", e.target.value)}
-                  className="input-base"
-                >
-                  <option value="balanced">Balanced (Profit & Safety)</option>
-                  <option value="max_profit">Maximum Profit Yield</option>
-                  <option value="play_safe">Play Safe (Minimize Downside Risk)</option>
-                </select>
+                  onChange={(e) => handleFieldChange("priorityProfile", e.target?.value ?? e)}
+                  options={PRIORITY_OPTIONS}
+                />
               </div>
             </div>
 
@@ -398,15 +411,12 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
 
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-foreground">Seasonal Weather Projection</label>
-                <select
+                <CustomSelect
+                  id="scenario-weather"
                   value={activeScenario.weather || "normal"}
-                  onChange={(e) => handleFieldChange("weather", e.target.value)}
-                  className="input-base"
-                >
-                  <option value="normal">Normal Monsoon / Expected Weather</option>
-                  <option value="poor">Deficient Monsoon / High Heat (Poor)</option>
-                  <option value="good">Abundant Rainfall / Favorable (Good)</option>
-                </select>
+                  onChange={(e) => handleFieldChange("weather", e.target?.value ?? e)}
+                  options={WEATHER_CHOICES}
+                />
               </div>
 
               <div className="space-y-2">

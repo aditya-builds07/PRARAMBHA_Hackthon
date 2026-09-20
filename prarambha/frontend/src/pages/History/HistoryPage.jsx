@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
 import ExpandableCard from "../../components/common/ExpandableCard";
+import { CustomSelect } from "../../components/common/CustomSelect";
+
+const SEASON_OPTIONS = [
+  { value: "all", label: "All Available Cycles (2023 - 2025)", icon: "date_range" },
+  { value: "rabi-2425", label: "Rabi 2024-25 (Wheat Precision • Active)", icon: "grain" },
+  { value: "kharif-2025", label: "Kharif 2025 (Cotton & Tur • Harvested)", icon: "spa" },
+  { value: "rabi-2324", label: "Rabi 2023-24 (Desi Gram • Audited)", icon: "eco" },
+  { value: "kharif-2024", label: "Kharif 2024 (Soybean • Baseline)", icon: "nutrition" },
+];
 
 export default function HistoryPage({ onNavigate = null }) {
   const navigate = useNavigate();
@@ -105,19 +114,16 @@ export default function HistoryPage({ onNavigate = null }) {
       </div>
 
       {/* Filter Toolbar */}
-      <div className="flex items-center gap-3">
-        <span className="text-xs font-bold text-[#164A34] uppercase">Filter Cycle:</span>
-        <select
-          value={selectedSeason}
-          onChange={(e) => setSelectedSeason(e.target.value)}
-          className="bg-white border border-[#D0DEC0] px-3.5 py-1.5 rounded-xl text-xs font-bold text-[#1E2924] outline-none cursor-pointer"
-        >
-          <option value="all">All Available Cycles (2023 - 2025)</option>
-          <option value="rabi-2425">Rabi 2024-25 (Wheat Precision • Active)</option>
-          <option value="kharif-2025">Kharif 2025 (Cotton & Tur • Harvested)</option>
-          <option value="rabi-2324">Rabi 2023-24 (Desi Gram • Audited)</option>
-          <option value="kharif-2024">Kharif 2024 (Soybean • Baseline)</option>
-        </select>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <span className="text-xs font-bold text-[#164A34] uppercase tracking-wider whitespace-nowrap">Filter Cycle:</span>
+        <div className="w-full sm:w-80">
+          <CustomSelect
+            value={selectedSeason}
+            onChange={(e) => setSelectedSeason(e.target?.value ?? e)}
+            options={SEASON_OPTIONS}
+            className="py-1.5 min-h-[38px] text-xs font-bold"
+          />
+        </div>
       </div>
 
       {/* History Records via ExpandableCard */}

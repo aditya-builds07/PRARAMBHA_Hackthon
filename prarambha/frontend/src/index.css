@@ -84,6 +84,73 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(205, 224, 210, 0.8);
   }
+
+  /* Form Controls & Inputs */
+  .input-base {
+    display: block;
+    width: 100%;
+    min-height: 42px;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: #1E2924;
+    background-color: #FFFFFF;
+    border: 1.5px solid #D0DEC0;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 2px 0 rgba(16, 24, 40, 0.04);
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .input-base:hover {
+    border-color: #86C39C;
+    background-color: #FAFCFA;
+  }
+
+  .input-base:focus,
+  .input-base:focus-visible {
+    border-color: #164A34;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(22, 74, 52, 0.15);
+    background-color: #FFFFFF;
+  }
+
+  .input-base::placeholder {
+    color: #8A9E93;
+    font-weight: 400;
+  }
+
+  /* KrishiMitra Styled Select Dropdown (Native & Custom) */
+  select.input-base,
+  .krishi-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.2' stroke='%23164A34'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.15rem 1.15rem;
+  }
+
+  select.input-base:disabled,
+  .krishi-select:disabled {
+    background-color: #F4F7F4;
+    color: #8A9E93;
+    cursor: not-allowed;
+    border-color: #E2EAD8;
+    opacity: 0.65;
+  }
+
+  select.input-base option,
+  .krishi-select option {
+    background-color: #FFFFFF;
+    color: #1E2924;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.625rem 0.875rem;
+  }
 }
 
 @layer utilities {

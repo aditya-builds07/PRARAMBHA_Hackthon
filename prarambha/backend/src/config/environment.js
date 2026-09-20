@@ -7,19 +7,32 @@ function requiredEnvironmentValue(name) {
 }
 
 /**
- * Centralises server-only configuration so adapters do not each interpret
- * environment variables differently or accidentally expose credentials to clients.
+ * Returns the Supabase URL and ANON key for per-request user-scoped clients.
+ * The anon key is safe to use with RLS — it respects Row-Level Security policies.
  */
-export function getSupabaseConfiguration() {
-  const url = requiredEnvironmentValue('SUPABASE_URL');
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || process.env.SUPABASE_SECRET_KEY?.trim();
-  if (!serviceRoleKey) {
-    throw new Error('Missing required server configuration: SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SECRET_KEY). Add it to prarambha/.env.');
-  }
+export function getSupabaseAnonConfiguration() {
   return {
-    url,
-    serviceRoleKey,
+    url: requiredEnvironmentValue('SUPABASE_URL'),
+    anonKey: requiredEnvironmentValue('SUPABASE_ANON_KEY'),
   };
+}
+
+/**
+ * Returns the Supabase service-role key for the whitelisted admin client only.
+ * NEVER call this from route handlers or services — only from supabase.admin.client.js.
+ * Using the service-role key bypasses Row-Level Security (RLS).
+ */
+export function getSupabaseAdminConfiguration() {
+  const url = requiredEnvironmentValue('SUPABASE_URL');
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+    process.env.SUPABASE_SECRET_KEY?.trim();
+  if (!serviceRoleKey) {
+    throw new Error(
+      'Missing required server configuration: SUPABASE_SERVICE_ROLE_KEY. Add it to prarambha/.env.'
+    );
+  }
+  return { url, serviceRoleKey };
 }
 
 export function getServerPort() {

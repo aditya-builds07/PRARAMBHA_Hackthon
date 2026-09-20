@@ -4,6 +4,7 @@ import { useLanguage } from "../../i18n/LanguageContext";
 import { MOCK_SCENARIOS, MOCK_WHY_EXPLANATIONS } from "../../services/mockData";
 import { getWhyExplanation } from "../../services/comparison.service";
 import ExpandableCard from "../../components/common/ExpandableCard";
+import { CustomSelect } from "../../components/common/CustomSelect";
 
 export default function WhyPage({
   initialTargetId = "sc-002",
@@ -70,30 +71,28 @@ export default function WhyPage({
 
       {/* Scenario Selection Strip */}
       <div className="bg-white rounded-2xl p-4 border border-[#D0DEC0] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold">
-        <div className="flex items-center gap-2">
-          <span className="text-[#164A34]">Target Plan:</span>
-          <select
-            value={targetId}
-            onChange={(e) => setTargetId(e.target.value)}
-            className="bg-[#FAF9F5] border border-[#D0DEC0] px-3 py-1.5 rounded-xl text-xs font-bold text-[#1E2924] outline-none cursor-pointer"
-          >
-            {allScenarios.map((s) => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <span className="text-[#164A34] whitespace-nowrap">Target Plan:</span>
+          <div className="min-w-[220px]">
+            <CustomSelect
+              value={targetId}
+              onChange={(e) => setTargetId(e.target?.value ?? e)}
+              options={allScenarios.map((s) => ({ value: s.id, label: s.name, icon: "analytics" }))}
+              className="py-1.5 min-h-[38px] text-xs font-bold"
+            />
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-[#596A61]">Baseline Reference:</span>
-          <select
-            value={referenceId}
-            onChange={(e) => setReferenceId(e.target.value)}
-            className="bg-[#FAF9F5] border border-[#D0DEC0] px-3 py-1.5 rounded-xl text-xs font-bold text-[#1E2924] outline-none cursor-pointer"
-          >
-            {allScenarios.map((s) => (
-              <option key={s.id} value={s.id}>{s.name} (Baseline)</option>
-            ))}
-          </select>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <span className="text-[#596A61] whitespace-nowrap">Baseline Reference:</span>
+          <div className="min-w-[220px]">
+            <CustomSelect
+              value={referenceId}
+              onChange={(e) => setReferenceId(e.target?.value ?? e)}
+              options={allScenarios.map((s) => ({ value: s.id, label: `${s.name} (Baseline)`, icon: "history" }))}
+              className="py-1.5 min-h-[38px] text-xs font-bold"
+            />
+          </div>
         </div>
       </div>
 

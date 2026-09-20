@@ -1,4 +1,8 @@
-import { getSupabaseClient } from "../adapters/db/supabase.client.js";
+// WHY SERVICE ROLE: audit_logs has no permissive RLS policy by design
+// (users must not be able to read or forge audit records). Only the admin
+// client (service role) can insert and read audit rows. This is the ONLY
+// file in src/ that is whitelisted to import the admin client.
+import { getAdminClient } from '../adapters/db/supabase.admin.client.js';
 
 /**
  * Allowed audit action values. This list is the single source of truth — any
@@ -50,7 +54,7 @@ export async function writeAuditLog({
     );
   }
 
-  const { data, error } = await getSupabaseClient()
+  const { data, error } = await getAdminClient()
     .from("audit_logs")
     .insert({
       user_id: userId,
@@ -88,8 +92,26 @@ export async function writeAuditLogSafely(event) {
  * Returns the most recent audit log entries for a given farm.
  * Used by the read endpoint in audit.routes.js.
  */
-export async function listAuditByFarm(farmId, limit = 100) {
-  const { data, error } = await getSupabaseClient()
+export async function listAuditByFarm(farmId, limit = 100, userId) {
+  // WHY SERVICE ROLE: Reading audit logs requires service role because the
+  // audit_logs table has no permissive RLS read policy for users.
+  // Ownership is verified here at the application layer instead.
+  const supabase = getAdminClient();
+
+  // Application-layer ownership check: verify the requesting user owns this farm.
+  // We use the admin client here because audit_logs itself is admin-only, but we
+  // read the farms table to verify ownership before returning audit data.
+  if (userId) {
+    const { data: farm } = await supabase
+      .from('farms')
+      .select('id')
+      .eq('id', farmId)
+      .eq('auth_user_id', userId)
+      .maybeSingle();
+    if (!farm) throw new Error('Farm not found.');
+  }
+
+  const { data, error } = await supabase
     .from("audit_logs")
     .select("*")
     .eq("farm_id", farmId)

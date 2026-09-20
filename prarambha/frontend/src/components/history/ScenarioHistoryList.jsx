@@ -8,6 +8,14 @@ import {
   deleteScenario,
   cloneScenario,
 } from "../../services/history.service";
+import { CustomSelect } from "../common/CustomSelect";
+
+const SORT_OPTIONS = [
+  { value: "newest", label: "Newest First", icon: "schedule" },
+  { value: "oldest", label: "Oldest First", icon: "history" },
+  { value: "profit_high", label: "Highest Profit", icon: "trending_up" },
+  { value: "risk_low", label: "Lowest Risk", icon: "shield" },
+];
 
 /**
  * ScenarioHistoryList Component - Member 4
@@ -67,17 +75,15 @@ export default function ScenarioHistoryList({
             <label htmlFor="history-sort" className="font-semibold text-slate-500 whitespace-nowrap">
               Sort:
             </label>
-            <select
-              id="history-sort"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-2 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
-            >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="profit_high">Highest Profit</option>
-              <option value="risk_low">Lowest Risk</option>
-            </select>
+            <div className="w-44">
+              <CustomSelect
+                id="history-sort"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target?.value ?? e)}
+                options={SORT_OPTIONS}
+                className="py-1.5 min-h-[36px] text-xs font-bold"
+              />
+            </div>
           </div>
         </div>
 

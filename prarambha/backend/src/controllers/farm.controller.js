@@ -16,7 +16,7 @@ function farmId(value) {
 
 export async function getFarms(request, response, next) {
   try {
-    sendSuccess(response, 200, await listFarms(request.user.id));
+    sendSuccess(response, 200, await listFarms(request.supabaseClient, request.user.id));
   } catch (error) {
     next(error);
   }
@@ -25,7 +25,7 @@ export async function getFarms(request, response, next) {
 export async function postFarm(request, response, next) {
   try {
     const farm = validateFarmInput(request.body);
-    const created = await createFarm(farm, request.user.id);
+    const created = await createFarm(request.supabaseClient, farm, request.user.id);
     await writeAuditLogSafely({ action: 'CREATE_FARM', userId: request.user.id, farmId: created.id, inputSnapshot: farm, outputSnapshot: created });
     sendSuccess(response, 201, created);
   } catch (error) {
@@ -40,7 +40,7 @@ export async function postFarm(request, response, next) {
 export async function putFarm(request, response, next) {
   try {
     const id = farmId(request.params.id);
-    const updated = await updateFarm(id, validateFarmInput(request.body), request.user.id);
+    const updated = await updateFarm(request.supabaseClient, id, validateFarmInput(request.body), request.user.id);
     await writeAuditLogSafely({ action: 'UPDATE_FARM', userId: request.user.id, farmId: updated.id, inputSnapshot: request.body, outputSnapshot: updated });
     sendSuccess(response, 200, updated);
   } catch (error) {
@@ -53,9 +53,9 @@ export async function putFarm(request, response, next) {
 export async function deleteFarm(request, response, next) {
   try {
     const id = farmId(request.params.id);
-    const existing = await getFarmById(id);
+    const existing = await getFarmById(request.supabaseClient, id);
     if (existing) await writeAuditLogSafely({ action: 'DELETE_FARM', userId: request.user.id, farmId: id, inputSnapshot: existing });
-    const deleted = await deleteFarmById(id, request.user.id);
+    const deleted = await deleteFarmById(request.supabaseClient, id, request.user.id);
     sendSuccess(response, 200, deleted);
   } catch (error) {
     if (error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);

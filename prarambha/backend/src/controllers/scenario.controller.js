@@ -25,7 +25,7 @@ export async function getScenarios(request, response, next) {
       sendError(response, 400, 'VALIDATION_ERROR', 'farmId query parameter is required.');
       return;
     }
-    sendSuccess(response, 200, await listScenariosByFarm(farmId.trim(), request.user.id));
+    sendSuccess(response, 200, await listScenariosByFarm(request.supabaseClient, farmId.trim(), request.user.id));
   } catch (error) {
     next(error);
   }
@@ -33,7 +33,7 @@ export async function getScenarios(request, response, next) {
 
 export async function postScenario(request, response, next) {
   try {
-    const created = await createScenario(validateScenarioInput(request.body), request.user.id);
+    const created = await createScenario(request.supabaseClient, validateScenarioInput(request.body), request.user.id);
     await writeAuditLogSafely({ action: 'CREATE_SCENARIO', userId: request.user.id, farmId: created.farm_id, scenarioId: created.id, inputSnapshot: request.body, outputSnapshot: created });
     sendSuccess(response, 201, created);
   } catch (error) {
@@ -46,7 +46,7 @@ export async function postScenario(request, response, next) {
 }
 
 export async function getScenario(request, response, next) {
-  try { sendSuccess(response, 200, await getScenarioById(scenarioId(request.params.id), request.user.id)); }
+  try { sendSuccess(response, 200, await getScenarioById(request.supabaseClient, scenarioId(request.params.id), request.user.id)); }
   catch (error) {
     if (error.message === 'Scenario not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
     if (error.message.includes('required')) return sendError(response, 400, 'VALIDATION_ERROR', error.message);
@@ -56,8 +56,7 @@ export async function getScenario(request, response, next) {
 
 export async function putScenario(request, response, next) {
   try {
-    // Stored scenarios are the input snapshot used to reproduce their saved results.
-    const updated = await updateScenario(scenarioId(request.params.id), validateScenarioInput(request.body), request.user.id);
+    const updated = await updateScenario(request.supabaseClient, scenarioId(request.params.id), validateScenarioInput(request.body), request.user.id);
     await writeAuditLogSafely({ action: 'UPDATE_SCENARIO', userId: request.user.id, farmId: updated.farm_id, scenarioId: updated.id, inputSnapshot: request.body, outputSnapshot: updated });
     sendSuccess(response, 200, updated);
   } catch (error) {
@@ -71,9 +70,9 @@ export async function putScenario(request, response, next) {
 export async function deleteScenario(request, response, next) {
   try {
     const id = scenarioId(request.params.id);
-    const existing = await getScenarioById(id, request.user.id);
+    const existing = await getScenarioById(request.supabaseClient, id, request.user.id);
     await writeAuditLogSafely({ action: 'DELETE_SCENARIO', userId: request.user.id, farmId: existing.farm_id, scenarioId: id, inputSnapshot: existing });
-    const deleted = await deleteScenarioById(id, request.user.id);
+    const deleted = await deleteScenarioById(request.supabaseClient, id, request.user.id);
     sendSuccess(response, 200, deleted);
   }
   catch (error) {

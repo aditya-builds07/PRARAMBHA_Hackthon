@@ -1,9 +1,9 @@
-﻿/**
+/**
  * FarmForm.jsx — create or edit a farm.
  * Controlled form; validates on submit; never calls fetch directly.
  */
 import { useState } from "react"
-import { Field, Button } from "../common/index.jsx"
+import { Field, Button, CustomSelect } from "../common/index.jsx"
 import { validateFarm } from "../../utils/validate.js"
 import en from "../../i18n/en.json"
 
@@ -63,12 +63,12 @@ export default function FarmForm({ initial = null, onSave, onCancel, saving = fa
         </Field>
 
         <Field label={en.farms.fields.waterProfile} htmlFor="farm-water-profile">
-          <select id="farm-water-profile" value={values.waterProfile}
-            onChange={(e) => set("waterProfile", e.target.value)} className="input-base">
-            {Object.entries(en.farms.waterProfiles).map(([k, v]) => (
-              <option key={k} value={k}>{v}</option>
-            ))}
-          </select>
+          <CustomSelect
+            id="farm-water-profile"
+            value={values.waterProfile}
+            onChange={(e) => set("waterProfile", e.target?.value ?? e)}
+            options={Object.entries(en.farms.waterProfiles).map(([k, v]) => ({ value: k, label: v }))}
+          />
         </Field>
 
         <Field label={en.farms.fields.cropCycle} htmlFor="farm-crop-cycle">
