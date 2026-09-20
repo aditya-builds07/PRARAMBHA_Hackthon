@@ -1,14 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_RESOURCE_READINESS } from "../../services/mockData";
+import { getResourceReadiness } from "../../services/resources.service";
 import ResourceReadiness from "../../components/resources/ResourceReadiness";
 
 /**
  * ResourceCheckPage - Member 4 (Section 14 of Task_Distribution.md)
- * Feasibility audit verifying budget, water, seed, and input availability.
+ * Feasibility audit verifying budget, water, seed, and input availability with async fetch & states.
  */
-export default function ResourceCheckPage({ onNavigate = null }) {
+export default function ResourceCheckPage({
+  farmId = "farm-001",
+  scenarioId = "sc-001",
+  onNavigate = null,
+}) {
   const { t, language, setLanguage, supportedLanguages } = useLanguage();
+
+  const [readinessData, setReadinessData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchReadiness = () => {
+    setIsLoading(true);
+    setError(null);
+
+    getResourceReadiness(farmId, scenarioId)
+      .then((data) => {
+        setReadinessData(data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setError(err?.message || "Failed to load farm resource audit.");
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchReadiness();
+  }, [farmId, scenarioId]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 p-4 sm:p-6 lg:p-8 font-sans">
@@ -32,7 +59,7 @@ export default function ResourceCheckPage({ onNavigate = null }) {
               <button
                 type="button"
                 onClick={() => onNavigate("comparison")}
-                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs"
+                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors shadow-2xs cursor-pointer"
               >
                 ← Back to Comparison
               </button>
@@ -59,8 +86,13 @@ export default function ResourceCheckPage({ onNavigate = null }) {
           </div>
         </header>
 
-        {/* Resource Readiness Component */}
-        <ResourceReadiness readinessData={MOCK_RESOURCE_READINESS} />
+        {/* Resource Readiness Component with loading, empty, and error states */}
+        <ResourceReadiness
+          readinessData={readinessData}
+          isLoading={isLoading}
+          error={error}
+          onRetry={fetchReadiness}
+        />
       </div>
     </div>
   );

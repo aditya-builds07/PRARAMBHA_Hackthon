@@ -38,7 +38,7 @@ export default function ResourceStatusBadge({ status = "available" }) {
     <span
       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border shadow-2xs ${configs.bg}`}
     >
-      <span className={`w-1.5 h-1.5 rounded-full ${configs.dot}`} aria-hidden="true" />
+      <span aria-hidden="true" className="font-extrabold text-[11px]">{configs.icon}</span>
       <span>{configs.label}</span>
     </span>
   );
