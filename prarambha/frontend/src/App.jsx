@@ -141,9 +141,11 @@ function AppContent() {
   // Centralized logout handler
   const handleLogout = () => {
     try {
-      localStorage.removeItem("supabase_token");
-      localStorage.removeItem("user_email");
+      localStorage.removeItem("farmer_id");
+      localStorage.removeItem("user_id");
       localStorage.removeItem("user_name");
+      localStorage.removeItem("user_email");
+      localStorage.removeItem("supabase_token");
       sessionStorage.removeItem("sb-access-token");
     } catch {}
     navigate("/");
