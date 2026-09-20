@@ -2,6 +2,7 @@ import React from "react";
 import { useLanguage } from "../../i18n/LanguageContext";
 import ResourceGapTable from "./ResourceGapTable";
 import ResourceStatusBadge from "./ResourceStatusBadge";
+import FeasibilityBanner from "./FeasibilityBanner";
 
 /**
  * ResourceReadiness Component - Member 4
@@ -80,6 +81,12 @@ export default function ResourceReadiness({
 
   return (
     <div className="space-y-6">
+      {/* Module 3: Feasibility Verdict Banner */}
+      <FeasibilityBanner
+        feasibility={readinessData.feasibility}
+        resources={readinessData.resources || []}
+      />
+
       {/* 1. Overall Readiness Status Card */}
       <section
         aria-label="Overall Readiness Summary"
