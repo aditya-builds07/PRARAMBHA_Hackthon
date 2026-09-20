@@ -18,6 +18,7 @@ export default function ComparisonTable({
   baselineId = null,
   differences = [],
   tradeoffs = {},
+  onSelectWhyScenario = null,
 }) {
   const { t } = useLanguage();
 
@@ -102,6 +103,19 @@ export default function ComparisonTable({
                         </span>
                       ))}
                     </div>
+
+                    {/* Action: Explain Scenario Attribution */}
+                    {onSelectWhyScenario && !isBaseline && (
+                      <button
+                        type="button"
+                        onClick={() => onSelectWhyScenario(scenario.id)}
+                        className="mt-2.5 w-full inline-flex items-center justify-center gap-1 px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold transition-colors shadow-2xs"
+                        title={`Explain why ${scenario.name} differs from baseline`}
+                      >
+                        <span>Explain (Why?)</span>
+                        <span aria-hidden="true">→</span>
+                      </button>
+                    )}
                   </th>
                 );
               })}

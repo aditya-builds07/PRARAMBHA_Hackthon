@@ -304,6 +304,36 @@ export const MOCK_WHY_EXPLANATIONS = {
       },
     ],
   },
+  "sc-004_vs_sc-001": {
+    referenceScenarioId: "sc-001",
+    referenceScenarioName: "Standard Flood Plan",
+    targetScenarioId: "sc-004",
+    targetScenarioName: "Play Safe Sprinkler Plan",
+    totalChange: {
+      metric: "Profit",
+      value: -10500, // -₹10,500
+    },
+    factors: [
+      {
+        factor: "Sprinkler Irrigation Efficiency",
+        contribution: 4500,
+        controllability: "controllable",
+        explanation: "Sprinkler distribution saved 900 m³ water buffer and maintained stable canopy cooling.",
+      },
+      {
+        factor: "Input Cost Multiplier (1.05x)",
+        contribution: -3000,
+        controllability: "controllable",
+        explanation: "Sprinkler maintenance and targeted micronutrients added ₹3,000 in operational costs.",
+      },
+      {
+        factor: "Conservative Plant Density",
+        contribution: -12000,
+        controllability: "controllable",
+        explanation: "Lower seed rate intentionally favored risk protection and water endurance over maximum yield potential.",
+      },
+    ],
+  },
 };
 
 export const MOCK_RECOMMENDATIONS = [

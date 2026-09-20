@@ -173,3 +173,107 @@ export function getRiskLevelInfo(level, score) {
     };
   }
 }
+
+/**
+ * Group factors into controllable, external, and unclassified categories
+ */
+export function groupFactorsByControllability(factors = []) {
+  const result = {
+    controllable: [],
+    external: [],
+    unclassified: [],
+  };
+
+  if (!Array.isArray(factors)) return result;
+
+  for (const factor of factors) {
+    if (factor.controllability === "controllable") {
+      result.controllable.push(factor);
+    } else if (factor.controllability === "external") {
+      result.external.push(factor);
+    } else {
+      result.unclassified.push(factor);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Calculate secondary metric deltas between target and reference scenarios
+ */
+export function calculateSecondaryDeltas(targetScenario, referenceScenario) {
+  if (!targetScenario || !referenceScenario) return null;
+
+  const targetM = extractScenarioMetrics(targetScenario);
+  const refM = extractScenarioMetrics(referenceScenario);
+
+  return {
+    profit: {
+      diff: targetM.profit - refM.profit,
+      pct: refM.profit !== 0 ? ((targetM.profit - refM.profit) / refM.profit) * 100 : 0,
+      unit: "₹",
+    },
+    yieldTotal: {
+      diff: targetM.yieldTotal - refM.yieldTotal,
+      pct: refM.yieldTotal !== 0 ? ((targetM.yieldTotal - refM.yieldTotal) / refM.yieldTotal) * 100 : 0,
+      unit: "Quintals",
+    },
+    yieldPerAcre: {
+      diff: targetM.yieldPerAcre - refM.yieldPerAcre,
+      pct: refM.yieldPerAcre !== 0 ? ((targetM.yieldPerAcre - refM.yieldPerAcre) / refM.yieldPerAcre) * 100 : 0,
+      unit: "Qtl/Acre",
+    },
+    waterDrawn: {
+      diff: targetM.waterDrawn - refM.waterDrawn,
+      pct: refM.waterDrawn !== 0 ? ((targetM.waterDrawn - refM.waterDrawn) / refM.waterDrawn) * 100 : 0,
+      unit: "m³",
+    },
+    riskOverall: {
+      diff: targetM.riskOverall - refM.riskOverall,
+      pct: refM.riskOverall !== 0 ? ((targetM.riskOverall - refM.riskOverall) / refM.riskOverall) * 100 : 0,
+      unit: "pts",
+    },
+    decisionScore: {
+      diff: targetM.decisionScore - refM.decisionScore,
+      pct: refM.decisionScore !== 0 ? ((targetM.decisionScore - refM.decisionScore) / refM.decisionScore) * 100 : 0,
+      unit: "pts",
+    },
+  };
+}
+
+/**
+ * Retrieve and validate WhyExplanation attribution data for two scenarios
+ */
+export function getWhyExplanation(targetScenarioId, referenceScenarioId, explanationsMap = {}) {
+  if (!targetScenarioId || !referenceScenarioId) return null;
+
+  // Identity comparison (same scenario compared to itself)
+  if (targetScenarioId === referenceScenarioId) {
+    return {
+      referenceScenarioId,
+      targetScenarioId,
+      totalChange: { metric: "Profit", value: 0 },
+      factors: [],
+      isIdentical: true,
+    };
+  }
+
+  const key = `${targetScenarioId}_vs_${referenceScenarioId}`;
+  const explanation = explanationsMap[key];
+
+  if (!explanation) return null;
+
+  // Validate attribution reconciliation: sum(contributions) === totalChange.value
+  const factorSum = (explanation.factors || []).reduce(
+    (acc, f) => acc + (typeof f.contribution === "number" ? f.contribution : 0),
+    0
+  );
+
+  return {
+    ...explanation,
+    factorSum,
+    isReconciled: factorSum === explanation.totalChange?.value,
+  };
+}
+
