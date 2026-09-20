@@ -3,6 +3,7 @@ import {
   Sprout,
   ArrowRight,
   Play,
+  LogIn,
 } from "lucide-react";
 
 /**
@@ -61,7 +62,7 @@ export default function LaunchPage({ onNavigate = null }) {
     <div className="relative h-screen w-full bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white overflow-hidden flex flex-col justify-between">
       
       {/* ========================================================================= */}
-      {/* 1. TOP NAVBAR (LOGO ONLY) */}
+      {/* 1. TOP NAVBAR */}
       {/* ========================================================================= */}
       <header className="relative z-20 w-full pt-6 pb-3 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-950/90 via-slate-950/50 to-transparent">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -87,6 +88,17 @@ export default function LaunchPage({ onNavigate = null }) {
               </p>
             </div>
           </div>
+
+          {/* Farmer Login Button */}
+          <button
+            type="button"
+            id="launch-farmer-login-btn"
+            onClick={() => navigateTo("login")}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-emerald-500/25 text-white hover:text-emerald-300 border border-white/20 hover:border-emerald-400/50 text-xs font-bold backdrop-blur-md transition-all cursor-pointer shadow-sm hover:scale-105"
+          >
+            <LogIn className="h-4 w-4" />
+            <span>Farmer Login</span>
+          </button>
         </div>
       </header>
 
