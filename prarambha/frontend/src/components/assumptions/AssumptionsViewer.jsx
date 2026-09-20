@@ -1,5 +1,6 @@
 import React from "react";
 import { useLanguage } from "../../i18n/LanguageContext";
+import { formatRiskWeightPercent } from "../../services/assumptions.service.js";
 import CropParametersTable from "./CropParametersTable";
 import FormulasList from "./FormulasList";
 
@@ -127,7 +128,8 @@ export default function AssumptionsViewer({ assumptionsData, isLoading = false }
 
           <div className="space-y-2.5 pt-1 text-xs">
             {Object.entries(riskWeights).map(([key, weight]) => {
-              const pct = (weight * 100).toFixed(0);
+              const formattedPct = formatRiskWeightPercent(weight);
+              const widthPct = (weight * 100).toFixed(0);
               const labels = {
                 waterStress: "Water Deficit Stress Weight",
                 weatherAnomaly: "Weather / Temperature Anomaly",
@@ -138,12 +140,12 @@ export default function AssumptionsViewer({ assumptionsData, isLoading = false }
                 <div key={key} className="space-y-1">
                   <div className="flex justify-between font-bold text-slate-800">
                     <span>{labels[key] || key}</span>
-                    <span className="tabular-nums text-slate-900">{pct}%</span>
+                    <span className="tabular-nums text-slate-900">{formattedPct}</span>
                   </div>
                   <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                     <div
                       className="bg-emerald-600 h-full rounded-full"
-                      style={{ width: `${pct}%` }}
+                      style={{ width: `${widthPct}%` }}
                       aria-hidden="true"
                     />
                   </div>

@@ -88,4 +88,40 @@ describe("Assumptions Transparency & Invariants — Unit Tests", () => {
       assert.ok(formulaNames.some((n) => n.includes("score") || n.includes("decision")));
     });
   });
+
+  describe("Assumptions Service Utilities", () => {
+    it("validates valid assumptions data successfully", async () => {
+      const { validateAssumptions } = await import("../src/services/assumptions.service.js");
+      const result = validateAssumptions(MOCK_ASSUMPTIONS);
+      assert.equal(result.isValid, true);
+      assert.equal(result.errors.length, 0);
+    });
+
+    it("detects invalid risk weights sum and missing disclaimer", async () => {
+      const { validateAssumptions } = await import("../src/services/assumptions.service.js");
+      const invalidData = {
+        modelVersion: "v2.0",
+        assumptionVersion: "2026.01",
+        riskWeights: { w1: 0.5, w2: 0.2 }, // sums to 0.7 !== 1.0
+      };
+      const result = validateAssumptions(invalidData);
+      assert.equal(result.isValid, false);
+      assert.ok(result.errors.some((e) => e.includes("Risk weights sum invariant")));
+      assert.ok(result.errors.some((e) => e.includes("disclaimer")));
+    });
+
+    it("formats fractional risk weights as percentage strings", async () => {
+      const { formatRiskWeightPercent } = await import("../src/services/assumptions.service.js");
+      assert.equal(formatRiskWeightPercent(0.35), "35%");
+      assert.equal(formatRiskWeightPercent(0.25), "25%");
+      assert.equal(formatRiskWeightPercent(0), "0%");
+    });
+
+    it("retrieves active assumptions with fallback", async () => {
+      const { getActiveAssumptions } = await import("../src/services/assumptions.service.js");
+      const data = await getActiveAssumptions();
+      assert.ok(data.modelVersion);
+      assert.ok(data.cropParameters);
+    });
+  });
 });
