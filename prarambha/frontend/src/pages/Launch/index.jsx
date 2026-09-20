@@ -108,28 +108,6 @@ export default function LaunchPage({ onNavigate = null }) {
               </p>
             </div>
           </div>
-
-          {/* Navigation Links */}
-          <nav className="flex items-center gap-6 text-sm font-medium text-slate-300">
-            <button
-              onClick={() => navigateTo("dashboard")}
-              className="hover:text-emerald-400 transition-colors"
-            >
-              Dashboard
-            </button>
-            <button
-              onClick={() => navigateTo("comparison")}
-              className="hover:text-emerald-400 transition-colors"
-            >
-              Scenario Comparison
-            </button>
-            <button
-              onClick={() => navigateTo("history")}
-              className="hover:text-emerald-400 transition-colors hidden sm:inline-block"
-            >
-              History
-            </button>
-          </nav>
         </div>
       </header>
 
