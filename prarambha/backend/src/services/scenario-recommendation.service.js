@@ -1,5 +1,6 @@
 import { getSupabaseClient } from '../adapters/db/supabase.client.js';
 import { generateRecommendations } from './recommendation.service.js';
+import { assertScenarioOwnership } from './authorization.service.js';
 
 function toScenarioInput(scenario) {
   return {
@@ -15,7 +16,10 @@ function toScenarioInput(scenario) {
 }
 
 /** Loads saved deterministic output; it never creates a second recommendation path. */
-export async function getRecommendationsForScenario(scenarioId) {
+export async function getRecommendationsForScenario(scenarioId, userId) {
+  if (userId) {
+    await assertScenarioOwnership(scenarioId, userId);
+  }
   const supabase = getSupabaseClient();
   const { data: scenario, error: scenarioError } = await supabase.from('scenarios').select('*').eq('id', scenarioId).maybeSingle();
   if (scenarioError) throw new Error(`Unable to load scenario: ${scenarioError.message}`);

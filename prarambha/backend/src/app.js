@@ -16,6 +16,8 @@ import { healthRouter } from "./routes/health.routes.js";
 import { weatherRouter } from "./routes/weather.routes.js";
 import { auditRouter } from "./routes/audit.routes.js";
 import { sendError } from './utils/response.js';
+import { getAllowedCorsOrigins } from './config/environment.js';
+import { apiLimiter } from './middleware/rate-limiter.middleware.js';
 
 export function createApp(options = {}) {
   const app = express();
@@ -26,11 +28,28 @@ export function createApp(options = {}) {
   // V7: Standard Security HTTP Headers via Helmet (CSP, HSTS, X-Frame-Options, X-Content-Type-Options)
   app.use(securityHeaders);
 
-  // Standard CORS & Body Parser with size boundaries
-  app.use(cors());
+  // V5: Strict CORS Policy
+  const allowedOrigins = getAllowedCorsOrigins();
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+        return callback(new Error(`CORS policy does not allow access from origin: ${origin}`));
+      },
+      credentials: true,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  );
+
   app.use(express.json({ limit: "100kb" }));
 
-  // API Route Mounts
+  // V6: Rate limiting across /api
+  app.use("/api", apiLimiter);
+
   app.use("/api", healthRouter);
   app.use("/api", cropRouter);
   app.use("/api", assumptionRouter);
@@ -54,8 +73,13 @@ export function createApp(options = {}) {
     sendError(response, 404, 'NOT_FOUND', 'The requested API route does not exist.');
   });
 
-  // V8: Centralized Error Handler preventing database error & stack trace leakage
-  app.use(globalErrorHandler);
+  // V8: Centralized Error Handler preventing database error & stack trace leakage + CORS errors
+  app.use((error, _request, response, next) => {
+    if (error.message?.includes("CORS policy")) {
+      return sendError(response, 403, "CORS_FORBIDDEN", error.message);
+    }
+    return globalErrorHandler(error, _request, response, next);
+  });
 
   return app;
 }

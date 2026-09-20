@@ -1,11 +1,5 @@
 import { getSupabaseClient } from "../adapters/db/supabase.client.js";
-
-async function assertFarmOwnership(farmId, userId) {
-  const { data, error } = await getSupabaseClient()
-    .from('farms').select('id').eq('id', farmId).eq('auth_user_id', userId).maybeSingle();
-  if (error) throw new Error(`Unable to verify farm ownership: ${error.message}`);
-  if (!data) throw new Error('Farm not found.');
-}
+import { assertFarmOwnership } from "./authorization.service.js";
 
 export async function listResourcesByFarm(farmId, userId) {
   if (userId) await assertFarmOwnership(farmId, userId);
@@ -47,7 +41,8 @@ export async function updateResource(id, resource, userId) {
   return data;
 }
 
-export async function upsertResourceForFarm(farmId, resource) {
+export async function upsertResourceForFarm(farmId, resource, userId) {
+  if (userId) await assertFarmOwnership(farmId, userId);
   const { data, error } = await getSupabaseClient()
     .from("resources")
     .upsert(

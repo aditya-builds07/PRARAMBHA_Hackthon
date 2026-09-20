@@ -35,7 +35,12 @@ function toScenarioInput(scenario) {
   };
 }
 
-export async function compareScenarios(farmId, scenarioIds) {
+import { assertFarmOwnership } from "./authorization.service.js";
+
+export async function compareScenarios(farmId, scenarioIds, userId) {
+  if (userId) {
+    await assertFarmOwnership(farmId, userId);
+  }
   const supabase = getSupabaseClient();
   let scenariosQuery = supabase
     .from("scenarios")

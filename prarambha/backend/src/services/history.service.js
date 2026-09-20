@@ -1,16 +1,25 @@
+import { getSupabaseClient } from "../adapters/db/supabase.client.js";
+import { assertFarmOwnership } from "./authorization.service.js";
+
 /**
  * history.service.js — Read-only view of scenario history for a farm.
- * Accepts a supabase parameter (per-request user-scoped client, D2).
- * The user-scoped client + .eq('auth_user_id', userId) on farms provides
- * defense-in-depth ownership enforcement (D4).
+ * Supports both listScenarioHistory(supabase, farmId, userId) and listScenarioHistory(farmId, userId).
  */
+export async function listScenarioHistory(supabaseOrFarmId, farmIdOrUserId, maybeUserId) {
+  let supabase, farmId, userId;
+  if (typeof supabaseOrFarmId === "string") {
+    supabase = getSupabaseClient();
+    farmId = supabaseOrFarmId;
+    userId = farmIdOrUserId;
+  } else {
+    supabase = supabaseOrFarmId || getSupabaseClient();
+    farmId = farmIdOrUserId;
+    userId = maybeUserId;
+  }
 
-export async function listScenarioHistory(supabase, farmId, userId) {
-  // Ownership check: only return history for farms owned by this user.
-  const { data: farm } = await supabase
-    .from('farms').select('id').eq('id', farmId).eq('auth_user_id', userId).maybeSingle();
-  if (!farm) throw new Error('Farm not found.');
-
+  if (userId) {
+    await assertFarmOwnership(farmId, userId);
+  }
   const { data: scenarios, error: scenariosError } = await supabase
     .from('scenarios')
     .select('id, name, crop_code, area_acres, is_baseline, created_at, updated_at')

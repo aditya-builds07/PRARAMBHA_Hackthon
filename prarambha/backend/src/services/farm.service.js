@@ -8,6 +8,8 @@
  * NEVER call getSupabaseClient() or getAdminClient() here.
  */
 
+import { getSupabaseClient } from "../adapters/db/supabase.client.js";
+
 export async function listFarms(supabase, userId) {
   const { data, error } = await supabase
     .from('farms')
@@ -30,12 +32,17 @@ export async function createFarm(supabase, farm, userId) {
   return data;
 }
 
-export async function getFarmById(supabase, farmId) {
-  const { data, error } = await supabase
+export async function getFarmById(supabase, farmId, userId = null) {
+  let query = (supabase || getSupabaseClient())
     .from('farms')
     .select('*')
-    .eq('id', farmId)
-    .maybeSingle();
+    .eq('id', farmId);
+
+  if (userId) {
+    query = query.eq('auth_user_id', userId);
+  }
+
+  const { data, error } = await query.maybeSingle();
 
   if (error) throw new Error(`Unable to load farm: ${error.message}`);
   return data;

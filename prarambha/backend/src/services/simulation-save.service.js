@@ -46,17 +46,12 @@ export function toPersistedResult(result) {
   };
 }
 
-export async function simulateAndSave(scenarioId) {
-  const { data: scenario, error } = await getSupabaseClient()
-    .from("scenarios")
-    .select("*")
-    .eq("id", scenarioId)
-    .maybeSingle();
+import { assertScenarioOwnership } from "./authorization.service.js";
 
-  if (error) throw new Error(`Unable to load scenario: ${error.message}`);
-  if (!scenario) throw new Error("Scenario not found.");
+export async function simulateAndSave(scenarioId, userId) {
+  const scenario = await assertScenarioOwnership(scenarioId, userId);
 
   const result = await runSimulation(toSimulationInput(scenario));
-  const stored = await saveSimulationResult(validateSimulationResultInput(toPersistedResult(result)));
+  const stored = await saveSimulationResult(validateSimulationResultInput(toPersistedResult(result)), userId);
   return { farmId: scenario.farm_id, simulation: result, savedResult: stored };
 }

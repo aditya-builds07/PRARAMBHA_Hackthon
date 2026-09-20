@@ -1,14 +1,20 @@
+import { getSupabaseClient } from "../adapters/db/supabase.client.js";
+import { assertFarmOwnership as authAssertFarmOwnership } from "./authorization.service.js";
+
 /**
  * scenario.service.js — Data access for the scenarios table.
  * All functions accept a `supabase` parameter (per-request user-scoped client).
  * RLS + assertFarmOwnership provide defense-in-depth (D2, D4).
  */
-
 async function assertFarmOwnership(supabase, farmId, userId) {
-  const { data, error } = await supabase
-    .from('farms').select('id').eq('id', farmId).eq('auth_user_id', userId).maybeSingle();
-  if (error) throw new Error(`Unable to verify farm ownership: ${error.message}`);
-  if (!data) throw new Error('Farm not found.');
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('farms').select('id').eq('id', farmId).eq('auth_user_id', userId).maybeSingle();
+    if (error) throw new Error(`Unable to verify farm ownership: ${error.message}`);
+    if (!data) throw new Error('Farm not found.');
+  } else {
+    await authAssertFarmOwnership(farmId, userId);
+  }
 }
 
 export async function listScenariosByFarm(supabase, farmId, userId) {

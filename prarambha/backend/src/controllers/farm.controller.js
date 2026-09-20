@@ -53,7 +53,7 @@ export async function putFarm(request, response, next) {
 export async function deleteFarm(request, response, next) {
   try {
     const id = farmId(request.params.id);
-    const existing = await getFarmById(request.supabaseClient, id);
+    const existing = await getFarmById(request.supabaseClient, id, request.user.id);
     if (existing) await writeAuditLogSafely({ action: 'DELETE_FARM', userId: request.user.id, farmId: id, inputSnapshot: existing });
     const deleted = await deleteFarmById(request.supabaseClient, id, request.user.id);
     sendSuccess(response, 200, deleted);

@@ -40,6 +40,6 @@ export async function requireAuthenticatedUser(request, response, next) {
 
     next();
   } catch (error) {
-    next(error);
+    return sendError(response, 401, 'UNAUTHORIZED', 'The access token is invalid or expired.');
   }
 }

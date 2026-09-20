@@ -88,29 +88,21 @@ export async function writeAuditLogSafely(event) {
   }
 }
 
+import { assertFarmOwnership } from "./authorization.service.js";
+
 /**
  * Returns the most recent audit log entries for a given farm.
  * Used by the read endpoint in audit.routes.js.
  */
-export async function listAuditByFarm(farmId, limit = 100, userId) {
+export async function listAuditByFarm(farmId, limit = 100, userId = null) {
   // WHY SERVICE ROLE: Reading audit logs requires service role because the
   // audit_logs table has no permissive RLS read policy for users.
   // Ownership is verified here at the application layer instead.
-  const supabase = getAdminClient();
-
-  // Application-layer ownership check: verify the requesting user owns this farm.
-  // We use the admin client here because audit_logs itself is admin-only, but we
-  // read the farms table to verify ownership before returning audit data.
   if (userId) {
-    const { data: farm } = await supabase
-      .from('farms')
-      .select('id')
-      .eq('id', farmId)
-      .eq('auth_user_id', userId)
-      .maybeSingle();
-    if (!farm) throw new Error('Farm not found.');
+    await assertFarmOwnership(farmId, userId);
   }
 
+  const supabase = getAdminClient();
   const { data, error } = await supabase
     .from("audit_logs")
     .select("*")

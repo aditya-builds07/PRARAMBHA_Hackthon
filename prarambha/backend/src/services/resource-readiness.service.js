@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "../adapters/db/supabase.client.js";
+import { assertFarmOwnership } from "./authorization.service.js";
 
 function createStatus(required, available, unit) {
   const gap = Math.max(0, required - available);
@@ -11,13 +12,6 @@ function overallStatus(statuses) {
   if (statuses.some((item) => item.status === "critical")) return "critical";
   if (statuses.some((item) => item.status === "shortage")) return "shortage";
   return "available";
-}
-
-async function assertFarmOwnership(farmId, userId) {
-  const { data, error } = await getSupabaseClient()
-    .from('farms').select('id').eq('id', farmId).eq('auth_user_id', userId).maybeSingle();
-  if (error) throw new Error(`Unable to verify farm ownership: ${error.message}`);
-  if (!data) throw new Error('Farm not found.');
 }
 
 export async function getResourceReadiness(farmId, scenarioId, userId) {
