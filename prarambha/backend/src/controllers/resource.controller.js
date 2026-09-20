@@ -1,7 +1,12 @@
-import { createResource, listResourcesByFarm, updateResource } from "../services/resource.service.js";
+import {
+  createResource,
+  listResourcesByFarm,
+  updateResource,
+  upsertResourceForFarm,
+} from "../services/resource.service.js";
+import { writeAuditLogSafely } from "../services/audit.service.js";
 import { validateResourceInput } from "../validators/resource.validator.js";
 import { sendError, sendSuccess } from '../utils/response.js';
-import { recordAudit } from '../services/audit.service.js';
 
 export async function getResources(request, response, next) {
   try {
@@ -11,7 +16,7 @@ export async function getResources(request, response, next) {
       sendError(response, 400, 'VALIDATION_ERROR', 'farmId is required.');
       return;
     }
-    sendSuccess(response, 200, await listResourcesByFarm(farmId, request.user.id));
+    sendSuccess(response, 200, await listResourcesByFarm(farmId, request.user?.id));
   } catch (error) {
     next(error);
   }
@@ -19,9 +24,39 @@ export async function getResources(request, response, next) {
 
 export async function postResource(request, response, next) {
   try {
-    const created = await createResource(validateResourceInput(request.body), request.user.id);
-    await recordAudit({ userId: request.user.id, entityType: 'resource', entityId: created.id, action: 'CREATE' });
+    const created = await createResource(validateResourceInput(request.body), request.user?.id);
+    await writeAuditLogSafely({ action: 'SAVE_SCENARIO', userId: request.user?.id, farmId: created.farm_id, inputSnapshot: request.body, outputSnapshot: created });
     sendSuccess(response, 201, created);
+  } catch (error) {
+    if (error.message.includes("required") || error.message.includes("invalid") || error.message.includes("must be")) {
+      sendError(response, 400, 'VALIDATION_ERROR', error.message);
+      return;
+    }
+    next(error);
+  }
+}
+
+export async function getResourcesForFarm(request, response, next) {
+  try {
+    const farmId = typeof request.params.farmId === "string" ? request.params.farmId.trim() : "";
+    if (!farmId) {
+      response.status(400).json({ error: { code: "VALIDATION_ERROR", message: "farmId is required." } });
+      return;
+    }
+    response.status(200).json({ data: await listResourcesByFarm(farmId) });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function putResourceForFarm(request, response, next) {
+  try {
+    const farmId = typeof request.params.farmId === "string" ? request.params.farmId.trim() : "";
+    if (!farmId) throw new Error("farmId is required.");
+    const resource = validateResourceInput({ ...request.body, farmId });
+    const updated = await upsertResourceForFarm(farmId, resource);
+    await writeAuditLogSafely({ action: 'SAVE_SCENARIO', userId: request.user?.id, farmId, inputSnapshot: request.body, outputSnapshot: updated });
+    response.status(200).json({ data: updated });
   } catch (error) {
     if (error.message.includes("required") || error.message.includes("invalid") || error.message.includes("must be")) {
       sendError(response, 400, 'VALIDATION_ERROR', error.message);
@@ -35,8 +70,8 @@ export async function putResource(request, response, next) {
   try {
     const id = typeof request.params.id === 'string' ? request.params.id.trim() : '';
     if (!id) throw new Error('resource id is required.');
-    const updated = await updateResource(id, validateResourceInput(request.body), request.user.id);
-    await recordAudit({ userId: request.user.id, entityType: 'resource', entityId: updated.id, action: 'UPDATE' });
+    const updated = await updateResource(id, validateResourceInput(request.body), request.user?.id);
+    await writeAuditLogSafely({ action: 'SAVE_SCENARIO', userId: request.user?.id, farmId: updated.farm_id, inputSnapshot: request.body, outputSnapshot: updated });
     sendSuccess(response, 200, updated);
   } catch (error) {
     if (error.message === 'Resource not found.') return sendError(response, 404, 'NOT_FOUND', error.message);

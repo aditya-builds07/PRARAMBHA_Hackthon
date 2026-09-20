@@ -22,6 +22,17 @@ export async function createFarm(farm, userId) {
   return data;
 }
 
+export async function getFarmById(farmId) {
+  const { data, error } = await getSupabaseClient()
+    .from("farms")
+    .select("*")
+    .eq("id", farmId)
+    .maybeSingle();
+
+  if (error) throw new Error(`Unable to load farm: ${error.message}`);
+  return data;
+}
+
 export async function updateFarm(id, farm, userId) {
   const { data, error } = await getSupabaseClient()
     .from('farms').update(farm).eq('id', id).eq('auth_user_id', userId).select('*').maybeSingle();

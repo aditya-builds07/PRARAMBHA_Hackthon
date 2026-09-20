@@ -58,5 +58,5 @@ export async function simulateAndSave(scenarioId) {
 
   const result = await runSimulation(toSimulationInput(scenario));
   const stored = await saveSimulationResult(validateSimulationResultInput(toPersistedResult(result)));
-  return { simulation: result, savedResult: stored };
+  return { farmId: scenario.farm_id, simulation: result, savedResult: stored };
 }

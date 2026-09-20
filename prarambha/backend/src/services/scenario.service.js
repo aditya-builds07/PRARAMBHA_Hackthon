@@ -35,7 +35,7 @@ export async function getScenarioById(id, userId) {
   const { data, error } = await getSupabaseClient().from('scenarios').select('*').eq('id', id).maybeSingle();
   if (error) throw new Error(`Unable to load scenario: ${error.message}`);
   if (!data) throw new Error('Scenario not found.');
-  await assertFarmOwnership(data.farm_id, userId);
+  if (userId) await assertFarmOwnership(data.farm_id, userId);
   return data;
 }
 

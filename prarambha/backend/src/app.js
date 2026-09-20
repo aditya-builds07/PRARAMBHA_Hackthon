@@ -11,6 +11,7 @@ import { recommendationRouter } from "./routes/recommendations.routes.js";
 import { reportRouter } from "./routes/reports.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
 import { weatherRouter } from "./routes/weather.routes.js";
+import { auditRouter } from "./routes/audit.routes.js";
 import { sendError } from './utils/response.js';
 
 export function createApp() {
@@ -29,6 +30,7 @@ export function createApp() {
   app.use("/api", recommendationRouter);
   app.use("/api", reportRouter);
   app.use("/api", weatherRouter);
+  app.use("/api", auditRouter);
 
   app.use((_request, response) => {
     sendError(response, 404, 'NOT_FOUND', 'The requested API route does not exist.');

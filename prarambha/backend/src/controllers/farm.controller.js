@@ -1,7 +1,18 @@
-import { createFarm, deleteFarmById, listFarms, updateFarm } from "../services/farm.service.js";
+import {
+  createFarm,
+  deleteFarmById,
+  getFarmById,
+  listFarms,
+  updateFarm,
+} from "../services/farm.service.js";
+import { writeAuditLogSafely } from "../services/audit.service.js";
 import { validateFarmInput } from "../validators/farm.validator.js";
 import { sendError, sendSuccess } from '../utils/response.js';
-import { recordAudit } from '../services/audit.service.js';
+
+function farmId(value) {
+  if (typeof value !== 'string' || !value.trim()) throw new Error('farm id is required.');
+  return value.trim();
+}
 
 export async function getFarms(request, response, next) {
   try {
@@ -15,7 +26,7 @@ export async function postFarm(request, response, next) {
   try {
     const farm = validateFarmInput(request.body);
     const created = await createFarm(farm, request.user.id);
-    await recordAudit({ userId: request.user.id, entityType: 'farm', entityId: created.id, action: 'CREATE' });
+    await writeAuditLogSafely({ action: 'CREATE_FARM', userId: request.user.id, farmId: created.id, inputSnapshot: farm, outputSnapshot: created });
     sendSuccess(response, 201, created);
   } catch (error) {
     if (error.message.includes("must") || error.message.includes("required")) {
@@ -26,15 +37,11 @@ export async function postFarm(request, response, next) {
   }
 }
 
-function farmId(value) {
-  if (typeof value !== 'string' || !value.trim()) throw new Error('farm id is required.');
-  return value.trim();
-}
-
 export async function putFarm(request, response, next) {
   try {
-    const updated = await updateFarm(farmId(request.params.id), validateFarmInput(request.body), request.user.id);
-    await recordAudit({ userId: request.user.id, entityType: 'farm', entityId: updated.id, action: 'UPDATE' });
+    const id = farmId(request.params.id);
+    const updated = await updateFarm(id, validateFarmInput(request.body), request.user.id);
+    await writeAuditLogSafely({ action: 'CREATE_FARM', userId: request.user.id, farmId: updated.id, inputSnapshot: request.body, outputSnapshot: updated });
     sendSuccess(response, 200, updated);
   } catch (error) {
     if (error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
@@ -45,8 +52,10 @@ export async function putFarm(request, response, next) {
 
 export async function deleteFarm(request, response, next) {
   try {
-    const deleted = await deleteFarmById(farmId(request.params.id), request.user.id);
-    await recordAudit({ userId: request.user.id, entityType: 'farm', entityId: deleted.id, action: 'DELETE' });
+    const id = farmId(request.params.id);
+    const existing = await getFarmById(id);
+    if (existing) await writeAuditLogSafely({ action: 'DELETE_SCENARIO', userId: request.user.id, farmId: id, inputSnapshot: existing });
+    const deleted = await deleteFarmById(id, request.user.id);
     sendSuccess(response, 200, deleted);
   } catch (error) {
     if (error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
