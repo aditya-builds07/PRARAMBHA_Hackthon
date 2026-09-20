@@ -100,7 +100,7 @@ function getRecommendationSeverityBadge(severity) {
 
 /**
  * PrintableReport Component - Member 4
- * Renders all 12 sections in the exact specified order:
+ * Renders all 12 sections in the exact specified order with dedicated @media print styling:
  * 1. Farm
  * 2. Scenario
  * 3. Inputs
@@ -144,9 +144,47 @@ export default function PrintableReport({ reportData }) {
   return (
     <article
       aria-label="Executive Decision Report"
-      className="bg-white rounded-2xl border border-slate-300 shadow-md p-6 sm:p-10 space-y-7 print:p-0 print:border-none print:shadow-none font-sans text-slate-900"
+      className="report-printable-sheet bg-white rounded-2xl border border-slate-300 shadow-md p-6 sm:p-10 space-y-7 font-sans text-slate-900"
     >
-      {/* Top Title Banner */}
+      {/* Explicit Print Stylesheet for flawless paper layout */}
+      <style>{`
+        @media print {
+          @page {
+            size: A4;
+            margin: 12mm 15mm;
+          }
+          body {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          .print\\:hidden, header, nav, button, input, select {
+            display: none !important;
+          }
+          .report-printable-sheet {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+          }
+          section, footer {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          table {
+            page-break-inside: auto;
+          }
+          tr {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+        }
+      `}</style>
+
+      {/* Document Header */}
       <div className="border-b-2 border-slate-900 pb-4 flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 text-xs font-black text-emerald-700 uppercase tracking-widest mb-1">
