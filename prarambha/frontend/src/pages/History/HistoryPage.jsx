@@ -1,27 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import {
-  getScenarioHistory,
-  renameScenario,
-  deleteScenario,
-} from "../../services/history.service";
+import { getScenarioHistory } from "../../services/history.service";
 import ScenarioHistoryTable from "../../components/history/ScenarioHistoryTable";
+import { useScenarioActions } from "../../components/history/useScenarioActions";
 
 /**
  * HistoryPage - Member 4 (Section 16 of Task_Distribution.md)
- * Full scenario history screen with 8-column table, async fetch, loading, empty, and error states.
+ * Full scenario history screen using the extracted useScenarioActions hook for
+ * optimistic updates, rollback management, compare selections, and lifecycle states.
  */
 export default function HistoryPage({ onNavigate = null }) {
   const { t, language, setLanguage, supportedLanguages } = useLanguage();
 
-  const [scenarios, setScenarios] = useState([]);
-  const [selectedIds, setSelectedIds] = useState(["sc-001", "sc-002"]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [fetchError, setFetchError] = useState(null);
+
+  const {
+    scenarios,
+    setScenarios,
+    selectedIds,
+    toggleSelectScenario,
+    handleRename,
+    handleDelete,
+    actionError,
+    clearError,
+  } = useScenarioActions({
+    initialScenarios: [],
+    defaultSelectedIds: ["sc-001", "sc-002"],
+  });
 
   const fetchHistory = () => {
     setIsLoading(true);
-    setError(null);
+    setFetchError(null);
+    clearError();
 
     getScenarioHistory()
       .then((data) => {
@@ -29,7 +40,7 @@ export default function HistoryPage({ onNavigate = null }) {
         setIsLoading(false);
       })
       .catch((err) => {
-        setError(err?.message || "Failed to load saved scenario history.");
+        setFetchError(err?.message || "Failed to load saved scenario history.");
         setIsLoading(false);
       });
   };
@@ -37,18 +48,6 @@ export default function HistoryPage({ onNavigate = null }) {
   useEffect(() => {
     fetchHistory();
   }, []);
-
-  const handleToggleSelect = (id) => {
-    setSelectedIds((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((item) => item !== id);
-      }
-      if (prev.length >= 4) {
-        return prev;
-      }
-      return [...prev, id];
-    });
-  };
 
   const handleOpenScenario = (scenario) => {
     if (onNavigate) {
@@ -62,43 +61,10 @@ export default function HistoryPage({ onNavigate = null }) {
     }
   };
 
-  const handleRename = async (id, newName) => {
-    const previous = [...scenarios];
-    // Optimistic update
-    setScenarios((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, name: newName } : s))
-    );
-
-    try {
-      await renameScenario(id, newName);
-    } catch (err) {
-      // Rollback on failure
-      setScenarios(previous);
-      alert(`Rename failed: ${err.message}`);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    const previous = [...scenarios];
-    const previousSelected = [...selectedIds];
-    // Optimistic update
-    setScenarios((prev) => prev.filter((s) => s.id !== id));
-    setSelectedIds((prev) => prev.filter((item) => item !== id));
-
-    try {
-      await deleteScenario(id);
-    } catch (err) {
-      // Rollback on failure
-      setScenarios(previous);
-      setSelectedIds(previousSelected);
-      alert(`Delete failed: ${err.message}`);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 p-4 sm:p-6 lg:p-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
+        {/* Top Navigation Header */}
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
           <div>
             <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 uppercase tracking-widest mb-1">
@@ -144,6 +110,26 @@ export default function HistoryPage({ onNavigate = null }) {
           </div>
         </header>
 
+        {/* Action / Rollback Notification Banner */}
+        {actionError && (
+          <div
+            role="alert"
+            className="p-4 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 flex items-center justify-between gap-4 shadow-xs"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-lg" aria-hidden="true">⚠️</span>
+              <p className="text-xs font-semibold">{actionError}</p>
+            </div>
+            <button
+              type="button"
+              onClick={clearError}
+              className="text-xs font-bold text-amber-800 hover:text-amber-950 underline cursor-pointer"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
         {/* Loading State */}
         {isLoading && (
           <div className="bg-white rounded-xl border border-slate-200 p-8 shadow-xs space-y-4 animate-pulse">
@@ -152,8 +138,8 @@ export default function HistoryPage({ onNavigate = null }) {
           </div>
         )}
 
-        {/* Error State with Retry Button */}
-        {!isLoading && error && (
+        {/* Fetch Error State with Retry Button */}
+        {!isLoading && fetchError && (
           <div
             role="alert"
             className="p-5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 flex items-center justify-between gap-4 shadow-xs"
@@ -162,7 +148,7 @@ export default function HistoryPage({ onNavigate = null }) {
               <p className="font-bold text-xs uppercase tracking-wide">
                 {t("history.errorTitle") || "Unable to Load Scenario History"}
               </p>
-              <p className="text-xs text-rose-700 mt-0.5">{error}</p>
+              <p className="text-xs text-rose-700 mt-0.5">{fetchError}</p>
             </div>
             <button
               type="button"
@@ -175,7 +161,7 @@ export default function HistoryPage({ onNavigate = null }) {
         )}
 
         {/* Empty State */}
-        {!isLoading && !error && scenarios.length === 0 && (
+        {!isLoading && !fetchError && scenarios.length === 0 && (
           <div className="bg-white rounded-xl border border-slate-200 p-12 text-center shadow-xs space-y-3">
             <span className="text-4xl block" aria-hidden="true">🌱</span>
             <h3 className="text-base font-bold text-slate-900">
@@ -197,11 +183,11 @@ export default function HistoryPage({ onNavigate = null }) {
         )}
 
         {/* Table View with 8 columns */}
-        {!isLoading && !error && scenarios.length > 0 && (
+        {!isLoading && !fetchError && scenarios.length > 0 && (
           <ScenarioHistoryTable
             scenarios={scenarios}
             selectedIds={selectedIds}
-            onToggleSelect={handleToggleSelect}
+            onToggleSelect={toggleSelectScenario}
             onOpen={handleOpenScenario}
             onRename={handleRename}
             onDelete={handleDelete}
