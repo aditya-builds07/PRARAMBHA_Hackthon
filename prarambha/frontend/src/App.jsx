@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
+import LaunchPage from "./pages/Launch/index.jsx";
 import EntryPage from "./pages/Entry/index";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import FarmSelectionPage from "./pages/FarmSelection/index";
@@ -40,15 +41,17 @@ function AppContent() {
 
   // Determine active page ID directly from URL location
   const pathname = location.pathname;
-  let currentPage = "dashboard";
-  if (pathname === "/" || pathname === "" || pathname.startsWith("/dashboard")) {
-    currentPage = "dashboard";
+  let currentPage = "launch";
+  if (pathname === "/" || pathname === "" || pathname === "/launch") {
+    currentPage = "launch";
   } else if (pathname === "/login") {
     currentPage = "login";
   } else if (pathname === "/signup") {
     currentPage = "signup";
   } else if (pathname === "/forgot-password") {
     currentPage = "forgot-password";
+  } else if (pathname.startsWith("/dashboard")) {
+    currentPage = "dashboard";
   } else if (pathname.startsWith("/farms")) {
     currentPage = "farms";
   } else if (pathname.includes("/results")) {
@@ -83,6 +86,9 @@ function AppContent() {
     const scenarioId = params.scenarioId || navParams.scenarioId || "sc-001";
 
     switch (page) {
+      case "launch":
+        navigate("/");
+        break;
       case "home":
       case "dashboard":
         navigate("/dashboard");
@@ -95,9 +101,6 @@ function AppContent() {
         break;
       case "forgot-password":
         navigate("/forgot-password");
-        break;
-      case "dashboard":
-        navigate("/dashboard");
         break;
       case "farms":
         navigate("/farms");
@@ -148,7 +151,10 @@ function AppContent() {
   // Check if session token exists
   const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("supabase_token") || localStorage.getItem("sb-access-token"));
 
-  // Standalone page rendering for Auth if explicitly navigated to /login, /signup, etc.
+  // Standalone page rendering for Launch and Auth pages
+  if (currentPage === "launch") {
+    return <LaunchPage onNavigate={handleNavigate} />;
+  }
   if (currentPage === "login") {
     return <LoginPage onNavigate={handleNavigate} />;
   }
@@ -172,6 +178,7 @@ function AppContent() {
     { id: "assumptions", label: t("nav.assumptions") || "Model Assumptions", icon: "article" },
     { id: "history", label: t("nav.history") || "Scenario History", icon: "history" },
     { id: "report", label: t("nav.report") || "Printable Report", icon: "description" },
+    { id: "launch", label: "Launch Screen", icon: "rocket_launch" },
   ];
 
   return (
