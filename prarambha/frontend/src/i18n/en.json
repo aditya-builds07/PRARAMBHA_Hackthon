@@ -1,0 +1,120 @@
+{
+  "appTitle": "KrishiMitra",
+  "appTagline": "Test the season before you sow it",
+  "nav": {
+    "comparison": "Scenario Comparison",
+    "why": "Why Did It Change?",
+    "recommendations": "Recommendations",
+    "resources": "Resource Readiness",
+    "assumptions": "Model Assumptions",
+    "history": "Scenario History",
+    "report": "Printable Report"
+  },
+  "comparison": {
+    "title": "Scenario Comparison",
+    "subtitle": "Compare 2 to 4 farming strategies side-by-side to understand trade-offs in yield, economics, water, and risk.",
+    "selectScenarios": "Select Scenarios to Compare",
+    "selectInstruction": "Select between 2 and 4 scenarios. Neutral trade-offs are calculated relative to your baseline.",
+    "baseline": "Baseline Plan",
+    "setBaseline": "Set as Baseline",
+    "tradeoffs": "Key Trade-offs",
+    "metricsTable": "Detailed Comparison Table",
+    "metric": "Key Metric",
+    "economicsChart": "Economics: Cost vs Revenue vs Profit",
+    "riskWaterChart": "Risk & Water Efficiency",
+    "compareButton": "Compare Selected",
+    "minSelectionHint": "Please select at least 2 scenarios to activate comparison.",
+    "maxSelectionHint": "Maximum 4 scenarios can be compared simultaneously."
+  },
+  "why": {
+    "title": "Why Did This Scenario Change?",
+    "subtitle": "Clear, factor-by-factor attribution of changes in profit and yield against your baseline.",
+    "referenceLabel": "Baseline Plan",
+    "targetLabel": "Simulated Alternative",
+    "totalImpact": "Total Net Profit Impact",
+    "controllableFactors": "Controllable Factors",
+    "controllableDesc": "Decisions you have direct agency over (irrigation type, sowing date, inputs).",
+    "externalFactors": "External Factors",
+    "externalDesc": "Environmental factors beyond direct farm control (weather patterns, rainfall).",
+    "factor": "Driver Factor",
+    "impactValue": "Monetary Contribution",
+    "explanation": "Agronomic Explanation"
+  },
+  "recommendations": {
+    "title": "Decision Recommendations",
+    "subtitle": "Evidence-backed advisory triggers derived from your simulation parameters.",
+    "ruleBasedNote": "Generated strictly from deterministic agronomic models, not generative AI assumptions.",
+    "condition": "Trigger Condition",
+    "impact": "Projected Impact",
+    "action": "Recommended Action",
+    "reason": "Scientific / Economic Reason",
+    "severity": {
+      "critical": "Critical Attention Required",
+      "warning": "Optimization Opportunity",
+      "info": "Informational Advisory"
+    }
+  },
+  "resources": {
+    "title": "Resource & Cost Readiness",
+    "subtitle": "Verify if your farm has sufficient capital, water reserves, and inputs before committing to this plan.",
+    "budget": "Financial Budget",
+    "water": "Water Reserves",
+    "seed": "Seed Stock",
+    "fertilizer": "Fertilizer Stock",
+    "other": "Machinery & Equipment",
+    "required": "Required",
+    "available": "Available on Farm",
+    "gap": "Deficit / Gap",
+    "surplus": "Surplus Available",
+    "status": {
+      "available": "Sufficient",
+      "shortage": "Deficit Identified",
+      "critical": "Critical Shortage"
+    }
+  },
+  "assumptions": {
+    "title": "Simulation Assumptions & Transparency",
+    "subtitle": "All calculations in KrishiMitra are reproducible and governed by transparent agronomic benchmarks.",
+    "modelVersion": "Model Version",
+    "assumptionVersion": "Assumption Dataset",
+    "lastUpdated": "Last Reviewed",
+    "disclaimerTitle": "Disclaimer & Guidance",
+    "cropParameters": "Crop Baseline Parameters",
+    "riskWeights": "Risk Model Weights",
+    "formulas": "Core Mathematical Formulations",
+    "sources": "Agronomic Research Sources"
+  },
+  "history": {
+    "title": "Saved Scenarios History",
+    "subtitle": "Review, clone, or reopen prior simulations across your farm plots.",
+    "scenarioName": "Scenario Plan",
+    "cropArea": "Crop & Area",
+    "profit": "Estimated Profit",
+    "risk": "Risk Level",
+    "score": "Decision Score",
+    "actions": "Actions",
+    "open": "Open",
+    "clone": "Clone",
+    "delete": "Delete",
+    "compare": "Compare"
+  },
+  "report": {
+    "title": "Farm Scenario Summary Report",
+    "printButton": "Print / Export as PDF",
+    "dateGenerated": "Generated Date",
+    "summaryTitle": "Executive Decision Summary"
+  },
+  "common": {
+    "profit": "Net Profit",
+    "cost": "Cost",
+    "revenue": "Revenue",
+    "yield": "Yield",
+    "water": "Water",
+    "risk": "Risk",
+    "score": "Score",
+    "acres": "Acres",
+    "quintals": "Quintals",
+    "rupees": "₹",
+    "cubicMeters": "m³"
+  }
+}
