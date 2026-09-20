@@ -1,20 +1,34 @@
-﻿import en from "../../i18n/en.json"
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { LanguageProvider } from "../../i18n/LanguageContext";
+import WhyPage from "./WhyPage";
 
 /**
- * STUB — owned by Member 4.
- * Member 3 provides this route so routing works end-to-end.
- * Replace the body with the real implementation.
- *
- * Props available from router params: farmId, scenarioId (via useParams)
- * State available from: useAppStore() — getScenarios(), getResult(id), getSelectedForComparison()
+ * Why / Factor Attribution Route Entry - Member 4
+ * Replaces Member 3 placeholder stub with full Why Panel implementation.
  */
-export default function Stub() {
+export default function WhyRoute() {
+  const { farmId, scenarioId } = useParams();
+  const navigate = useNavigate();
+
+  const handleNavigate = (page) => {
+    const fId = farmId || "farm-001";
+    if (page === "comparison") {
+      navigate(`/scenarios/${fId}/compare`);
+    } else if (page === "history") {
+      navigate(`/scenarios/${fId}/history`);
+    } else if (page === "report") {
+      navigate(`/scenarios/${fId}/${scenarioId || "sc-002"}/report`);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-[40vh]">
-      <div className="text-center p-8 rounded-lg border border-dashed border-border">
-        <p className="text-muted-foreground text-sm">{en.stubs["why"]}</p>
-        <p className="text-xs text-muted-foreground mt-2 italic">Route stub — Member 4 fills this in.</p>
-      </div>
-    </div>
-  )
+    <LanguageProvider>
+      <WhyPage
+        initialTargetId={scenarioId || "sc-002"}
+        initialReferenceId="sc-001"
+        onNavigate={handleNavigate}
+      />
+    </LanguageProvider>
+  );
 }

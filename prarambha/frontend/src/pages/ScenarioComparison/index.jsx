@@ -1,20 +1,36 @@
-﻿import en from "../../i18n/en.json"
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { LanguageProvider } from "../../i18n/LanguageContext";
+import ScenarioComparisonPage from "./ScenarioComparisonPage";
 
 /**
- * STUB — owned by Member 4.
- * Member 3 provides this route so routing works end-to-end.
- * Replace the body with the real implementation.
- *
- * Props available from router params: farmId, scenarioId (via useParams)
- * State available from: useAppStore() — getScenarios(), getResult(id), getSelectedForComparison()
+ * Scenario Comparison Route Entry - Member 4
+ * Replaces Member 3 placeholder stub with full Scenario Comparison implementation.
  */
-export default function Stub() {
+export default function ScenarioComparisonRoute() {
+  const { farmId } = useParams();
+  const navigate = useNavigate();
+
+  const handleNavigate = (page, params = {}) => {
+    const fId = farmId || "farm-001";
+    if (page === "why") {
+      navigate(`/scenarios/${fId}/${params.targetScenarioId || "sc-002"}/why`);
+    } else if (page === "history") {
+      navigate(`/scenarios/${fId}/history`);
+    } else if (page === "report") {
+      navigate(`/scenarios/${fId}/${params.scenarioId || "sc-002"}/report`);
+    } else if (page === "recommendations") {
+      navigate(`/scenarios/${fId}/${params.scenarioId || "sc-003"}/recommendations`);
+    } else if (page === "resources") {
+      navigate(`/scenarios/${fId}/${params.scenarioId || "sc-001"}/resources`);
+    } else if (page === "assumptions") {
+      navigate(`/scenarios/${fId}/${params.scenarioId || "sc-001"}/assumptions`);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-[40vh]">
-      <div className="text-center p-8 rounded-lg border border-dashed border-border">
-        <p className="text-muted-foreground text-sm">{en.stubs["comparison"]}</p>
-        <p className="text-xs text-muted-foreground mt-2 italic">Route stub — Member 4 fills this in.</p>
-      </div>
-    </div>
-  )
+    <LanguageProvider>
+      <ScenarioComparisonPage onNavigate={handleNavigate} />
+    </LanguageProvider>
+  );
 }
