@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
+// Video-First Full-Screen Launch Experience (100vh)
 import LaunchPage from "./pages/Launch/index.jsx";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import ScenarioComparisonPage from "./pages/ScenarioComparison/ScenarioComparisonPage";
