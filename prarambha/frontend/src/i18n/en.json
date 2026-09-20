@@ -103,6 +103,10 @@
     "impact": "Projected Impact",
     "action": "Recommended Action",
     "reason": "Scientific / Economic Reason",
+    "emptyTitle": "No Recommendations For This Scenario",
+    "empty": "All simulated parameters are within optimal agronomic thresholds. No critical advisories triggered.",
+    "errorTitle": "Unable to Load Recommendations",
+    "retry": "Retry",
     "severity": {
       "critical": "Critical Attention Required",
       "warning": "Optimization Opportunity",
@@ -121,6 +125,21 @@
     "available": "Available on Farm",
     "gap": "Deficit / Gap",
     "surplus": "Surplus Available",
+    "statusLabel": "Status",
+    "explanation": "Explanation",
+    "emptyTitle": "No Resource Inventory Available",
+    "empty": "No resource inventory records found for this farm plot.",
+    "errorTitle": "Unable to Load Resource Inventory",
+    "retry": "Retry",
+    "overallFeasibility": "Overall Scenario Feasibility",
+    "verdict": {
+      "notFeasible": "NOT FEASIBLE",
+      "notFeasibleDesc": "Critical resource shortages must be resolved prior to planting.",
+      "feasibleWithGaps": "FEASIBLE WITH GAPS",
+      "feasibleWithGapsDesc": "Operational plan is viable if noted input deficits are procured.",
+      "feasible": "FEASIBLE",
+      "feasibleDesc": "Sufficient capital, water, seeds, and equipment are available."
+    },
     "status": {
       "available": "Sufficient",
       "shortage": "Deficit Identified",
