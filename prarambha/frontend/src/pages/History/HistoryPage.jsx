@@ -51,7 +51,7 @@ export default function HistoryPage({ onNavigate = null }) {
 
   const handleOpenScenario = (scenario) => {
     if (onNavigate) {
-      onNavigate("results", { scenarioId: scenario.id });
+      onNavigate("report", { scenarioId: scenario.id });
     }
   };
 

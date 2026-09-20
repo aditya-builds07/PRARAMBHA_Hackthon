@@ -13,10 +13,19 @@ export default function HistoryRoute() {
 
   const handleNavigate = (page, params = {}) => {
     const fId = farmId || "farm-001";
+    const scId = params.scenarioId || "sc-001";
+
     if (page === "comparison") {
-      navigate(`/scenarios/${fId}/compare`);
+      const query = params?.selectedIds && params.selectedIds.length > 0
+        ? `?ids=${params.selectedIds.join(",")}`
+        : "";
+      navigate(`/scenarios/${fId}/compare${query}`, { state: params });
+    } else if (page === "report") {
+      navigate(`/scenarios/${fId}/${scId}/report`);
     } else if (page === "results") {
-      navigate(`/scenarios/${fId}/${params.scenarioId || "sc-001"}/results`);
+      navigate(`/scenarios/${fId}/${scId}/report`);
+    } else if (page === "builder") {
+      navigate(`/scenarios/${fId}`);
     }
   };
 

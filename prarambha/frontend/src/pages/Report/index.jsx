@@ -8,21 +8,29 @@ import ReportPage from "./ReportPage";
  * Replaces Member 3 placeholder stub with full 12-section Printable Report implementation.
  */
 export default function ReportRoute() {
-  const { farmId } = useParams();
+  const { farmId, scenarioId } = useParams();
   const navigate = useNavigate();
 
-  const handleNavigate = (page) => {
+  const handleNavigate = (page, params = {}) => {
     const fId = farmId || "farm-001";
+    const scId = params.scenarioId || scenarioId || "sc-001";
     if (page === "comparison") {
       navigate(`/scenarios/${fId}/compare`);
     } else if (page === "history") {
       navigate(`/scenarios/${fId}/history`);
+    } else if (page === "recommendations") {
+      navigate(`/scenarios/${fId}/${scId}/recommendations`);
+    } else if (page === "resources") {
+      navigate(`/scenarios/${fId}/${scId}/resources`);
     }
   };
 
   return (
     <LanguageProvider>
-      <ReportPage onNavigate={handleNavigate} />
+      <ReportPage
+        scenarioId={scenarioId || "sc-001"}
+        onNavigate={handleNavigate}
+      />
     </LanguageProvider>
   );
 }

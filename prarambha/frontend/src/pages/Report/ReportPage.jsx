@@ -35,6 +35,12 @@ export default function ReportPage({ scenarioId = "sc-001", onNavigate = null })
   };
 
   useEffect(() => {
+    if (scenarioId) {
+      setCurrentScenarioId(scenarioId);
+    }
+  }, [scenarioId]);
+
+  useEffect(() => {
     fetchReport(currentScenarioId);
   }, [currentScenarioId]);
 
