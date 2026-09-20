@@ -3,6 +3,7 @@ import AppLayout from "./components/common/AppLayout.jsx"
 
 // --- Member 3 pages (owned) ---
 import EntryPage          from "./pages/Entry/index.jsx"
+import LaunchPage         from "./pages/Launch/index.jsx"
 import FarmSelectionPage  from "./pages/FarmSelection/index.jsx"
 import ScenarioBuilderPage from "./pages/ScenarioBuilder/index.jsx"
 import ScenarioResultsPage from "./pages/ScenarioResults/index.jsx"
@@ -19,6 +20,7 @@ import ReportStub         from "./pages/Report/index.jsx"
 
 export const ROUTES = {
   ENTRY:        "/",
+  LAUNCH:       "/launch",
   FARMS:        "/farms",
   BUILDER:      "/scenarios/:farmId",
   RESULTS:      "/scenarios/:farmId/:scenarioId/results",
@@ -37,7 +39,9 @@ export const router = createBrowserRouter([
     path: "/",
     element: <AppLayout />,
     children: [
-      { index: true,              element: <EntryPage /> },
+      { index: true,              element: <LaunchPage /> },
+      { path: "launch",           element: <LaunchPage /> },
+      { path: "entry",            element: <EntryPage /> },
       { path: "farms",            element: <FarmSelectionPage /> },
       { path: "scenarios/:farmId",                          element: <ScenarioBuilderPage /> },
       { path: "scenarios/:farmId/:scenarioId/results",      element: <ScenarioResultsPage /> },

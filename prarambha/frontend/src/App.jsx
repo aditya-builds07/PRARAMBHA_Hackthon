@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
+import LaunchPage from "./pages/Launch/index.jsx";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import ScenarioComparisonPage from "./pages/ScenarioComparison/ScenarioComparisonPage";
 import WhyPage from "./pages/Why/WhyPage";
@@ -17,8 +18,8 @@ import ReportPage from "./pages/Report/ReportPage";
 function AppShell() {
   const { t, language, setLanguage, supportedLanguages } = useLanguage();
 
-  // Active page: "dashboard" | "comparison" | "why" | "recommendations" | "resources" | "assumptions" | "history" | "report"
-  const [currentPage, setCurrentPage] = useState("dashboard");
+  // Active page: "launch" | "dashboard" | "comparison" | "why" | "recommendations" | "resources" | "assumptions" | "history" | "report"
+  const [currentPage, setCurrentPage] = useState("launch");
 
   // Cross-module parameter passing
   const [navParams, setNavParams] = useState({});
@@ -36,7 +37,13 @@ function AppShell() {
     }
   };
 
+  // Full-screen video-first launch page experience
+  if (currentPage === "launch") {
+    return <LaunchPage onNavigate={handleNavigate} />;
+  }
+
   const navItems = [
+    { id: "launch", label: "Video Launch", icon: "🎬" },
     { id: "dashboard", label: t("nav.dashboard") || "Dashboard", icon: "📊" },
     { id: "comparison", label: t("nav.comparison") || "Scenario Comparison", icon: "⚖️" },
     { id: "why", label: t("nav.why") || "Why Did It Change?", icon: "💡" },

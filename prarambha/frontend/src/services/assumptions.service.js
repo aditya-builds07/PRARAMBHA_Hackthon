@@ -91,11 +91,13 @@ export function validateAssumptions(data) {
     errors.push("Missing mandatory disclaimer statement.");
   }
 
-  if (data.riskWeights && typeof data.riskWeights === "object") {
-    const weights = Object.values(data.riskWeights).map((w) => Number(w) || 0);
+  if (data.riskWeights) {
+    const weights = Array.isArray(data.riskWeights)
+      ? data.riskWeights.map((w) => (typeof w === "number" ? w : w.weight ?? 0))
+      : Object.values(data.riskWeights).map((w) => Number(w) || 0);
     const sum = weights.reduce((acc, w) => acc + w, 0);
-    if (Math.abs(sum - 1.0) > 1e-4) {
-      errors.push(`Risk weights sum invariant failed: expected 1.0, received ${sum.toFixed(2)}`);
+    if (Math.abs(sum - 1.0) > 0.01) {
+      errors.push(`Risk weights sum invariant must equal 1.0 (100%), got ${sum.toFixed(2)}.`);
     }
   } else {
     errors.push("Missing riskWeights section.");

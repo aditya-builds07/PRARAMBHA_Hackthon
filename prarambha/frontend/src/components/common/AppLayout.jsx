@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate } from "react-router-dom"
+import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom"
 import { Sprout } from "lucide-react"
 import { cn } from "../../lib/utils.js"
 import en from "../../i18n/en.json"
@@ -17,6 +17,13 @@ const NAV_LINKS = [
 
 export default function AppLayout() {
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Full-screen video-first launch page on root "/" renders without outer container framing
+  if (location.pathname === "/") {
+    return <Outlet />
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="sticky top-0 z-50 border-b border-border bg-white/90 backdrop-blur-sm">
