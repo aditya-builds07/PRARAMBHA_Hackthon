@@ -4,24 +4,72 @@ import RecommendationCard from "./RecommendationCard";
 
 /**
  * RecommendationsList Component - Member 4
- * Filters and renders list of rule-based recommendations.
+ * Filters and renders list of rule-based recommendations with loading, empty, and error states.
  */
 export default function RecommendationsList({
   recommendations = [],
   isLoading = false,
+  error = null,
+  onRetry = null,
   className = "",
 }) {
   const { t } = useLanguage();
   const [filterSeverity, setFilterSeverity] = useState("all"); // "all" | "critical" | "warning" | "info"
 
+  // 1. Error State
+  if (error) {
+    return (
+      <div
+        role="alert"
+        className="p-8 rounded-xl bg-rose-50 border border-rose-200 text-center space-y-3 shadow-xs"
+      >
+        <div className="text-2xl" aria-hidden="true">⚠️</div>
+        <h3 className="font-bold text-rose-950 text-sm">
+          {t("recommendations.errorTitle") || "Unable to Load Recommendations"}
+        </h3>
+        <p className="text-xs text-rose-700 max-w-md mx-auto">
+          {error}
+        </p>
+        {onRetry && (
+          <button
+            type="button"
+            onClick={onRetry}
+            className="px-4 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-colors shadow-2xs cursor-pointer"
+          >
+            Retry Request
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  // 2. Loading State (Accessible Skeleton)
   if (isLoading) {
     return (
-      <div className={`space-y-4 animate-pulse ${className}`} aria-busy="true">
+      <div className={`space-y-4 animate-pulse ${className}`} aria-busy="true" aria-label="Loading recommendations">
         <div className="h-10 bg-slate-200 rounded-lg w-72" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="h-64 bg-slate-200 rounded-xl" />
           <div className="h-64 bg-slate-200 rounded-xl" />
         </div>
+      </div>
+    );
+  }
+
+  // 3. Global Empty State (when no recommendations exist at all for this scenario)
+  if (!recommendations || recommendations.length === 0) {
+    return (
+      <div
+        role="status"
+        className="bg-white border border-slate-200 rounded-xl p-10 text-center space-y-2 shadow-xs"
+      >
+        <div className="text-2xl text-slate-400" aria-hidden="true">🌱</div>
+        <h3 className="font-bold text-slate-900 text-sm">
+          {t("recommendations.emptyTitle") || "No Recommendations For This Scenario"}
+        </h3>
+        <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          {t("recommendations.empty") || "All simulated parameters are within optimal agronomic thresholds. No critical advisories triggered."}
+        </p>
       </div>
     );
   }
@@ -80,7 +128,7 @@ export default function RecommendationsList({
         </span>
       </div>
 
-      {/* Recommendations Cards Grid */}
+      {/* Filter-specific Empty State */}
       {filtered.length === 0 ? (
         <div className="bg-white border border-slate-200 rounded-xl p-8 text-center text-slate-500 text-xs">
           No recommendations matching the "{filterSeverity}" filter.

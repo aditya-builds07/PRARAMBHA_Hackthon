@@ -1,17 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLanguage } from "../../i18n/LanguageContext";
-import { MOCK_SCENARIOS, MOCK_RECOMMENDATIONS } from "../../services/mockData";
+import { MOCK_SCENARIOS } from "../../services/mockData";
+import { getRecommendations } from "../../services/recommendations.service";
 import RecommendationsList from "../../components/recommendations/RecommendationsList";
 
 /**
  * RecommendationsPage - Member 4 (Section 13 of Task_Distribution.md)
  * Full page presenting rule-based actionable advisories for simulated scenarios.
  */
-export default function RecommendationsPage({ onNavigate = null }) {
+export default function RecommendationsPage({ scenarioId = "sc-003", onNavigate = null }) {
   const { t, language, setLanguage, supportedLanguages } = useLanguage();
 
   const allScenarios = MOCK_SCENARIOS || [];
-  const [selectedScenarioId, setSelectedScenarioId] = useState("sc-003"); // Default to Late Sowing (highest vulnerability)
+  const [selectedScenarioId, setSelectedScenarioId] = useState(scenarioId);
+  const [recommendations, setRecommendations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Sync state if scenarioId prop changes from parent / router
+  useEffect(() => {
+    if (scenarioId) {
+      setSelectedScenarioId(scenarioId);
+    }
+  }, [scenarioId]);
+
+  // Fetch recommendations whenever selected scenario changes
+  const fetchAdvisories = () => {
+    setIsLoading(true);
+    setError(null);
+
+    getRecommendations(selectedScenarioId)
+      .then((data) => {
+        setRecommendations(data || []);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setError(err?.message || "Failed to load scenario recommendations.");
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchAdvisories();
+  }, [selectedScenarioId]);
 
   const activeScenario = allScenarios.find((s) => s.id === selectedScenarioId) || allScenarios[0];
 
@@ -100,8 +131,13 @@ export default function RecommendationsPage({ onNavigate = null }) {
           </div>
         </div>
 
-        {/* Recommendations List Component */}
-        <RecommendationsList recommendations={MOCK_RECOMMENDATIONS} />
+        {/* Recommendations List Component with Loading, Empty & Error States */}
+        <RecommendationsList
+          recommendations={recommendations}
+          isLoading={isLoading}
+          error={error}
+          onRetry={fetchAdvisories}
+        />
       </div>
     </div>
   );
