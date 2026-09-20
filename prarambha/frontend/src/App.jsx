@@ -46,7 +46,7 @@ function AppContent() {
     currentPage = "launch";
   } else if (pathname === "/login") {
     currentPage = "login";
-  } else if (pathname === "/signup") {
+  } else if (pathname === "/signup" || pathname === "/register") {
     currentPage = "signup";
   } else if (pathname === "/forgot-password") {
     currentPage = "forgot-password";
@@ -97,6 +97,7 @@ function AppContent() {
         navigate("/login");
         break;
       case "signup":
+      case "register":
         navigate("/signup");
         break;
       case "forgot-password":
