@@ -1,10 +1,18 @@
-﻿import { Outlet, NavLink, useNavigate } from "react-router-dom"
+import { Outlet, NavLink, useNavigate } from "react-router-dom"
 import { Sprout } from "lucide-react"
 import { cn } from "../../lib/utils.js"
 import en from "../../i18n/en.json"
 
 const NAV_LINKS = [
-  { to: "/farms", label: en.nav.farms },
+  { to: "/farms", label: en.nav?.farms || "Farms" },
+  { to: "/dashboard", label: en.nav?.dashboard || "Dashboard" },
+  { to: "/scenarios/farm-001/compare", label: en.nav?.comparison || "Comparison" },
+  { to: "/scenarios/farm-001/sc-002/why", label: en.nav?.why || "Why" },
+  { to: "/scenarios/farm-001/sc-003/recommendations", label: en.nav?.recommendations || "Recommendations" },
+  { to: "/scenarios/farm-001/sc-001/resources", label: en.nav?.resources || "Resources" },
+  { to: "/scenarios/farm-001/sc-001/assumptions", label: en.nav?.assumptions || "Assumptions" },
+  { to: "/scenarios/farm-001/history", label: en.nav?.history || "History" },
+  { to: "/scenarios/farm-001/sc-001/report", label: en.nav?.report || "Report" },
 ]
 
 export default function AppLayout() {

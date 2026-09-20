@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
+import DashboardPage from "./pages/Dashboard/DashboardPage";
 import ScenarioComparisonPage from "./pages/ScenarioComparison/ScenarioComparisonPage";
 import WhyPage from "./pages/Why/WhyPage";
 import RecommendationsPage from "./pages/Recommendations/RecommendationsPage";
@@ -10,14 +11,14 @@ import ReportPage from "./pages/Report/ReportPage";
 
 /**
  * Main Application Shell - Member 4 Integration
- * Connects all 7 decision-support modules with unified navigation,
+ * Connects all 8 decision-support modules with unified navigation,
  * state passing, and trilingual localization.
  */
 function AppShell() {
   const { t, language, setLanguage, supportedLanguages } = useLanguage();
 
-  // Active page: "comparison" | "why" | "recommendations" | "resources" | "assumptions" | "history" | "report"
-  const [currentPage, setCurrentPage] = useState("comparison");
+  // Active page: "dashboard" | "comparison" | "why" | "recommendations" | "resources" | "assumptions" | "history" | "report"
+  const [currentPage, setCurrentPage] = useState("dashboard");
 
   // Cross-module parameter passing
   const [navParams, setNavParams] = useState({});
@@ -36,6 +37,7 @@ function AppShell() {
   };
 
   const navItems = [
+    { id: "dashboard", label: t("nav.dashboard") || "Dashboard", icon: "📊" },
     { id: "comparison", label: t("nav.comparison") || "Scenario Comparison", icon: "⚖️" },
     { id: "why", label: t("nav.why") || "Why Did It Change?", icon: "💡" },
     { id: "recommendations", label: t("nav.recommendations") || "Recommendations", icon: "🚨" },
@@ -145,6 +147,9 @@ function AppShell() {
 
       {/* Main Content Area: Page Router */}
       <main className="flex-1">
+        {currentPage === "dashboard" && (
+          <DashboardPage onNavigate={handleNavigate} />
+        )}
         {currentPage === "comparison" && (
           <ScenarioComparisonPage
             initialSelectedIds={navParams.selectedIds}
@@ -154,16 +159,23 @@ function AppShell() {
         )}
         {currentPage === "why" && (
           <WhyPage
-            initialTargetId={navParams.targetScenarioId || "sc-002"}
+            initialTargetId={navParams.targetScenarioId || navParams.scenarioId || "sc-002"}
             initialReferenceId={navParams.baselineId || "sc-001"}
             onNavigate={handleNavigate}
           />
         )}
         {currentPage === "recommendations" && (
-          <RecommendationsPage onNavigate={handleNavigate} />
+          <RecommendationsPage
+            scenarioId={navParams.scenarioId || "sc-003"}
+            onNavigate={handleNavigate}
+          />
         )}
         {currentPage === "resources" && (
-          <ResourceCheckPage onNavigate={handleNavigate} />
+          <ResourceCheckPage
+            farmId={navParams.farmId || "farm-001"}
+            scenarioId={navParams.scenarioId || "sc-001"}
+            onNavigate={handleNavigate}
+          />
         )}
         {currentPage === "assumptions" && (
           <AssumptionsPage onNavigate={handleNavigate} />
@@ -172,7 +184,10 @@ function AppShell() {
           <HistoryPage onNavigate={handleNavigate} />
         )}
         {currentPage === "report" && (
-          <ReportPage onNavigate={handleNavigate} />
+          <ReportPage
+            scenarioId={navParams.scenarioId || "sc-001"}
+            onNavigate={handleNavigate}
+          />
         )}
       </main>
 

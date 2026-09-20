@@ -1,4 +1,4 @@
-﻿import { createBrowserRouter } from "react-router-dom"
+import { createBrowserRouter } from "react-router-dom"
 import AppLayout from "./components/common/AppLayout.jsx"
 
 // --- Member 3 pages (owned) ---
@@ -7,7 +7,8 @@ import FarmSelectionPage  from "./pages/FarmSelection/index.jsx"
 import ScenarioBuilderPage from "./pages/ScenarioBuilder/index.jsx"
 import ScenarioResultsPage from "./pages/ScenarioResults/index.jsx"
 
-// --- Member 4 stubs (placeholder only — Member 4 fills these) ---
+// --- Member 4 pages ---
+import DashboardPage       from "./pages/Dashboard/index.jsx"
 import ComparisonStub     from "./pages/ScenarioComparison/index.jsx"
 import WhyStub            from "./pages/Why/index.jsx"
 import RecommendationsStub from "./pages/Recommendations/index.jsx"
@@ -21,6 +22,7 @@ export const ROUTES = {
   FARMS:        "/farms",
   BUILDER:      "/scenarios/:farmId",
   RESULTS:      "/scenarios/:farmId/:scenarioId/results",
+  DASHBOARD:    "/dashboard",
   COMPARISON:   "/scenarios/:farmId/compare",
   WHY:          "/scenarios/:farmId/:scenarioId/why",
   RECOMMENDATIONS: "/scenarios/:farmId/:scenarioId/recommendations",
@@ -39,7 +41,8 @@ export const router = createBrowserRouter([
       { path: "farms",            element: <FarmSelectionPage /> },
       { path: "scenarios/:farmId",                          element: <ScenarioBuilderPage /> },
       { path: "scenarios/:farmId/:scenarioId/results",      element: <ScenarioResultsPage /> },
-      // Member 4 routes — stubs only
+      // Member 4 routes
+      { path: "dashboard",                                  element: <DashboardPage /> },
       { path: "scenarios/:farmId/compare",                  element: <ComparisonStub /> },
       { path: "scenarios/:farmId/:scenarioId/why",          element: <WhyStub /> },
       { path: "scenarios/:farmId/:scenarioId/recommendations", element: <RecommendationsStub /> },
