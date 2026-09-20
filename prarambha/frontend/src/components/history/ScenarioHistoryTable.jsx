@@ -142,7 +142,7 @@ export default function ScenarioHistoryTable({
           type="button"
           disabled={selectedIds.length < 2}
           onClick={() => onLaunchCompare && onLaunchCompare(selectedIds)}
-          className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer ${
+          className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-2xs flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-hidden ${
             selectedIds.length >= 2 && selectedIds.length <= 4
               ? "bg-slate-900 hover:bg-slate-800 text-white cursor-pointer"
               : "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"
@@ -330,7 +330,7 @@ export default function ScenarioHistoryTable({
                       <span
                         role="status"
                         aria-label={`Risk assessment: ${risk.label}`}
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${risk.className}`}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-2xs ${risk.className}`}
                       >
                         <span aria-hidden="true">{risk.dot}</span>
                         <span>{risk.label}</span>

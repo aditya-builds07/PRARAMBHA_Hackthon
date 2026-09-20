@@ -63,7 +63,7 @@ export default function RecommendationCard({ recommendation }) {
           <span className="text-base" aria-hidden="true">
             {severityConfig.icon}
           </span>
-          <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded shadow-2xs ${severityConfig.badge}`}>
+          <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider shadow-2xs ${severityConfig.badge}`}>
             {severityConfig.label}
           </span>
         </div>

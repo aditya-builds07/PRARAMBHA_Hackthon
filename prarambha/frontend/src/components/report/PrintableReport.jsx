@@ -360,7 +360,7 @@ export default function PrintableReport({ reportData }) {
             <span className="text-slate-500 font-bold block text-[10px] uppercase">Risk Index & Rating</span>
             <div className="flex items-center gap-2 mt-1">
               <span
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${riskBadge.className}`}
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-2xs ${riskBadge.className}`}
               >
                 <span aria-hidden="true">{riskBadge.dot}</span>
                 <span>{riskBadge.label}</span>
@@ -424,7 +424,7 @@ export default function PrintableReport({ reportData }) {
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-900">{rec.trigger}</span>
                     <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border ${sevBadge.className}`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-2xs ${sevBadge.className}`}
                     >
                       <span aria-hidden="true">{sevBadge.icon}</span>
                       <span>{sevBadge.label}</span>
@@ -477,7 +477,7 @@ export default function PrintableReport({ reportData }) {
                       </td>
                       <td className="p-2.5 text-center">
                         <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border ${statusBadge.className}`}
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-2xs ${statusBadge.className}`}
                         >
                           <span aria-hidden="true">{statusBadge.icon}</span>
                           <span>{statusBadge.label}</span>

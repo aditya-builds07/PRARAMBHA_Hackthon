@@ -110,7 +110,7 @@ export default function ReportPage({ scenarioId = "sc-001", onNavigate = null })
             type="button"
             onClick={handlePrint}
             disabled={isLoading || !!error}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-2xs flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors shadow-2xs flex items-center gap-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:outline-hidden ${
               !isLoading && !error
                 ? "bg-slate-900 hover:bg-slate-800 text-white"
                 : "bg-slate-200 text-slate-400 cursor-not-allowed"
