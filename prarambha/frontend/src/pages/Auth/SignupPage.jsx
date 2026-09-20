@@ -2,12 +2,12 @@ import React, { useState } from "react";
 
 export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [fullName, setFullName] = useState("");
-  const [farmerId, setFarmerId] = useState("MH-PUN-099");
+  const [farmerId, setFarmerId] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [village, setVillage] = useState("Baramati");
-  const [district, setDistrict] = useState("Pune");
-  const [landAcres, setLandAcres] = useState("10.5");
+  const [village, setVillage] = useState("");
+  const [district, setDistrict] = useState("");
+  const [landAcres, setLandAcres] = useState("");
   const [preferredLang, setPreferredLang] = useState("mr");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -19,23 +19,9 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   // Generate unique Farmer ID
   const generateNewId = () => {
     const randomNum = Math.floor(100 + Math.random() * 900);
-    const prefix = district.slice(0, 3).toUpperCase() || "PUN";
+    const prefix = district.trim() ? district.trim().slice(0, 3).toUpperCase() : "MH";
     const newId = `MH-${prefix}-${randomNum}`;
     setFarmerId(newId);
-  };
-
-  const handlePreFill = () => {
-    setFullName("Tukaram Shinde");
-    setFarmerId("MH-PUN-388");
-    setEmail("tukaram.shinde@krishimitra.in");
-    setPhone("+91 98220 98765");
-    setVillage("Indapur");
-    setDistrict("Pune");
-    setLandAcres("14.0");
-    setPreferredLang("mr");
-    setPassword("farmer2026");
-    setConfirmPassword("farmer2026");
-    setError(null);
   };
 
   const handleSubmit = async (e) => {
@@ -405,24 +391,16 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
             </button>
           </form>
 
-          {/* Quick Demo Pre-fill */}
-          <div className="pt-2 flex items-center justify-between text-xs border-t border-[#164A34]">
-            <button
-              type="button"
-              onClick={handlePreFill}
-              className="text-emerald-400 hover:text-emerald-300 underline font-semibold cursor-pointer"
-            >
-              Pre-fill Sample Registration (Tukaram Shinde)
-            </button>
-
-            <span className="text-slate-400">
-              Already registered?{" "}
+          {/* Sign In Link */}
+          <div className="pt-3 flex items-center justify-center text-xs border-t border-[#164A34]">
+            <span className="text-slate-300">
+              Already have a Farmer ID?{" "}
               <button
                 type="button"
                 onClick={() => onNavigate && onNavigate("login")}
-                className="font-bold text-white hover:text-emerald-300 underline cursor-pointer ml-1"
+                className="font-bold text-emerald-400 hover:text-emerald-300 underline cursor-pointer ml-1"
               >
-                Sign In
+                Sign In with ID & Password
               </button>
             </span>
           </div>

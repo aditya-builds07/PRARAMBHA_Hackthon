@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 export default function LoginPage({ onNavigate, onLoginSuccess }) {
-  const [userId, setUserId] = useState("MH-PUN-042");
-  const [password, setPassword] = useState("farmer2026");
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
       const mockToken = "km_auth_" + Date.now();
       const farmerName = userId.includes("OFFICER")
         ? "Dr. Rajesh Kulkarni (Agri Officer)"
-        : "Shivaji Patil (Baramati Farm)";
+        : "Farmer " + userId.trim();
 
       localStorage.setItem("user_id", userId.trim());
       localStorage.setItem("farmer_id", userId.trim());
@@ -54,12 +54,6 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
       setError(err.message || "Failed to sign in. Please verify your ID and password.");
       setLoading(false);
     }
-  };
-
-  const handleQuickFill = (presetId, presetPassword) => {
-    setUserId(presetId);
-    setPassword(presetPassword);
-    setError(null);
   };
 
   return (
@@ -238,73 +232,21 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
             </button>
           </form>
 
-          {/* One-Click Demo Credentials */}
-          <div className="pt-3 border-t border-[#164A34] space-y-2.5">
-            <div className="text-center">
-              <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400">
-                Quick Test Credentials (1-Click Fill)
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                id="quick-farmer-login"
-                onClick={() => handleQuickFill("MH-PUN-042", "farmer2026")}
-                className="p-2.5 rounded-xl bg-[#002216] hover:bg-[#164A34] border border-[#164A34] text-left transition-colors cursor-pointer group"
-              >
-                <div className="text-[10px] font-bold text-emerald-400 group-hover:text-emerald-300">
-                  Farmer Account
-                </div>
-                <div className="text-[11px] font-mono text-white truncate">
-                  ID: MH-PUN-042
-                </div>
-                <div className="text-[9px] text-slate-400">
-                  Pass: farmer2026
-                </div>
-              </button>
-
-              <button
-                type="button"
-                id="quick-officer-login"
-                onClick={() => handleQuickFill("AGRI-OFFICER-01", "officer2026")}
-                className="p-2.5 rounded-xl bg-[#002216] hover:bg-[#164A34] border border-[#164A34] text-left transition-colors cursor-pointer group"
-              >
-                <div className="text-[10px] font-bold text-teal-400 group-hover:text-teal-300">
-                  Agri Officer
-                </div>
-                <div className="text-[11px] font-mono text-white truncate">
-                  ID: AGRI-OFFICER-01
-                </div>
-                <div className="text-[9px] text-slate-400">
-                  Pass: officer2026
-                </div>
-              </button>
+            {/* Register Farm Account Link */}
+            <div className="pt-3 border-t border-[#164A34] text-center">
+              <p className="text-xs text-slate-300">
+                Don't have a Farmer ID yet?{" "}
+                <button
+                  type="button"
+                  onClick={() => onNavigate && onNavigate("signup")}
+                  className="font-bold text-emerald-400 hover:text-emerald-300 underline cursor-pointer ml-1"
+                >
+                  Register Farm Account
+                </button>
+              </p>
             </div>
           </div>
-
-          {/* Guest / Direct Entry */}
-          <div className="pt-2 text-center space-y-2">
-            <button
-              type="button"
-              onClick={() => onNavigate && onNavigate("dashboard")}
-              className="text-xs text-slate-300 hover:text-emerald-300 transition-colors underline cursor-pointer"
-            >
-              Skip sign-in & enter simulator as Guest
-            </button>
-            <p className="text-[11px] text-slate-400">
-              Need a new ID?{" "}
-              <button
-                type="button"
-                onClick={() => onNavigate && onNavigate("signup")}
-                className="font-bold text-emerald-400 hover:underline cursor-pointer"
-              >
-                Register Farm ID
-              </button>
-            </p>
-          </div>
-        </div>
-      </main>
+        </main>
 
       {/* Footer */}
       <footer className="relative z-10 py-4 px-4 text-center text-xs text-slate-400">

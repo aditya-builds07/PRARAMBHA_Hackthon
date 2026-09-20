@@ -78,19 +78,6 @@ export default function LaunchPage({ onNavigate = null }) {
     }
   };
 
-  // Quick Demo entry handler
-  const handleDemoEntry = () => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("farmer_id", "MH-PUN-042");
-      localStorage.setItem("user_id", "MH-PUN-042");
-      localStorage.setItem("user_name", "Shivaji Patil");
-      localStorage.setItem("user_email", "shivaji.patil@krishimitra.in");
-      localStorage.setItem("supabase_token", "km_demo_session_" + Date.now());
-    }
-    setShowAuthModal(false);
-    navigateTo("dashboard");
-  };
-
   return (
     <div className="relative h-screen w-full bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-white overflow-hidden flex flex-col justify-between">
       
@@ -314,22 +301,12 @@ export default function LaunchPage({ onNavigate = null }) {
               </div>
             </div>
 
-            {/* Quick Demo Access Option */}
-            <div className="pt-2 border-t border-[#164A34] text-center space-y-2">
-              <button
-                type="button"
-                id="modal-quick-demo-btn"
-                onClick={handleDemoEntry}
-                className="w-full py-2.5 px-4 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 hover:text-white text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Sparkles className="h-4 w-4 text-amber-300" />
-                <span>Instant Demo Access (Shivaji Patil Farm • MH-PUN-042)</span>
-              </button>
-
+            {/* Modal Cancel Footer */}
+            <div className="pt-2 border-t border-[#164A34] text-center">
               <button
                 type="button"
                 onClick={() => setShowAuthModal(false)}
-                className="text-[11px] text-slate-400 hover:text-slate-300 underline cursor-pointer"
+                className="text-xs text-slate-400 hover:text-slate-200 underline cursor-pointer py-1"
               >
                 Cancel and return to launch page
               </button>
