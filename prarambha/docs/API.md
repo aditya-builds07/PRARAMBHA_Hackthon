@@ -11,6 +11,9 @@ All JSON responses use either `{ "data": ... }` for success or `{ "error": { "co
 | GET | `/health` | Service health check |
 | GET | `/crops` | Active crop parameters |
 | GET | `/assumptions` | Model weights, profiles, disclaimer |
+| GET | `/weather?latitude=<lat>&longitude=<lon>` | Normalized current Open-Meteo observation |
+
+`GET /weather` is advisory only. On an unavailable or malformed Open-Meteo response it returns `200` with `data.available: false`, `data.source: "manual_required"`, and no weather classification. The client must let the farmer retain or choose the simulation's `good`, `normal`, or `poor` weather input; forecast failures never silently alter deterministic simulation results.
 
 ## Farms
 
@@ -62,6 +65,7 @@ All JSON responses use either `{ "data": ... }` for success or `{ "error": { "co
 | POST | `/simulation-results` | Persist a verified simulation result |
 | GET | `/compare?farmId=<id>&scenarioIds=<id1,id2>` | Compare 2–4 saved scenarios |
 | POST | `/recommendations` | Produce deterministic recommendations from a verified result |
+| GET | `/scenarios/:scenarioId/recommendations` | Retrieve recommendations for a saved scenario's latest result |
 
 `POST /simulate` uses the same scenario input shape as `POST /scenarios`.
 
@@ -84,6 +88,7 @@ For `POST /recommendations`, send:
 | GET | `/resources?farmId=<id>` | List farm resources |
 | POST | `/resources` | Add available budget, water, seed, fertilizer, or other resource |
 | GET | `/resources/:farmId/readiness?scenarioId=<id>` | Compare latest result against available budget and water |
+| GET | `/farms/:farmId/resources/readiness?scenarioId=<id>` | Compatibility alias for the resource readiness endpoint |
 | GET | `/history?farmId=<id>` | List scenarios with their latest stored result |
 
 ```json

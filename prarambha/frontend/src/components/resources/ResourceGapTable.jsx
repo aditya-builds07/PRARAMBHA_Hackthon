@@ -186,5 +186,6 @@ export default function ResourceGapTable({ readinessData }) {
         </tbody>
       </table>
     </div>
+  </div>
   );
 }

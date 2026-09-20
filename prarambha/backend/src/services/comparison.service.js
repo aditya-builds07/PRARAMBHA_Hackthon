@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "../adapters/db/supabase.client.js";
+import { calculateAttribution } from '../simulation/attribution.engine.js';
 
 const METRICS = [
   ["profit", "profit_inr"],
@@ -18,11 +19,27 @@ function latestResultsByScenario(results) {
   }, []).map((result) => [result.scenario_id, result]));
 }
 
+function toScenarioInput(scenario) {
+  return {
+    id: scenario.id,
+    crop: scenario.crop_code,
+    areaAcres: Number(scenario.area_acres),
+    sowingDate: scenario.sowing_date,
+    waterAvailabilityPercent: Number(scenario.water_availability_percent),
+    availableWaterM3: scenario.available_water_m3 === null ? null : Number(scenario.available_water_m3),
+    weather: scenario.weather,
+    planting: { type: scenario.planting_type, delayDays: Number(scenario.delay_days) },
+    inputCostMultiplier: Number(scenario.input_cost_multiplier),
+    irrigation: scenario.irrigation,
+    priorityProfile: scenario.priority_profile,
+  };
+}
+
 export async function compareScenarios(farmId, scenarioIds) {
   const supabase = getSupabaseClient();
   let scenariosQuery = supabase
     .from("scenarios")
-    .select("id, name, is_baseline, crop_code, created_at")
+    .select("*")
     .eq("farm_id", farmId)
     .order("created_at", { ascending: true });
 
@@ -55,12 +72,27 @@ export async function compareScenarios(farmId, scenarioIds) {
     result: latest.get(scenario.id),
   }));
 
+  const baseline = compared.find((scenario) => scenario.isBaseline) ?? compared[0];
+  // Keep attribution in Member 1's domain engine; this service only connects
+  // persisted scenarios and results to the API contract used by the Why panel.
+  const attributions = compared
+    .filter((scenario) => scenario.id !== baseline.id)
+    .map((alternative) => ({
+      baselineScenarioId: baseline.id,
+      alternativeScenarioId: alternative.id,
+      ...calculateAttribution({
+        baseline: { scenario: toScenarioInput(baseline), result: baseline.result.result_json },
+        alternative: { scenario: toScenarioInput(alternative), result: alternative.result.result_json },
+      }),
+    }));
+
   return {
     scenarios: compared,
     differences: METRICS.map(([metric, column]) => ({
       metric,
       values: Object.fromEntries(compared.map((scenario) => [scenario.id, Number(scenario.result[column])])),
     })),
-    baselineScenarioId: compared.find((scenario) => scenario.isBaseline)?.id ?? null,
+    baselineScenarioId: baseline.id,
+    attributions,
   };
 }

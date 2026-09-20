@@ -197,6 +197,8 @@ export default function EconomicsChart({ scenarios = [] }) {
             })()}
           </div>
         )}
+      </div>
+
       {/* Screen Reader Accessible Data Alternative */}
       <table className="sr-only">
         <caption>Economics breakdown comparison data table</caption>
