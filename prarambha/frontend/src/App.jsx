@@ -78,7 +78,7 @@ function AppShell() {
                   key={item.id}
                   type="button"
                   onClick={() => handleNavigate(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-hidden ${
                     currentPage === item.id
                       ? "bg-emerald-600 text-white shadow-2xs"
                       : "text-slate-300 hover:text-white hover:bg-slate-800"
@@ -99,7 +99,7 @@ function AppShell() {
                     key={lang.code}
                     type="button"
                     onClick={() => setLanguage(lang.code)}
-                    className={`px-2 py-0.5 rounded text-[11px] font-extrabold transition-colors ${
+                    className={`px-2 py-0.5 rounded text-[11px] font-extrabold transition-colors focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-hidden ${
                       language === lang.code
                         ? "bg-emerald-600 text-white shadow-2xs"
                         : "text-slate-400 hover:text-white"

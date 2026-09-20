@@ -107,7 +107,7 @@ export default function RecommendationsList({
               key={tab.id}
               type="button"
               onClick={() => setFilterSeverity(tab.id)}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-hidden ${
                 filterSeverity === tab.id
                   ? "bg-slate-900 text-white shadow-2xs"
                   : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"

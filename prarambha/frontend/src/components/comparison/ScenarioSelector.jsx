@@ -84,7 +84,7 @@ export default function ScenarioSelector({
                       checked={isSelected}
                       disabled={!isSelected && isMaxReached}
                       onChange={() => onToggleScenario(scenario.id)}
-                      className="mt-1 w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 cursor-pointer disabled:cursor-not-allowed"
+                      className="mt-1 w-4 h-4 rounded text-emerald-600 focus:ring-2 focus:ring-emerald-500 focus-visible:outline-hidden border-slate-300 cursor-pointer disabled:cursor-not-allowed"
                       aria-label={`Select ${scenario.name}`}
                     />
                     <div>
@@ -127,7 +127,7 @@ export default function ScenarioSelector({
                   <button
                     type="button"
                     onClick={() => onSetBaseline(scenario.id)}
-                    className="w-full text-[11px] font-semibold text-slate-600 hover:text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded-md py-1 px-2 transition-colors"
+                    className="w-full text-[11px] font-semibold text-slate-600 hover:text-emerald-700 bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded-md py-1 px-2 transition-colors focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-hidden"
                   >
                     {t("comparison.setBaseline")}
                   </button>

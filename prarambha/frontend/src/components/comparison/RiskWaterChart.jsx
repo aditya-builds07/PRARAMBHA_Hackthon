@@ -27,7 +27,7 @@ export default function RiskWaterChart({ scenarios = [] }) {
           <button
             type="button"
             onClick={() => setActiveTab("water")}
-            className={`px-3 py-1 rounded-md transition-all ${
+            className={`px-3 py-1 rounded-md transition-all focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:outline-hidden ${
               activeTab === "water"
                 ? "bg-white text-blue-800 shadow-xs font-bold"
                 : "text-slate-600 hover:text-slate-900"
@@ -38,7 +38,7 @@ export default function RiskWaterChart({ scenarios = [] }) {
           <button
             type="button"
             onClick={() => setActiveTab("risk")}
-            className={`px-3 py-1 rounded-md transition-all ${
+            className={`px-3 py-1 rounded-md transition-all focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:outline-hidden ${
               activeTab === "risk"
                 ? "bg-white text-rose-800 shadow-xs font-bold"
                 : "text-slate-600 hover:text-slate-900"

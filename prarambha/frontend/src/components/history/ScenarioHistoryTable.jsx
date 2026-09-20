@@ -341,7 +341,7 @@ export default function ScenarioHistoryTable({
                         <button
                           type="button"
                           onClick={() => onOpen && onOpen(sc)}
-                          className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold transition-colors cursor-pointer"
+                          className="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-hidden"
                         >
                           {t("history.open") || "Open"}
                         </button>
@@ -349,7 +349,7 @@ export default function ScenarioHistoryTable({
                         <button
                           type="button"
                           onClick={() => startRename(sc)}
-                          className="px-2 py-1 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-[11px] font-semibold transition-colors cursor-pointer"
+                          className="px-2 py-1 rounded text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-[11px] font-semibold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-hidden"
                         >
                           {t("history.rename") || "Rename"}
                         </button>
@@ -357,7 +357,7 @@ export default function ScenarioHistoryTable({
                         <button
                           type="button"
                           onClick={() => requestDelete(sc.id)}
-                          className="px-2 py-1 rounded text-rose-600 hover:text-rose-800 hover:bg-rose-50 text-[11px] font-semibold transition-colors cursor-pointer"
+                          className="px-2 py-1 rounded text-rose-600 hover:text-rose-800 hover:bg-rose-50 text-[11px] font-semibold transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:outline-hidden"
                         >
                           {t("history.delete") || "Delete"}
                         </button>
