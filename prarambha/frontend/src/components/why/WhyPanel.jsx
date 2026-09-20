@@ -109,7 +109,7 @@ export default function WhyPanel({
 
         {/* Secondary Impact Metrics Bar (Yield, Water, Risk, Decision Score) */}
         {secondaryDeltas && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 pt-4">
             {/* Total Yield */}
             <div className="p-3 rounded-lg bg-slate-50 border border-slate-100">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">

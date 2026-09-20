@@ -74,7 +74,7 @@ export default function RecommendationCard({ recommendation }) {
       </div>
 
       {/* Card Body: Structured 4-Part Format */}
-      <div className="p-5 space-y-4 flex-1 text-xs">
+      <div className="p-4 sm:p-5 space-y-4 flex-1 text-xs">
         {/* 1. Observed Condition */}
         <div className="space-y-1">
           <span className="font-bold text-slate-500 uppercase tracking-wider text-[10px] block">

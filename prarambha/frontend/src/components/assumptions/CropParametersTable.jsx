@@ -12,7 +12,7 @@ export default function CropParametersTable({ cropParameters }) {
   // Standard PRD format: array of { crop, parameter, value, unit }
   if (Array.isArray(cropParameters)) {
     return (
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto max-w-full touch-pan-x">
         <table className="w-full text-left border-collapse min-w-[500px]">
           <thead>
             <tr className="border-b border-slate-200 bg-slate-100/70 text-[11px] font-bold uppercase tracking-wider text-slate-600">
@@ -63,7 +63,7 @@ export default function CropParametersTable({ cropParameters }) {
   ];
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto max-w-full touch-pan-x">
       <table className="w-full text-left border-collapse min-w-[500px]">
         <thead>
           <tr className="border-b border-slate-200 bg-slate-100/70 text-[11px] font-bold uppercase tracking-wider text-slate-600">
