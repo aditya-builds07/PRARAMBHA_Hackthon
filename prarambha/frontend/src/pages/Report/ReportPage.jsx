@@ -147,7 +147,7 @@ export default function ReportPage({ scenarioId = "sc-001", onNavigate = null })
                 <h3 className="font-black text-sm uppercase tracking-wide">
                   {t("report.unavailableTitle") || "Report Unavailable"}
                 </h3>
-                <p className="text-xs text-rose-700 mt-0.5">
+                <p className="text-xs text-rose-900 mt-0.5">
                   {error}
                 </p>
               </div>
@@ -155,7 +155,7 @@ export default function ReportPage({ scenarioId = "sc-001", onNavigate = null })
             <button
               type="button"
               onClick={() => fetchReport(currentScenarioId)}
-              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer shrink-0"
+              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:outline-hidden"
             >
               {t("report.retry") || "Retry"}
             </button>

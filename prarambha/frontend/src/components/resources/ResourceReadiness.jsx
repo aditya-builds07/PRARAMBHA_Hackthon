@@ -28,16 +28,16 @@ export default function ResourceReadiness({
         <h3 className="font-bold text-rose-950 text-sm">
           {t("resources.errorTitle") || "Unable to Load Resource Inventory"}
         </h3>
-        <p className="text-xs text-rose-700 max-w-md mx-auto">
+        <p className="text-xs text-rose-900 max-w-md mx-auto">
           {error}
         </p>
         {onRetry && (
           <button
             type="button"
             onClick={onRetry}
-            className="px-4 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-colors shadow-2xs cursor-pointer"
+            className="px-4 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-colors shadow-2xs cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:outline-hidden"
           >
-            Retry Request
+            {t("resources.retry") || "Retry"}
           </button>
         )}
       </div>

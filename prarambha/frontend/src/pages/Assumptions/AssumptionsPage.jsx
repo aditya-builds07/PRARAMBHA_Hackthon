@@ -99,7 +99,7 @@ export default function AssumptionsPage({ onNavigate = null }) {
             <button
               type="button"
               onClick={fetchAssumptions}
-              className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer"
+              className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:outline-hidden"
             >
               {t("assumptions.retry") || "Retry"}
             </button>
