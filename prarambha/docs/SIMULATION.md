@@ -394,6 +394,66 @@ Every simulation result incorporates version metadata imported directly from `mo
 }
 ```
 
+---
+
+## 10. Simulation Input Validator (`simulation.validator.js`)
+
+The Simulation Input Validator checks scenario input structure, required fields, numerical bounds, enum values, and date strings before passing the scenario to the Simulation Engine.
+
+### 10.1 Responsibilities vs Non-Responsibilities
+
+| Responsibilities | Non-Responsibilities (Delegated to Domain Layer) |
+| :--- | :--- |
+| Validating required fields (`crop`, `areaAcres`, etc.) | Calculating `waterFactor` or water volume |
+| Validating numerical bounds (`areaAcres > 0`, $0 \le \text{water} \le 100$) | Estimating crop yield or uncertainty ranges |
+| Validating enums (`crop`, `weather`, `planting.type`, `irrigation`) | Calculating base costs, revenue, profit, or ROI |
+| Validating calendar date format (`sowingDate`) | Computing risk scores or decision scores |
+| Returning structured machine-readable error lists | Generating recommendations or advice |
+
+### 10.2 Architectural Boundary Diagram
+
+```text
+HTTP Request / API Service Layer
+              │
+              ▼
+   Simulation Input Validator (simulation.validator.js -> validateSimulationInput)
+              │
+     ┌────────┴────────┐
+     │                 │
+[valid = false]   [valid = true]
+     │                 │
+     ▼                 ▼
+Return Errors    Simulation Engine (simulation.engine.js -> calculateSimulation)
+                       │
+                       ▼
+            Simulation Result Output
+```
+
+### 10.3 Validation Result Contract
+`validateSimulationInput(input)` returns a structured object:
+```json
+{
+  "valid": false,
+  "errors": [
+    {
+      "field": "areaAcres",
+      "code": "INVALID_VALUE",
+      "message": "areaAcres must be a finite number greater than 0."
+    }
+  ],
+  "warnings": []
+}
+```
+
+### 10.4 Machine-Readable Error Codes
+- `REQUIRED_FIELD`: Missing mandatory scenario property
+- `INVALID_TYPE`: Incorrect JavaScript primitive data type
+- `INVALID_VALUE`: Value out of valid mathematical or domain range
+- `UNKNOWN_CROP`: Crop key not found in centralized crop parameters
+- `INVALID_ENUM`: String value outside supported enum set
+- `INVALID_DATE`: Unparseable or invalid calendar date string
+
+
 
 
 
