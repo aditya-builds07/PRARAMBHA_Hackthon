@@ -5,6 +5,7 @@ import { cropRouter } from "./routes/crop.routes.js";
 import { farmRouter } from "./routes/farms.routes.js";
 import { scenarioRouter } from "./routes/scenarios.routes.js";
 import { simulateRouter } from "./routes/simulate.routes.js";
+import { resourceRouter } from "./routes/resources.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
 
 export function createApp() {
@@ -18,6 +19,7 @@ export function createApp() {
   app.use("/api", farmRouter);
   app.use("/api", scenarioRouter);
   app.use("/api", simulateRouter);
+  app.use("/api", resourceRouter);
 
   app.use((_request, response) => {
     response.status(404).json({
