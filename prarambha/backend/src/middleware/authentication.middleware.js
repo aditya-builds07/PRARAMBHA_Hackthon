@@ -1,5 +1,6 @@
 import { getUserScopedClient } from '../adapters/db/supabase.client.js';
 import { sendError } from '../utils/response.js';
+import { supabaseRequestContext } from '../adapters/db/supabase.context.js';
 
 /**
  * requireAuthenticatedUser — Express middleware (D1).
@@ -39,8 +40,9 @@ export async function requireAuthenticatedUser(request, response, next) {
     request.supabase = supabase;
     request.supabaseClient = supabase;
 
-    next();
+    return supabaseRequestContext.run(supabase, () => next());
   } catch (_error) {
     return sendError(response, 401, 'UNAUTHORIZED', 'Authentication required');
   }
 }
+
