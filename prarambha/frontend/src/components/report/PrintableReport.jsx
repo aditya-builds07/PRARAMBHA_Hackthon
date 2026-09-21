@@ -19,7 +19,7 @@ function getRiskBadge(riskLevel, riskScore) {
     case "high":
       return {
         label: `High Risk (${riskScore ?? 0}/100)`,
-        iconName: "warning",
+        iconName: "warning", this 
         className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "critical":
@@ -390,9 +390,8 @@ export default function PrintableReport({ reportData }) {
                   </span>
                 </div>
                 <span
-                  className={`font-black font-mono tabular-nums ${
-                    item.impact >= 0 ? "text-emerald-700" : "text-rose-700"
-                  }`}
+                  className={`font-black font-mono tabular-nums ${item.impact >= 0 ? "text-emerald-700" : "text-rose-700"
+                    }`}
                 >
                   {item.impact >= 0 ? `+${formatCurrency(item.impact)}` : formatCurrency(item.impact)}
                 </span>

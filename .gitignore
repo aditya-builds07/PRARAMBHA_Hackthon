@@ -21,3 +21,12 @@ Thumbs.db
 .vscode/
 !.vscode/extensions.json
 !.vscode/settings.json
+
+# Large media files (too big for GitHub — use Google Drive / YouTube instead)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.zip
+*.tar.gz

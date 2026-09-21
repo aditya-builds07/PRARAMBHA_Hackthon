@@ -234,36 +234,54 @@ export default function ScenarioComparisonPage({
         </div>
       </header>
 
-      {/* ── COMPARISON HIGHLIGHT TILES (STITCH STYLE) ── */}
+      {/* ── COMPARISON HIGHLIGHT TILES (ENHANCED) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-3xl border border-[#CDE0D2] shadow-xs space-y-1">
-          <span className="text-[10px] font-bold text-[#596A61] uppercase tracking-wider block">
-            ESTIMATED HIGHEST YIELD
-          </span>
-          <span className="text-2xl font-black text-[#0D4A2B] block">
-            88 qtl <span className="text-xs font-bold text-[#3D8B5A] bg-[#EAF3EC] px-2 py-0.5 rounded-full inline-block ml-2">+18.2%</span>
-          </span>
-          <span className="text-xs text-[#596A61]">Plan B (Drip Recommended)</span>
+        {/* Yield Tile */}
+        <div className="relative bg-gradient-to-br from-[#063D27] to-[#0D4A2B] p-5 rounded-3xl border border-[#164A34] shadow-md space-y-2 overflow-hidden group hover:shadow-lg transition-shadow">
+          <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-white/5 -translate-y-8 translate-x-8" />
+          <div className="flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[#86C39C] text-[18px]">grain</span>
+            <span className="text-[10px] font-bold text-[#86C39C] uppercase tracking-wider">Best Yield Estimate</span>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-white tabular-nums">88 qtl</span>
+            <span className="text-xs font-bold text-[#86C39C] bg-white/10 border border-[#86C39C]/30 px-2 py-0.5 rounded-full">
+              ↑ +18.2%
+            </span>
+          </div>
+          <span className="text-xs text-emerald-200/70 block">Plan B — Drip Recommended</span>
         </div>
 
-        <div className="bg-white p-5 rounded-3xl border border-[#CDE0D2] shadow-xs space-y-1">
-          <span className="text-[10px] font-bold text-[#596A61] uppercase tracking-wider block">
-            ESTIMATED MAX NET PROFIT
-          </span>
-          <span className="text-2xl font-black text-[#0D4A2B] block">
-            ₹2,15,000 <span className="text-xs font-bold text-[#3D8B5A] bg-[#EAF3EC] px-2 py-0.5 rounded-full inline-block ml-2">+₹43,000</span>
-          </span>
-          <span className="text-xs text-[#596A61]">vs Plan A Baseline (₹1,72,000)</span>
+        {/* Profit Tile */}
+        <div className="relative bg-gradient-to-br from-[#EAF3EC] to-white p-5 rounded-3xl border border-[#CDE0D2] shadow-xs space-y-2 overflow-hidden hover:border-[#86C39C] hover:shadow-md transition-all">
+          <div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-[#CDE0D2]/30 -translate-y-6 translate-x-6" />
+          <div className="flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[#0D4A2B] text-[18px]">payments</span>
+            <span className="text-[10px] font-bold text-[#596A61] uppercase tracking-wider">Max Net Profit</span>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-[#0D4A2B] tabular-nums">₹2,15,000</span>
+            <span className="text-xs font-bold text-[#3D8B5A] bg-[#EAF3EC] border border-[#CDE0D2] px-2 py-0.5 rounded-full">
+              ↑ +₹43,000
+            </span>
+          </div>
+          <span className="text-xs text-[#596A61] block">vs Plan A Baseline (₹1,72,000)</span>
         </div>
 
-        <div className="bg-white p-5 rounded-3xl border border-[#CDE0D2] shadow-xs space-y-1">
-          <span className="text-[10px] font-bold text-[#596A61] uppercase tracking-wider block">
-            HIGHEST WATER PRODUCTIVITY
-          </span>
-          <span className="text-2xl font-black text-[#4C9BB8] block">
-            4.2 kg/m³ <span className="text-xs font-bold text-[#4C9BB8] bg-sky-50 px-2 py-0.5 rounded-full inline-block ml-2">+35% Efficiency</span>
-          </span>
-          <span className="text-xs text-[#596A61]">Drip Irrigation System</span>
+        {/* Water Efficiency Tile */}
+        <div className="relative bg-gradient-to-br from-sky-50 to-white p-5 rounded-3xl border border-sky-200 shadow-xs space-y-2 overflow-hidden hover:border-[#4C9BB8] hover:shadow-md transition-all">
+          <div className="absolute top-0 right-0 w-20 h-20 rounded-full bg-sky-100/50 -translate-y-6 translate-x-6" />
+          <div className="flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[#4C9BB8] text-[18px]">water_voc</span>
+            <span className="text-[10px] font-bold text-[#596A61] uppercase tracking-wider">Water Productivity</span>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-[#4C9BB8] tabular-nums">4.2 kg/m³</span>
+            <span className="text-xs font-bold text-[#4C9BB8] bg-sky-50 border border-sky-200 px-2 py-0.5 rounded-full">
+              ↑ +35% eff.
+            </span>
+          </div>
+          <span className="text-xs text-[#596A61] block">Drip Irrigation System</span>
         </div>
       </div>
 
