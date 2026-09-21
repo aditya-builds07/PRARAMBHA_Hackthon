@@ -60,6 +60,10 @@ export function createApp(options = {}) {
 
   // Individual protected routers declare requireAuthenticatedUser
 
+  // Route-specific authentication is enforced within each protected router.
+  // Keeping auth out of the global /api middleware preserves the intended
+  // contract: unknown routes surface 404s while known protected endpoints
+  // continue to require a valid bearer token.
   app.use("/api", cropRouter);
   app.use("/api", assumptionRouter);
   app.use("/api", comparisonRouter);
@@ -71,7 +75,7 @@ export function createApp(options = {}) {
   app.use("/api", weatherRouter);
   app.use("/api", auditRouter);
 
-  // Optional extension hook for test routes before 404 handler
+  // Optional extension hook for test routes before the 404 handler.
   if (typeof options?.configure === "function") {
     options.configure(app);
   }

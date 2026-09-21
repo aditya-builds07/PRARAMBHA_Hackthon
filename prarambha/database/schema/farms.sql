@@ -8,6 +8,7 @@ create table if not exists farms (
   auth_user_id uuid,
   name text not null check (char_length(trim(name)) between 1 and 80),
   region text,
+  crop_cycle text,
   area_acres numeric(10,2) not null check (area_acres > 0 and area_acres <= 10000),
   water_profile text,
   available_water_m3 numeric(14,2) check (available_water_m3 is null or available_water_m3 >= 0),

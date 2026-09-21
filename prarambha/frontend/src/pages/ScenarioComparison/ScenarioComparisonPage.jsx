@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { MOCK_SCENARIOS, MOCK_WHY_EXPLANATIONS } from "../../services/mockData";
 import { compareScenarios, getWhyExplanation, formatCurrency } from "../../services/comparison.service";
@@ -7,6 +8,7 @@ import ComparisonTable from "../../components/comparison/ComparisonTable";
 import EconomicsChart from "../../components/comparison/EconomicsChart";
 import RiskWaterChart from "../../components/comparison/RiskWaterChart";
 import WhyPanel from "../../components/why/WhyPanel";
+import { api } from "../../services/api.js";
 
 
 /**
@@ -134,8 +136,30 @@ export default function ScenarioComparisonPage({
   onNavigate = null,
 }) {
   const { t } = useLanguage();
+  const { farmId } = useParams();
+  const [liveScenarios, setLiveScenarios] = useState(null);
 
-  const allScenarios = MOCK_SCENARIOS;
+  useEffect(() => {
+    if (!farmId) return;
+    let active = true;
+    api.get(`/api/scenarios?farmId=${encodeURIComponent(farmId)}`).then(async ({ data }) => {
+      const scenarios = Array.isArray(data) ? data : [];
+      if (scenarios.length < 2) return;
+      const ids = scenarios.slice(0, 4).map((scenario) => scenario.id);
+      const comparison = await api.get(`/api/compare?farmId=${encodeURIComponent(farmId)}&scenarioIds=${ids.join(",")}`);
+      if (!active || comparison.error || !comparison.data?.scenarios) return;
+      setLiveScenarios(comparison.data.scenarios.map((scenario) => ({
+        id: scenario.id,
+        name: scenario.name,
+        crop: scenario.cropCode,
+        area: scenario.result?.result_json?.scenario?.areaAcres ?? scenario.result?.yield_total_q,
+        results: scenario.result?.result_json ?? {},
+      })));
+    });
+    return () => { active = false; };
+  }, [farmId]);
+
+  const allScenarios = liveScenarios || MOCK_SCENARIOS;
 
   const [selectedIds, setSelectedIds] = useState(
     initialSelectedIds && initialSelectedIds.length >= 2
@@ -149,6 +173,13 @@ export default function ScenarioComparisonPage({
 
   const [activeTab, setActiveTab] = useState("comparison");
   const [targetWhyId, setTargetWhyId] = useState("sc-002");
+
+  useEffect(() => {
+    if (!liveScenarios?.length) return;
+    setSelectedIds(liveScenarios.map((scenario) => scenario.id).slice(0, 4));
+    setBaselineId(liveScenarios[0].id);
+    setTargetWhyId(liveScenarios[1]?.id || liveScenarios[0].id);
+  }, [liveScenarios]);
 
   const handleToggleScenario = (id) => {
     setSelectedIds((prev) => {

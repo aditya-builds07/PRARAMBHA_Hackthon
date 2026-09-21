@@ -9,10 +9,25 @@ const translations = {
   hi,
 };
 
+function resolveTranslation(dict, path) {
+  const keys = path.split(".");
+  let value = dict;
+
+  for (const key of keys) {
+    if (value && typeof value === "object" && key in value) {
+      value = value[key];
+    } else {
+      return undefined;
+    }
+  }
+
+  return typeof value === "string" ? value : undefined;
+}
+
 const LanguageContext = createContext({
   language: "en",
   setLanguage: () => {},
-  t: (key) => key,
+  t: (key) => resolveTranslation(translations.en, key) ?? key,
   supportedLanguages: [
     { code: "en", name: "English", label: "English" },
     { code: "mr", name: "मराठी", label: "Marathi" },
@@ -37,31 +52,13 @@ export const LanguageProvider = ({ children }) => {
     const fallbackDict = translations.en;
 
     return (path) => {
-      const keys = path.split(".");
-      let val = currentDict;
-      for (const k of keys) {
-        if (val && typeof val === "object" && k in val) {
-          val = val[k];
-        } else {
-          val = undefined;
-          break;
-        }
-      }
+      const currentValue = resolveTranslation(currentDict, path);
+      if (currentValue) return currentValue;
 
-      if (val !== undefined && typeof val === "string") {
-        return val;
-      }
+      const fallbackValue = resolveTranslation(fallbackDict, path);
+      if (fallbackValue) return fallbackValue;
 
-      // Fallback to English
-      let fallbackVal = fallbackDict;
-      for (const k of keys) {
-        if (fallbackVal && typeof fallbackVal === "object" && k in fallbackVal) {
-          fallbackVal = fallbackVal[k];
-        } else {
-          return path;
-        }
-      }
-      return typeof fallbackVal === "string" ? fallbackVal : path;
+      return path;
     };
   }, [language]);
 

@@ -9,7 +9,7 @@ import { getSupabaseClient } from "../adapters/db/supabase.client.js";
  * @param {string} userId
  * @returns {Promise<object>} Farm object
  */
-export async function assertFarmOwnership(farmId, userId) {
+export async function assertFarmOwnership(farmId, userId, supabaseParam = null) {
   if (!farmId || typeof farmId !== "string" || !farmId.trim()) {
     throw new Error("farmId is required.");
   }
@@ -17,7 +17,8 @@ export async function assertFarmOwnership(farmId, userId) {
     throw new Error("Unauthorized: User ID is required.");
   }
 
-  const { data, error } = await getSupabaseClient()
+  const supabase = supabaseParam || getSupabaseClient();
+  const { data, error } = await supabase
     .from("farms")
     .select("*")
     .eq("id", farmId.trim())
@@ -37,7 +38,7 @@ export async function assertFarmOwnership(farmId, userId) {
  * @param {string} userId
  * @returns {Promise<object>} Scenario object
  */
-export async function assertScenarioOwnership(scenarioId, userId) {
+export async function assertScenarioOwnership(scenarioId, userId, supabaseParam = null) {
   if (!scenarioId || typeof scenarioId !== "string" || !scenarioId.trim()) {
     throw new Error("scenarioId is required.");
   }
@@ -45,7 +46,8 @@ export async function assertScenarioOwnership(scenarioId, userId) {
     throw new Error("Unauthorized: User ID is required.");
   }
 
-  const { data, error } = await getSupabaseClient()
+  const supabase = supabaseParam || getSupabaseClient();
+  const { data, error } = await supabase
     .from("scenarios")
     .select("*")
     .eq("id", scenarioId.trim())
@@ -55,6 +57,6 @@ export async function assertScenarioOwnership(scenarioId, userId) {
   if (!data) throw new Error("Scenario not found.");
 
   // Confirm ownership of the parent farm
-  await assertFarmOwnership(data.farm_id, userId);
+  await assertFarmOwnership(data.farm_id, userId, supabase);
   return data;
 }

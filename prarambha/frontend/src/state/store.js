@@ -33,7 +33,7 @@ export function defaultScenarioInput(farmId, overrides = {}) {
     label:                   "Scenario A",
     crop:                    "",               // loaded from /api/crops
     areaAcres:               5,
-    sowingDate:              "",
+    sowingDate:              "2026-10-25",
     waterAvailabilityPercent: 100,
     availableWaterM3:        null,
     weather:                 "normal",
@@ -98,10 +98,11 @@ export const useAppStore = create((set, get) => ({
     set({ activeFarmId: farmId })
     // Ensure scenario list exists for this farm
     if (!get().scenarios[farmId]) {
+      const farm = get().farms.find((item) => item.id === farmId)
       set((s) => ({
         scenarios: {
           ...s.scenarios,
-          [farmId]: [defaultScenarioInput(farmId)],
+          [farmId]: [defaultScenarioInput(farmId, { areaAcres: farm?.areaAcres ?? 5 })],
         },
         activeScenarioId: {
           ...s.activeScenarioId,
@@ -163,9 +164,10 @@ export const useAppStore = create((set, get) => ({
 
   addScenario(farmId, overrides = {}) {
     const existing = get().scenarios[farmId] ?? []
+    const farm = get().farms.find((item) => item.id === farmId)
     const labels = ["A", "B", "C", "D"]
     const label = `Scenario ${labels[existing.length] ?? existing.length + 1}`
-    const scenario = defaultScenarioInput(farmId, { label, ...overrides })
+    const scenario = defaultScenarioInput(farmId, { areaAcres: farm?.areaAcres ?? 5, label, ...overrides })
     set((s) => ({
       scenarios: {
         ...s.scenarios,
@@ -200,6 +202,28 @@ export const useAppStore = create((set, get) => ({
         ),
       },
     }))
+  },
+
+  replaceScenarioId(farmId, scenarioId, persistedScenario) {
+    const persistedId = persistedScenario?.id
+    if (!persistedId || persistedId === scenarioId) return
+    set((s) => {
+      const scenarios = (s.scenarios[farmId] ?? []).map((scenario) =>
+        scenario.id === scenarioId
+          ? { ...scenario, ...persistedScenario, id: persistedId, farmId }
+          : scenario
+      )
+      const results = { ...s.results }
+      const loading = { ...s.loading }
+      const errors = { ...s.errors }
+      if (results[scenarioId]) results[persistedId] = results[scenarioId]
+      if (loading[scenarioId] !== undefined) loading[persistedId] = loading[scenarioId]
+      if (errors[scenarioId] !== undefined) errors[persistedId] = errors[scenarioId]
+      delete results[scenarioId]
+      delete loading[scenarioId]
+      delete errors[scenarioId]
+      return { scenarios: { ...s.scenarios, [farmId]: scenarios }, results, loading, errors }
+    })
   },
 
   removeScenario(farmId, scenarioId) {

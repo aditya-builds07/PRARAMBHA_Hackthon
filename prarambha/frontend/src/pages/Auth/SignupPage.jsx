@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { getAuthRedirectUrl, requireSupabase } from "../../services/supabase.js";
 
 export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [fullName, setFullName] = useState("");
@@ -47,54 +48,49 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     setLoading(true);
 
     try {
-      // Create user record with password
-      const newFarmer = {
+      const profile = {
         farmer_id: farmerId.trim().toUpperCase(),
         full_name: fullName.trim(),
-        email: email.trim() || `${farmerId.toLowerCase()}@krishimitra.in`,
         phone: phone.trim(),
         village: village.trim(),
         district: district.trim(),
         total_land_acres: parseFloat(landAcres) || 5.0,
         preferred_language: preferredLang,
-        password: password.trim(),
         role: "farmer",
-        created_at: new Date().toISOString(),
       };
+      // If email is blank, generate a unique placeholder to avoid Supabase
+      // email rate-limits on shared domains. The placeholder is derived from
+      // the unique Farmer ID so no two accounts collide.
+      const effectiveEmail = email.trim() ||
+        `${farmerId.trim().toLowerCase().replace(/[^a-z0-9]/g, "")}@farmer.prarambha.local`;
+      const { data, error } = await requireSupabase().auth.signUp({
+        email: effectiveEmail,
+        password: password.trim(),
+        options: {
+          data: profile,
+          emailRedirectTo: getAuthRedirectUrl(),
+        },
+      });
+      if (error) throw error;
 
-      // Persist in local storage for offline-first support
-      const existingAccounts = JSON.parse(localStorage.getItem("km_registered_accounts") || "[]");
-      const filtered = existingAccounts.filter(
-        (a) => a.farmer_id.toUpperCase() !== newFarmer.farmer_id && (!a.email || a.email.toLowerCase() !== newFarmer.email.toLowerCase())
-      );
-      filtered.push(newFarmer);
-      localStorage.setItem("km_registered_accounts", JSON.stringify(filtered));
-
-      // Authenticate session
-      const mockToken = "km_auth_reg_" + Date.now();
-      localStorage.setItem("user_id", newFarmer.farmer_id);
-      localStorage.setItem("farmer_id", newFarmer.farmer_id);
-      localStorage.setItem("user_name", newFarmer.full_name);
-      localStorage.setItem("user_email", newFarmer.email);
-      localStorage.setItem("farmer_district", newFarmer.district || "Pune");
-      localStorage.setItem("farmer_village", newFarmer.village || "");
-      localStorage.setItem("farmer_land_acres", String(newFarmer.total_land_acres));
-      localStorage.setItem("supabase_token", mockToken);
+      const assignedId = profile.farmer_id;
 
       if (onLoginSuccess) {
         onLoginSuccess({
-          id: newFarmer.farmer_id,
-          name: newFarmer.full_name,
-          email: newFarmer.email,
-          token: mockToken,
+          id: data.user?.id,
+          name: profile.full_name,
+          email: email.trim(),
+          token: data.session?.access_token,
         });
       }
 
-      setSuccessMsg(`Account created! Assigned Farmer ID: ${newFarmer.farmer_id}. Opening simulator...`);
+      setSuccessMsg(data.session
+        ? `Account created! Assigned Farmer ID: ${assignedId}. Opening simulator...`
+        : `Account created for ${assignedId}. Check your email to confirm the account, then sign in.`);
 
       setTimeout(() => {
         setLoading(false);
-        if (onNavigate) {
+        if (onNavigate && data.session) {
           onNavigate("dashboard");
         }
       }, 800);

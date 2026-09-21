@@ -12,6 +12,7 @@ import { useSimulation } from "../../hooks/useSimulation.js"
 import { DEMO_PRESETS, WEATHER_OPTIONS, IRRIGATION_TYPES, PRIORITY_PROFILES } from "../../utils/constants.js"
 import en from "../../i18n/en.json"
 import { CustomSelect } from "../../components/common/CustomSelect.jsx"
+import { saveScenario } from "../../services/scenario.service.js"
 
 const CROP_OPTIONS = [
   { id: "wheat", name: "Wheat (गहू / गेहूं)", icon: "grain" },
@@ -58,18 +59,23 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
   const cloneScenario = useAppStore((s) => s.cloneScenario)
   const updateScenario = useAppStore((s) => s.updateScenario)
   const removeScenario = useAppStore((s) => s.removeScenario)
+  const replaceScenarioId = useAppStore((s) => s.replaceScenarioId)
   const setActiveFarm = useAppStore((s) => s.setActiveFarm)
   const farms = useAppStore((s) => s.farms)
 
   // Auto-select first farm if none is active
   useEffect(() => {
-    if (!activeFarmId && farms.length > 0) {
+    if (farmId && farms.some((farm) => farm.id === farmId)) {
+      if (activeFarmId !== farmId) setActiveFarm(farmId)
+    } else if (!activeFarmId && farms.length > 0) {
       setActiveFarm(farms[0].id)
     }
-  }, [activeFarmId, farms, setActiveFarm])
+  }, [farmId, activeFarmId, farms, setActiveFarm])
 
   const scenarios = activeFarmId ? (scenariosMap[activeFarmId] || []) : []
   const [selectedScenarioId, setSelectedScenarioId] = useState(null)
+  const [savingScenario, setSavingScenario] = useState(false)
+  const [saveMessage, setSaveMessage] = useState(null)
 
   useEffect(() => {
     if (scenarios.length > 0) {
@@ -126,6 +132,34 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
     }
   }
 
+  const handleSaveScenario = async () => {
+    if (!activeScenario || !activeFarmId || savingScenario) return
+    setSavingScenario(true)
+    setSaveMessage(null)
+    const { data, error } = await saveScenario({
+      farmId: activeFarmId,
+      name: activeScenario.label || "Scenario Plan",
+      isBaseline: scenarios[0]?.id === activeScenario.id,
+      crop: activeScenario.crop || "wheat",
+      areaAcres: activeScenario.areaAcres,
+      sowingDate: activeScenario.sowingDate,
+      waterAvailabilityPercent: activeScenario.waterAvailabilityPercent,
+      availableWaterM3: activeScenario.availableWaterM3,
+      weather: activeScenario.weather,
+      planting: activeScenario.planting,
+      inputCostMultiplier: activeScenario.inputCostMultiplier,
+      irrigation: activeScenario.irrigation,
+      priorityProfile: activeScenario.priorityProfile,
+    })
+    if (error) setSaveMessage(error)
+    else if (data?.id) {
+      replaceScenarioId(activeFarmId, activeScenario.id, data)
+      setSelectedScenarioId(data.id)
+      setSaveMessage("Scenario saved")
+    }
+    setSavingScenario(false)
+  }
+
   const handlePlantingChange = (patch) => {
     if (!activeFarmId || !activeScenario) return
     updateScenario(activeFarmId, activeScenario.id, {
@@ -139,6 +173,10 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
     if (preset) {
       updateScenario(activeFarmId, activeScenario.id, {
         ...preset.input,
+        areaAcres: Math.min(
+          Number(preset.input.areaAcres ?? activeScenario.areaAcres ?? 1),
+          Number(activeFarm.areaAcres ?? activeFarm.totalAcres ?? 10000)
+        ),
         crop: preset.input.crop || activeScenario.crop || "wheat"
       })
     }
@@ -189,13 +227,23 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
             </span>
           ) : null}
 
-          <button
-            onClick={handleViewResults}
-            className="touch-target inline-flex items-center gap-2 bg-[#164A34] hover:bg-[#196C3E] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer"
-          >
-            <span>View Detailed Results</span>
-            <span className="material-symbols-outlined text-base">arrow_forward</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {saveMessage && <span className="text-xs font-semibold text-[#164A34]">{saveMessage}</span>}
+            <button
+              onClick={handleSaveScenario}
+              disabled={savingScenario}
+              className="touch-target inline-flex items-center gap-2 border border-[#164A34] text-[#164A34] hover:bg-[#EBF3ED] text-xs font-bold px-4 py-2.5 rounded-xl transition-all cursor-pointer disabled:opacity-60"
+            >
+              <span>{savingScenario ? "Saving..." : "Save Scenario"}</span>
+            </button>
+            <button
+              onClick={handleViewResults}
+              className="touch-target inline-flex items-center gap-2 bg-[#164A34] hover:bg-[#196C3E] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer"
+            >
+              <span>View Detailed Results</span>
+              <span className="material-symbols-outlined text-base">arrow_forward</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -326,7 +374,7 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
                   <label className="font-medium text-foreground">Area Sown (Acres)</label>
-                  <span className="text-muted-foreground">Max {activeFarm.totalAcres} ac</span>
+                  <span className="text-muted-foreground">Max {activeFarm.areaAcres || activeFarm.totalAcres || 50} ac</span>
                 </div>
                 <input
                   type="number"
@@ -349,6 +397,18 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
                     handlePlantingChange({ type, delayDays: type === "delayed" ? 14 : 0 })
                   }}
                   options={TIMING_OPTIONS}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label htmlFor="scenario-sowing-date" className="text-xs font-medium text-foreground">Sowing Date</label>
+                <input
+                  id="scenario-sowing-date"
+                  type="date"
+                  value={activeScenario.sowingDate || ""}
+                  onChange={(e) => handleFieldChange("sowingDate", e.target.value)}
+                  className="input-base"
+                  required
                 />
               </div>
             </div>

@@ -11,6 +11,7 @@
     "test:services": "node --test tests/assumptions.test.js tests/comparison.service.test.js tests/history.service.test.js tests/recommendations.test.js tests/report.service.test.js tests/resource.service.test.js tests/why.attribution.test.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.116.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",

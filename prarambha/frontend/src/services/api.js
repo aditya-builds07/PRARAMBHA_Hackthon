@@ -6,6 +6,7 @@
  * - Base URL from VITE_API_BASE_URL (never hard-coded).
  * - No secrets, no auth tokens in this file.
  */
+import { supabase } from "./supabase.js"
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3001"
 
@@ -17,18 +18,6 @@ export function setAuthToken(token) {
 
 export function getAuthToken() {
   if (memoryToken) return memoryToken;
-  if (typeof window !== "undefined") {
-    try {
-      return (
-        localStorage.getItem("supabase_token") ||
-        localStorage.getItem("sb-access-token") ||
-        sessionStorage.getItem("sb-access-token") ||
-        null
-      );
-    } catch {
-      return null;
-    }
-  }
   return null;
 }
 
@@ -39,7 +28,12 @@ export function getAuthToken() {
  */
 async function request(path, options = {}) {
   try {
-    const token = getAuthToken();
+    let token = getAuthToken();
+    if (!token && supabase) {
+      const { data } = await supabase.auth.getSession();
+      token = data.session?.access_token ?? null;
+      setAuthToken(token);
+    }
     const headers = {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

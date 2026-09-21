@@ -17,6 +17,8 @@ import ReportPage from "./pages/Report/ReportPage";
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage";
+import { supabase } from "./services/supabase.js";
+import { setAuthToken } from "./services/api.js";
 
 /**
  * KrishiMitra Master Shell — PRARAMBHA 2.0
@@ -27,6 +29,9 @@ function AppContent() {
   const { t, language, setLanguage, supportedLanguages } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
+  const [session, setSession] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
+  const isMockMode = import.meta.env.VITE_USE_MOCK === "true";
 
   // Parameter state passed across decision modules
   const [navParams, setNavParams] = useState({
@@ -38,9 +43,49 @@ function AppContent() {
 
   // Mobile navigation drawer toggle
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = location.pathname;
+
+  useEffect(() => {
+    try {
+      localStorage.removeItem("supabase_token");
+    } catch {}
+
+    if (!supabase) {
+      setAuthReady(true);
+      return undefined;
+    }
+
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      setSession(data.session ?? null);
+      setAuthToken(data.session?.access_token ?? null);
+      setAuthReady(true);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession ?? null);
+      setAuthToken(nextSession?.access_token ?? null);
+    });
+
+    return () => {
+      active = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const scenarioPath = pathname.match(/^\/scenarios\/([^/]+)(?:\/([^/]+))?/)
+    if (!scenarioPath) return
+    const [, farmId, scenarioId] = scenarioPath
+    setNavParams((previous) => ({
+      ...previous,
+      farmId,
+      ...(scenarioId && !["compare", "history"].includes(scenarioId) ? { scenarioId } : {}),
+    }))
+  }, [pathname])
 
   // Determine active page ID directly from URL location
-  const pathname = location.pathname;
   let currentPage = "launch";
   if (pathname === "/" || pathname === "" || pathname === "/launch") {
     currentPage = "launch";
@@ -139,7 +184,9 @@ function AppContent() {
   };
 
   // Centralized logout handler
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (supabase) await supabase.auth.signOut();
+    setAuthToken(null);
     try {
       localStorage.removeItem("farmer_id");
       localStorage.removeItem("user_id");
@@ -150,9 +197,6 @@ function AppContent() {
     } catch {}
     navigate("/");
   };
-
-  // Check if session token exists
-  const hasToken = typeof window !== "undefined" && Boolean(localStorage.getItem("supabase_token") || localStorage.getItem("sb-access-token"));
 
   // Standalone page rendering for Launch and Auth pages
   if (currentPage === "launch") {
@@ -166,6 +210,9 @@ function AppContent() {
   }
   if (currentPage === "forgot-password") {
     return <ForgotPasswordPage onNavigate={handleNavigate} />;
+  }
+  if (authReady && !isMockMode && !session) {
+    return <LoginPage onNavigate={handleNavigate} />;
   }
 
   // Navigation Items for AppShell Sidebar — Direct Web App Modules
@@ -182,7 +229,7 @@ function AppContent() {
     { id: "report", label: t("nav.report") || "Printable Report", icon: "description" },
   ];
 
-  const currentUserId = typeof window !== "undefined" ? (localStorage.getItem("farmer_id") || localStorage.getItem("user_id")) : null;
+  const currentUserId = session?.user?.user_metadata?.farmer_id || session?.user?.email || null;
 
   return (
     <div className="min-h-screen bg-[#F8F6F0] flex flex-col lg:flex-row font-sans text-[#1E2924] relative">
@@ -369,7 +416,7 @@ function AppContent() {
           )}
           {currentPage === "builder" && (
             <ScenarioBuilderPage
-              farmId={navParams.farmId}
+              farmId={pathname.match(/^\/scenarios\/([^/]+)/)?.[1] || navParams.farmId}
               onNavigate={handleNavigate}
             />
           )}

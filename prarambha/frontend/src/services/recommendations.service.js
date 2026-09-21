@@ -60,6 +60,10 @@ const SCENARIO_RECOMMENDATIONS_MAP = {
  * @returns {Promise<Array<Object>>}
  */
 export async function getRecommendations(scenarioId, { timeoutMs = 3000 } = {}) {
+  if (import.meta.env.VITE_USE_MOCK === "true") {
+    return SCENARIO_RECOMMENDATIONS_MAP[scenarioId] || MOCK_RECOMMENDATIONS;
+  }
+
   const endpoint = `/api/scenarios/${encodeURIComponent(scenarioId)}/recommendations`;
 
   try {

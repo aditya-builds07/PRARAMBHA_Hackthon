@@ -22,7 +22,7 @@ export async function getComparison(request, response, next) {
     if (!farmId) throw new Error("farmId query parameter is required.");
     const scenarioIds = parseScenarioIds(request.query.scenarioIds);
     if (!request.user?.id) return sendError(response, 401, 'UNAUTHORIZED', 'Authentication required');
-    sendSuccess(response, 200, await compareScenarios(farmId, scenarioIds, request.user.id));
+    sendSuccess(response, 200, await compareScenarios(request.supabaseClient, farmId, scenarioIds, request.user.id));
   } catch (error) {
     if (error.message.includes("required") || error.message.includes("must") || error.message.includes("requires")) {
       sendError(response, 400, "VALIDATION_ERROR", error.message);
@@ -46,7 +46,7 @@ export async function postComparison(request, response, next) {
     if (!farmId) throw new Error("farmId is required.");
     const scenarioIds = parseScenarioIdArray(request.body?.scenarioIds);
     if (!request.user?.id) return sendError(response, 401, 'UNAUTHORIZED', 'Authentication required');
-    sendSuccess(response, 200, await compareScenarios(farmId, scenarioIds, request.user.id));
+    sendSuccess(response, 200, await compareScenarios(request.supabaseClient, farmId, scenarioIds, request.user.id));
   } catch (error) {
     if (error.message.includes("required") || error.message.includes("must") || error.message.includes("array")) {
       sendError(response, 400, "VALIDATION_ERROR", error.message);

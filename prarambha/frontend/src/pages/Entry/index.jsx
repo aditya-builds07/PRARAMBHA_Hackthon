@@ -91,7 +91,7 @@ export default function EntryPage({ onNavigate }) {
                 onClick={handleStartPlanning}
                 className="px-4 py-2 bg-[#3D8B5A] hover:bg-[#2F7348] border border-[#86C39C]/40 text-white text-xs font-extrabold rounded-xl shadow-sm hover:shadow-md transition-all flex items-center gap-1.5 cursor-pointer hover:scale-105"
               >
-                <span>{t("entry.ctaStart")}</span>
+                <span>Open App</span>
                 <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
               </button>
             </div>

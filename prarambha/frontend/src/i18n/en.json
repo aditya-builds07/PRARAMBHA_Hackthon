@@ -24,7 +24,7 @@
     "headline1": "Test the season",
     "headline2": "before you sow it.",
     "subheadline": "Explore farming plans before committing your land, water, inputs, and money. Evaluate crop yields, net profit, and water risk with transparent agronomic simulation.",
-    "ctaStart": "Start Planning",
+    "ctaStart": "Get Started",
     "ctaHow": "See How It Works",
     "badgeDeterministic": "100% Deterministic Engine",
     "badgeTrilingual": "Trilingual (English, Hindi, Marathi)",
@@ -83,6 +83,24 @@
     "deleteFarm": "Delete Farm",
     "deleteConfirm": "Are you sure you want to delete this farm?",
     "noFarms": "No farms found. Create your first farm to get started!",
+    "fields": {
+      "name": "Farm Name",
+      "namePlaceholder": "e.g. Desai Farm",
+      "region": "Village / Region",
+      "regionPlaceholder": "e.g. Sangli, Maharashtra",
+      "areaAcres": "Total Area (acres)",
+      "cropCycle": "Crop Cycle",
+      "waterProfile": "Water Availability",
+      "budgetInr": "Budget (₹)",
+      "waterM3": "Water Available (m³)",
+      "seedKg": "Seed Stock (kg)",
+      "fertilizerKg": "Fertilizer (kg)"
+    },
+    "waterProfiles": {
+      "normal": "Normal",
+      "abundant": "Abundant",
+      "scarce": "Scarce"
+    },
     "name": "Farm Name",
     "village": "Village",
     "district": "District",

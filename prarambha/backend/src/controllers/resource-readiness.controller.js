@@ -8,7 +8,7 @@ export async function getReadiness(request, response, next) {
     if (!farmId || !scenarioId) {
       return sendError(response, 400, 'VALIDATION_ERROR', 'farmId and scenarioId are required.');
     }
-    sendSuccess(response, 200, await getResourceReadiness(farmId, scenarioId, request.user.id));
+    sendSuccess(response, 200, await getResourceReadiness(request.supabaseClient, farmId, scenarioId, request.user.id));
   } catch (error) {
     if (error.message.startsWith("No saved simulation")) {
       return sendError(response, 404, 'NOT_FOUND', error.message);

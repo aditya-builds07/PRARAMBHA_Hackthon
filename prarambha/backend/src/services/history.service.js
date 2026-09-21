@@ -18,7 +18,7 @@ export async function listScenarioHistory(supabaseOrFarmId, farmIdOrUserId, mayb
   }
 
   if (userId) {
-    await assertFarmOwnership(farmId, userId);
+    await assertFarmOwnership(farmId, userId, supabase);
   }
   const { data: scenarios, error: scenariosError } = await supabase
     .from('scenarios')

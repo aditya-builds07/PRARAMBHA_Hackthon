@@ -21,7 +21,7 @@ export async function getScenarioRecommendations(request, response, next) {
       return sendError(response, 400, "VALIDATION_ERROR", "scenarioId is required.");
     }
     if (!request.user?.id) return sendError(response, 401, 'UNAUTHORIZED', 'Authentication required');
-    sendSuccess(response, 200, await getRecommendationsForScenario(scenarioId, request.user.id));
+    sendSuccess(response, 200, await getRecommendationsForScenario(request.supabaseClient, scenarioId, request.user.id));
   } catch (error) {
     if (error.message === 'Scenario not found.' || error.message === 'Farm not found.') {
       return sendError(response, 404, "NOT_FOUND", error.message);

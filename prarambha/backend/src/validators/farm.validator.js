@@ -36,6 +36,7 @@ export function validateFarmInput(input) {
     name,
     area_acres: areaAcres,
     region: optionalText(input.region, "region"),
+    crop_cycle: optionalText(input.cropCycle, "cropCycle"),
     water_profile: optionalText(input.waterProfile, "waterProfile"),
     available_water_m3: optionalNonNegativeNumber(input.availableWaterM3, "availableWaterM3"),
     budget_inr: optionalNonNegativeNumber(input.budgetInr, "budgetInr"),

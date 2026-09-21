@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { requireSupabase } from "../../services/supabase.js";
 
 export default function LoginPage({ onNavigate, onLoginSuccess }) {
   const [userId, setUserId] = useState("");
@@ -25,54 +26,23 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
       const input = userId.trim();
       const enteredPassword = password.trim();
 
-      // Check registered accounts list
-      const registered = JSON.parse(localStorage.getItem("km_registered_accounts") || "[]");
-      const matched = registered.find(
-        (a) =>
-          a.farmer_id?.toLowerCase() === input.toLowerCase() ||
-          (a.email && a.email.toLowerCase() === input.toLowerCase()) ||
-          (a.phone && a.phone.replace(/\D/g, "") === input.replace(/\D/g, "")) ||
-          (a.full_name && a.full_name.toLowerCase() === input.toLowerCase())
-      );
-
-      // Verify password if matched user has registered password
-      if (matched && matched.password) {
-        if (matched.password !== enteredPassword) {
-          throw new Error("Incorrect password. Please enter the password you registered with.");
-        }
-      } else if (input.toUpperCase() === "MH-PUN-042" && enteredPassword !== "farmer2026") {
-        throw new Error("Incorrect password for Shivaji Patil account. Default is: farmer2026");
-      } else if (input.toUpperCase().includes("OFFICER") && enteredPassword !== "officer2026") {
-        throw new Error("Incorrect password for Agri Officer account. Default is: officer2026");
-      }
-
-      // Generate active session token
-      const mockToken = "km_auth_" + Date.now();
-
-      // Resolve profile information
-      const finalFarmerId = matched?.farmer_id || input.toUpperCase();
-      const finalFarmerName = matched?.full_name || (input.toUpperCase() === "MH-PUN-042" ? "Shivaji Patil" : (input.toUpperCase().includes("OFFICER") ? "Dr. Rajesh Kulkarni (Agri Officer)" : `Farmer ${input}`));
-      const finalDistrict = matched?.district || "Pune";
-      const finalLand = matched?.total_land_acres || 5.0;
-      const finalEmail = matched?.email || (input.includes("@") ? input : `${finalFarmerId.toLowerCase()}@krishimitra.in`);
-
-      localStorage.setItem("user_id", finalFarmerId);
-      localStorage.setItem("farmer_id", finalFarmerId);
-      localStorage.setItem("user_name", finalFarmerName);
-      localStorage.setItem("farmer_district", finalDistrict);
-      localStorage.setItem("farmer_land_acres", String(finalLand));
-      localStorage.setItem("user_email", finalEmail);
-      localStorage.setItem("supabase_token", mockToken);
+      const { data, error } = await requireSupabase().auth.signInWithPassword({
+        email: input,
+        password: enteredPassword,
+      });
+      if (error) throw error;
+      if (!data.user || !data.session) throw new Error("Sign-in did not return an active session.");
 
       if (onLoginSuccess) {
         onLoginSuccess({
-          id: finalFarmerId,
-          name: finalFarmerName,
-          token: mockToken,
+          id: data.user.id,
+          name: data.user.user_metadata?.full_name || data.user.email,
+          email: data.user.email,
+          token: data.session.access_token,
         });
       }
 
-      setSuccessMsg(`Welcome back, ${finalFarmerName}! Opening simulator...`);
+      setSuccessMsg(`Welcome back, ${data.user.user_metadata?.full_name || data.user.email}! Opening simulator...`);
 
       setTimeout(() => {
         setLoading(false);
@@ -140,8 +110,8 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
             <h1 className="text-2xl font-black text-white tracking-tight">
               Sign In to Your Account
             </h1>
-            <p className="text-xs text-slate-300">
-              Enter your Farmer ID or User ID along with your password
+              <p className="text-xs text-slate-300">
+              Enter your registered email and password
             </p>
           </div>
 
@@ -166,7 +136,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
             {/* ID Input */}
             <div className="space-y-1.5">
               <label htmlFor="login-id" className="block text-xs font-bold text-emerald-300">
-                Farmer ID / User ID / Email
+                  Registered Email
               </label>
               <div className="relative flex items-center">
                 <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
@@ -178,12 +148,12 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
                   required
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
-                  placeholder="e.g. MH-PUN-042 or farmer@krishimitra.in"
+                  placeholder="farmer@krishimitra.in"
                   className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
                 />
               </div>
               <p className="text-[10px] text-slate-400">
-                Supports Farmer Registration ID, Aadhaar ID, or registered email.
+                Use the email address associated with your Supabase account.
               </p>
             </div>
 

@@ -121,6 +121,10 @@ export async function getActiveAssumptions() {
  * @returns {Promise<Object>} Assumptions dataset
  */
 export async function getAssumptions() {
+  if (import.meta.env.VITE_USE_MOCK === "true") {
+    return MOCK_ASSUMPTIONS_DATA;
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000);
 

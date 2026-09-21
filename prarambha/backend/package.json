@@ -8,7 +8,7 @@
     "start": "node src/server.js",
     "test": "node tests/security/security.test.js",
     "test:security": "node tests/security/security.test.js",
-    "test:vitest": "vitest run"
+    "test:vitest": "vitest run tests/security/auth.test.js tests/security/isolation.test.js tests/security/service-role.test.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",

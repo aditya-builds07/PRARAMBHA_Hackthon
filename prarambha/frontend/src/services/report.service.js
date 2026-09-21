@@ -108,6 +108,16 @@ export const MOCK_REPORT_DATA = {
  * @returns {Promise<Object>} Aggregated report document
  */
 export async function getReport(scenarioId = "sc-001") {
+  if (import.meta.env.VITE_USE_MOCK === "true") {
+    return {
+      ...MOCK_REPORT_DATA,
+      scenario: {
+        ...MOCK_REPORT_DATA.scenario,
+        id: scenarioId,
+      },
+    };
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000);
 

@@ -14,9 +14,12 @@ function overallStatus(statuses) {
   return "available";
 }
 
-export async function getResourceReadiness(farmId, scenarioId, userId) {
-  await assertFarmOwnership(farmId, userId);
-  const supabase = getSupabaseClient();
+export async function getResourceReadiness(supabaseOrFarmId, farmIdOrScenarioId, scenarioIdOrUserId, maybeUserId) {
+  const supabase = typeof supabaseOrFarmId === "object" ? supabaseOrFarmId : getSupabaseClient();
+  const farmId = typeof supabaseOrFarmId === "object" ? farmIdOrScenarioId : supabaseOrFarmId;
+  const scenarioId = typeof supabaseOrFarmId === "object" ? scenarioIdOrUserId : farmIdOrScenarioId;
+  const userId = typeof supabaseOrFarmId === "object" ? maybeUserId : scenarioIdOrUserId;
+  await assertFarmOwnership(farmId, userId, supabase);
   const [{ data: resources, error: resourcesError }, { data: result, error: resultError }] = await Promise.all([
     supabase.from("resources").select("resource_type, available_quantity").eq("farm_id", farmId),
     supabase

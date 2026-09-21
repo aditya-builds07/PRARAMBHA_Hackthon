@@ -270,6 +270,10 @@ export function deleteScenario(targetOrList, maybeId) {
  * Async API method to fetch history.
  */
 export async function getScenarioHistory() {
+  if (import.meta.env.VITE_USE_MOCK === "true") {
+    return JSON.parse(JSON.stringify(localHistoryStore));
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000);
 

@@ -164,6 +164,19 @@ export const MOCK_RESOURCE_DATA = [
  * }>}
  */
 export async function getResourceReadiness(farmId = "farm-001", scenarioId = "sc-001", { timeoutMs = 3000 } = {}) {
+  if (import.meta.env.VITE_USE_MOCK === "true") {
+    const resources = MOCK_RESOURCE_DATA.map((item) => ({
+      ...item,
+      gap: calculateGap(item.required, item.available),
+    }));
+    return {
+      farmId,
+      scenarioId,
+      resources,
+      feasibility: calculateFeasibility(resources),
+    };
+  }
+
   const endpoint = `/api/farms/${encodeURIComponent(farmId)}/resources/readiness?scenarioId=${encodeURIComponent(scenarioId)}`;
 
   try {
