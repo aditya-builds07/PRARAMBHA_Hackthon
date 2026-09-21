@@ -421,22 +421,7 @@ function AppContent() {
           )}
         </main>
 
-        {/* Global Footer */}
-        <footer className="bg-white border-t border-[#D0DEC0] text-[#596A61] text-xs py-5 px-4 sm:px-6 lg:px-8 mt-auto print:hidden">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <span className="font-bold text-[#164A34]">
-                KrishiMitra — PRARAMBHA 2.0
-              </span>
-              <p className="text-[11px] text-[#596A61] mt-0.5">
-                Transparent, deterministic agricultural decision simulator. Yield & profit values are model-estimated projections, not guarantees.
-              </p>
-            </div>
-            <div className="text-[11px] font-mono text-[#596A61] shrink-0">
-              Model Engine v2.0 • Offline Native
-            </div>
-          </div>
-        </footer>
+
       </div>
 
       {/* ── MOBILE BOTTOM NAVIGATION BAR (< 1024px) ── */}
@@ -495,11 +480,7 @@ function AppContent() {
         </button>
       </nav>
 
-      {/* ── FLOATING ENGINE STATUS ASSISTANT ── */}
-      <div className="fixed bottom-4 right-4 z-40 hidden sm:flex items-center gap-2 bg-[#164A34] text-white border border-[#3D8B5A] px-3 py-1.5 rounded-full shadow-lg text-[11px] font-bold print:hidden">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        <span>Engine v2.0 • Deterministic</span>
-      </div>
+
     </div>
   );
 }
