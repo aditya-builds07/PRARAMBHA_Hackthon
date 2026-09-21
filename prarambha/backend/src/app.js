@@ -51,18 +51,20 @@ export function createApp(options = {}) {
   // V6: Rate limiting across /api
   app.use("/api", apiLimiter);
 
-  // Public health check route
+  // Public health check routes (supports both /health and /api/health for Render/cloud providers)
+  app.get("/health", (_request, response) => response.status(200).json({ status: "ok", success: true }));
   app.use("/api", healthRouter);
 
-  // Apply authentication globally for all other /api routes
-  app.use("/api", requireAuthenticatedUser);
+  // Mount simulateRouter with its own dedicated rate limiter & auth guards
+  app.use("/api", simulateRouter);
+
+  // Individual protected routers declare requireAuthenticatedUser
 
   app.use("/api", cropRouter);
   app.use("/api", assumptionRouter);
   app.use("/api", comparisonRouter);
   app.use("/api", farmRouter);
   app.use("/api", scenarioRouter);
-  app.use("/api", simulateRouter);
   app.use("/api", resourceRouter);
   app.use("/api", recommendationRouter);
   app.use("/api", reportRouter);
