@@ -180,8 +180,6 @@ function AppContent() {
     { id: "assumptions", label: t("nav.assumptions") || "Model Assumptions", icon: "article" },
     { id: "history", label: t("nav.history") || "Scenario History", icon: "history" },
     { id: "report", label: t("nav.report") || "Printable Report", icon: "description" },
-    { id: "login", label: "Sign In / Switch ID", icon: "badge" },
-    { id: "launch", label: "Launch Screen", icon: "rocket_launch" },
   ];
 
   const currentUserId = typeof window !== "undefined" ? (localStorage.getItem("farmer_id") || localStorage.getItem("user_id")) : null;
@@ -259,29 +257,11 @@ function AppContent() {
           </div>
 
           {/* Active Farmer Profile Badge */}
-          {currentUserId ? (
-            <div className="bg-[#164A34]/80 border border-[#3D8B5A]/40 rounded-xl p-2.5 flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <span className="text-[10px] text-[#86C39C] uppercase font-bold block">Active Farmer ID</span>
-                <span className="text-xs font-mono font-bold text-white truncate block">{currentUserId}</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleNavigate("login")}
-                className="text-[10px] text-emerald-300 hover:text-white underline cursor-pointer shrink-0 ml-2"
-              >
-                Switch
-              </button>
+          {currentUserId && (
+            <div className="bg-[#164A34]/80 border border-[#3D8B5A]/40 rounded-xl p-2.5">
+              <span className="text-[10px] text-[#86C39C] uppercase font-bold block">Active Farmer ID</span>
+              <span className="text-xs font-mono font-bold text-white truncate block">{currentUserId}</span>
             </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => handleNavigate("login")}
-              className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[16px]">badge</span>
-              <span>Sign In with ID</span>
-            </button>
           )}
 
           <div className="pt-1 flex items-center justify-between">
