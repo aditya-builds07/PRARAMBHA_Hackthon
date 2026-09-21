@@ -15,6 +15,7 @@ import { reportRouter } from "./routes/reports.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
 import { weatherRouter } from "./routes/weather.routes.js";
 import { auditRouter } from "./routes/audit.routes.js";
+import { requireAuthenticatedUser } from "./middleware/authentication.middleware.js";
 import { sendError } from './utils/response.js';
 import { getAllowedCorsOrigins } from './config/environment.js';
 import { apiLimiter } from './middleware/rate-limiter.middleware.js';
@@ -25,7 +26,7 @@ export function createApp(options = {}) {
   // Disable technology footprint disclosure
   app.disable("x-powered-by");
 
-  // V7: Standard Security HTTP Headers via Helmet (CSP, HSTS, X-Frame-Options, X-Content-Type-Options)
+  // V7: Standard Security HTTP Headers via Helmet
   app.use(securityHeaders);
 
   // V5: Strict CORS Policy
@@ -50,7 +51,12 @@ export function createApp(options = {}) {
   // V6: Rate limiting across /api
   app.use("/api", apiLimiter);
 
+  // Public health check route
   app.use("/api", healthRouter);
+
+  // Apply authentication globally for all other /api routes
+  app.use("/api", requireAuthenticatedUser);
+
   app.use("/api", cropRouter);
   app.use("/api", assumptionRouter);
   app.use("/api", comparisonRouter);

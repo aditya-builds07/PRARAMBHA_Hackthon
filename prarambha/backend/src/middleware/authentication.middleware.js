@@ -1,13 +1,13 @@
-import { getUserScopedClient, getSupabaseClient } from '../adapters/db/supabase.client.js';
+import { getUserScopedClient } from '../adapters/db/supabase.client.js';
 import { sendError } from '../utils/response.js';
 
 /**
  * requireAuthenticatedUser — Express middleware (D1).
  *
  * 1. Extracts the Bearer JWT from the Authorization header.
- * 2. Verifies it against Supabase Auth (using anon client for the getUser call).
+ * 2. Verifies it against Supabase Auth (using user-scoped client).
  * 3. Attaches req.user = { id, email } for downstream handlers.
- * 4. Attaches req.supabaseClient = getUserScopedClient(jwt) so all downstream
+ * 4. Attaches req.supabase and req.supabaseClient = getUserScopedClient(token) so all downstream
  *    DB queries run as the authenticated user, subject to RLS.
  * 5. Returns 401 with a generic body for any auth failure (D6 — no leakage).
  *
@@ -22,24 +22,25 @@ export async function requireAuthenticatedUser(request, response, next) {
       : '';
 
   if (!token) {
-    return sendError(response, 401, 'UNAUTHORIZED', 'A Bearer access token is required.');
+    return sendError(response, 401, 'UNAUTHORIZED', 'Authentication required');
   }
 
   try {
-    const { data, error } = await getSupabaseClient().auth.getUser(token);
+    const supabase = getUserScopedClient(token);
+    const { data, error } = await supabase.auth.getUser(token);
     if (error || !data?.user?.id) {
-      return sendError(response, 401, 'UNAUTHORIZED', 'The access token is invalid or expired.');
+      return sendError(response, 401, 'UNAUTHORIZED', 'Authentication required');
     }
 
     // Attach verified identity to request
     request.user = { id: data.user.id, email: data.user.email ?? null };
 
-    // Attach a per-request user-scoped client. All service calls must use this
-    // client so RLS policies are enforced on every DB operation (D2).
-    request.supabaseClient = getUserScopedClient(token);
+    // Attach per-request user-scoped client (req.supabase and alias req.supabaseClient)
+    request.supabase = supabase;
+    request.supabaseClient = supabase;
 
     next();
-  } catch (error) {
-    return sendError(response, 401, 'UNAUTHORIZED', 'The access token is invalid or expired.');
+  } catch (_error) {
+    return sendError(response, 401, 'UNAUTHORIZED', 'Authentication required');
   }
 }

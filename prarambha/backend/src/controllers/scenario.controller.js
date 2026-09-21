@@ -27,6 +27,7 @@ export async function getScenarios(request, response, next) {
     }
     sendSuccess(response, 200, await listScenariosByFarm(request.supabaseClient, farmId.trim(), request.user.id));
   } catch (error) {
+    if (error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
     next(error);
   }
 }
@@ -37,6 +38,7 @@ export async function postScenario(request, response, next) {
     await writeAuditLogSafely({ action: 'CREATE_SCENARIO', userId: request.user.id, farmId: created.farm_id, scenarioId: created.id, inputSnapshot: request.body, outputSnapshot: created });
     sendSuccess(response, 201, created);
   } catch (error) {
+    if (error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
     if (error.message.includes("required") || error.message.includes("invalid") || error.message.includes("must be")) {
       sendError(response, 400, 'VALIDATION_ERROR', error.message);
       return;
@@ -48,7 +50,7 @@ export async function postScenario(request, response, next) {
 export async function getScenario(request, response, next) {
   try { sendSuccess(response, 200, await getScenarioById(request.supabaseClient, scenarioId(request.params.id), request.user.id)); }
   catch (error) {
-    if (error.message === 'Scenario not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
+    if (error.message === 'Scenario not found.' || error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
     if (error.message.includes('required')) return sendError(response, 400, 'VALIDATION_ERROR', error.message);
     next(error);
   }
@@ -60,7 +62,7 @@ export async function putScenario(request, response, next) {
     await writeAuditLogSafely({ action: 'UPDATE_SCENARIO', userId: request.user.id, farmId: updated.farm_id, scenarioId: updated.id, inputSnapshot: request.body, outputSnapshot: updated });
     sendSuccess(response, 200, updated);
   } catch (error) {
-    if (error.message === 'Scenario not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
+    if (error.message === 'Scenario not found.' || error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
     if (error.message.startsWith('Scenario has saved results')) return sendError(response, 409, 'CONFLICT', error.message);
     if (isValidationError(error)) return sendError(response, 400, 'VALIDATION_ERROR', error.message);
     next(error);
@@ -76,8 +78,9 @@ export async function deleteScenario(request, response, next) {
     sendSuccess(response, 200, deleted);
   }
   catch (error) {
-    if (error.message === 'Scenario not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
+    if (error.message === 'Scenario not found.' || error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
     if (error.message.includes('required')) return sendError(response, 400, 'VALIDATION_ERROR', error.message);
     next(error);
   }
 }
+

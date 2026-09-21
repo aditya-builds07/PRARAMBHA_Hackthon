@@ -9,7 +9,10 @@ export async function postSimulateAndSave(request, response, next) {
       sendError(response, 400, "VALIDATION_ERROR", "scenarioId is required.");
       return;
     }
-    const saved = await simulateAndSave(scenarioId, request.user?.id);
+    if (!request.user?.id) {
+      return sendError(response, 401, "UNAUTHORIZED", "Authentication required");
+    }
+    const saved = await simulateAndSave(scenarioId, request.user.id);
     await recordAuditSafely({
       farmId: saved.farmId,
       scenarioId,

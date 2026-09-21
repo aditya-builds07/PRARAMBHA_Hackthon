@@ -13,7 +13,8 @@ export async function getAudit(request, response, next) {
       return sendError(response, 400, "VALIDATION_ERROR", "limit must be an integer between 1 and 100.");
     }
 
-    sendSuccess(response, 200, await listAuditByFarm(farmId, limit, request.user?.id));
+    if (!request.user?.id) return sendError(response, 401, 'UNAUTHORIZED', 'Authentication required');
+    sendSuccess(response, 200, await listAuditByFarm(farmId, limit, request.user.id));
   } catch (error) {
     if (error.message === "Farm not found.") {
       return sendError(response, 404, "NOT_FOUND", error.message);
