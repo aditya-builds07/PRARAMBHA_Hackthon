@@ -25,21 +25,6 @@ import { createClient } from '@supabase/supabase-js';
 
 let _adminClient = null;
 
-function getAdminConfig() {
-  const url = process.env.SUPABASE_URL?.trim();
-  const serviceRoleKey =
-    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
-    process.env.SUPABASE_SECRET_KEY?.trim();
-
-  if (!url) throw new Error('SUPABASE_URL is required.');
-  if (!serviceRoleKey) {
-    throw new Error(
-      'Missing required server configuration: SUPABASE_SERVICE_ROLE_KEY. Add it to prarambha/.env.'
-    );
-  }
-  return { url, serviceRoleKey };
-}
-
 /**
  * Returns the singleton service-role Supabase client.
  * Call this ONLY from audit.service.js (see whitelist above).
@@ -48,10 +33,13 @@ function getAdminConfig() {
  */
 export function getAdminClient() {
   if (_adminClient) return _adminClient;
-  const { url, serviceRoleKey } = getAdminConfig();
+  const url = process.env.SUPABASE_URL?.trim();
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || process.env.SUPABASE_SECRET_KEY?.trim();
+  if (!url || !serviceRoleKey) {
+    throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment.');
+  }
   _adminClient = createClient(url, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
   return _adminClient;
 }
-
