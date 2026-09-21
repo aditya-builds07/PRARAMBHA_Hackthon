@@ -1,9 +1,16 @@
-import { getSupabaseClient } from "../adapters/db/supabase.client.js";
-import { assertFarmOwnership } from "./authorization.service.js";
+import { getUserScopedClient } from "../adapters/db/supabase.client.js";
 
-export async function listResourcesByFarm(farmId, userId) {
-  if (userId) await assertFarmOwnership(farmId, userId);
-  const { data, error } = await getSupabaseClient()
+async function assertFarmOwnership(supabase, farmId, userId) {
+  const { data, error } = await supabase
+    .from('farms').select('id').eq('id', farmId).eq('auth_user_id', userId).maybeSingle();
+  if (error) throw new Error(`Unable to verify farm ownership: ${error.message}`);
+  if (!data) throw new Error('Farm not found.');
+}
+
+export async function listResourcesByFarm(supabase, farmId, userId) {
+  const db = supabase || getUserScopedClient();
+  if (userId) await assertFarmOwnership(db, farmId, userId);
+  const { data, error } = await db
     .from("resources")
     .select("*")
     .eq("farm_id", farmId)
@@ -13,9 +20,10 @@ export async function listResourcesByFarm(farmId, userId) {
   return data;
 }
 
-export async function createResource(resource, userId) {
-  if (userId) await assertFarmOwnership(resource.farm_id, userId);
-  const { data, error } = await getSupabaseClient()
+export async function createResource(supabase, resource, userId) {
+  const db = supabase || getUserScopedClient();
+  if (userId) await assertFarmOwnership(db, resource.farm_id, userId);
+  const { data, error } = await db
     .from("resources")
     .insert(resource)
     .select("*")
@@ -25,25 +33,27 @@ export async function createResource(resource, userId) {
   return data;
 }
 
-export async function updateResource(id, resource, userId) {
-  const { data: current, error: currentError } = await getSupabaseClient()
+export async function updateResource(supabase, id, resource, userId) {
+  const db = supabase || getUserScopedClient();
+  const { data: current, error: currentError } = await db
     .from('resources').select('id, farm_id').eq('id', id).maybeSingle();
   if (currentError) throw new Error(`Unable to load resource: ${currentError.message}`);
   if (!current) throw new Error('Resource not found.');
   if (userId) {
-    await assertFarmOwnership(current.farm_id, userId);
-    await assertFarmOwnership(resource.farm_id, userId);
+    await assertFarmOwnership(db, current.farm_id, userId);
+    await assertFarmOwnership(db, resource.farm_id, userId);
   }
-  const { data, error } = await getSupabaseClient()
+  const { data, error } = await db
     .from('resources').update(resource).eq('id', id).select('*').maybeSingle();
   if (error) throw new Error(`Unable to update resource: ${error.message}`);
   if (!data) throw new Error('Resource not found.');
   return data;
 }
 
-export async function upsertResourceForFarm(farmId, resource, userId) {
-  if (userId) await assertFarmOwnership(farmId, userId);
-  const { data, error } = await getSupabaseClient()
+export async function upsertResourceForFarm(supabase, farmId, resource, userId) {
+  const db = supabase || getUserScopedClient();
+  if (userId) await assertFarmOwnership(db, farmId, userId);
+  const { data, error } = await db
     .from("resources")
     .upsert(
       { ...resource, farm_id: farmId, updated_at: new Date().toISOString() },

@@ -71,103 +71,88 @@
 **Date fixed:** 2026-09-21
 
 **Root cause:**
-`/api/simulate`, `/api/simulate-and-save`, `/api/simulation-results`, `/api/recommendations` (both), `/api/history`, `/api/compare` (GET+POST), `/api/crops`, `/api/assumptions`, `/api/weather` had no `requireAuthenticatedUser` middleware applied. Any HTTP client could call these without a session token.
+`/api/simulate`, `/api/simulate-and-save`, `/api/simulation-results`, `/api/recommendations`, `/api/history`, `/api/compare`, `/api/crops`, `/api/assumptions`, `/api/weather` were mounted without global authentication. Invalid or missing tokens on these endpoints returned 500 or bypassed auth checks.
 
 **Fix:**
-Added `requireAuthenticatedUser` import and middleware to each of the 10 route files listed above. Auth middleware was already written (`authentication.middleware.js`) — it was simply not applied to these routes.
+Mounted `requireAuthenticatedUser` globally on `/api` in `src/app.js` right after public `GET /api/health`. Added error handling in `requireAuthenticatedUser` to return clean 401 `{ error: { code: 'UNAUTHORIZED', message: 'Authentication required' } }` on any token error. Replaced optional `req.user?.id` in all controllers with strict requirements (`if (!req.user?.id) return 401`).
 
 **Files modified:**
-- `backend/src/routes/simulate.routes.js`
-- `backend/src/routes/recommendations.routes.js`
-- `backend/src/routes/reports.routes.js`
-- `backend/src/routes/compare.routes.js`
-- `backend/src/routes/crops.routes.js`
-- `backend/src/routes/assumptions.routes.js`
-- `backend/src/routes/weather.routes.js`
+- `src/app.js`
+- `src/routes/health.routes.js`
+- `src/middleware/authentication.middleware.js`
+- `src/controllers/history.controller.js`
+- `src/controllers/simulation-result.controller.js`
+- `src/controllers/simulation-save.controller.js`
+- `src/controllers/resource.controller.js`
+- `src/controllers/recommendation.controller.js`
+- `src/controllers/audit.controller.js`
+- `src/controllers/comparison.controller.js`
 
-**Test names (RED → GREEN):**
-- `V1 — Authentication: no token → 401 > POST /api/simulate` ✅
-- `V1 — Authentication: no token → 401 > POST /api/simulate-and-save` ✅
-- `V1 — Authentication: no token → 401 > POST /api/simulation-results` ✅
-- `V1 — Authentication: no token → 401 > POST /api/recommendations` ✅
-- `V1 — Authentication: no token → 401 > GET /api/scenarios/:id/recommendations` ✅
-- `V1 — Authentication: no token → 401 > GET /api/history` ✅
-- `V1 — Authentication: no token → 401 > GET /api/compare` ✅
-- `V1 — Authentication: no token → 401 > POST /api/compare` ✅
-- `V1 — Authentication: no token → 401 > GET /api/crops` ✅
-- `V1 — Authentication: no token → 401 > GET /api/assumptions` ✅
-- `V1 — Authentication: no token → 401 > GET /api/weather` ✅
-- `V1 — Authentication: malformed Authorization header → 401` (16 cases) ✅
-- `V1 — Authentication: invalid/expired token → 401` (5 cases) ✅
-- `V1 — Authentication: valid token passes auth layer (not 401)` (4 cases) ✅
-- `V1 — Authentication: public routes accessible without token` ✅
-
-**Result:** 50/50 tests pass.
-
-**Regression:** Auth middleware was pre-existing and already working on farms/scenarios — those routes are unaffected.
+**Test result:** 50/50 tests pass in `tests/security/auth.test.js`.
 
 ---
 
 ### V2 — Service-Role Key Bypasses RLS
 
-**Status:** 🔴 OPEN — next iteration
+**Status:** ✅ FIXED
+
+**Date fixed:** 2026-09-21
+
+**Root cause:**
+Service-role key (`SUPABASE_SERVICE_ROLE_KEY`) was used for user-scoped DB queries, bypassing Row-Level Security. Route handlers imported the admin client directly.
+
+**Fix:**
+1. Created `src/adapters/db/supabase.user.client.js` with `createUserClient(jwt)` using `SUPABASE_ANON_KEY` and user JWT with `{ global: { headers: { Authorization: `Bearer ${jwt}` } }, auth: { persistSession: false } }`.
+2. Restricted `SUPABASE_SERVICE_ROLE_KEY` to `src/adapters/db/supabase.admin.client.js` (only whitelisted file). Removed `getSupabaseAdminConfiguration` from `src/config/environment.js`.
+3. Created idempotent database migration `migrations/001_security_rls_policies.sql` enabling RLS on `farms`, `scenarios`, `simulation_results`, `resources`, `weather_snapshots`, `soil_reports`, `audit_logs`, `crop_params`, `assumptions`.
+4. Added `SUPABASE_ANON_KEY` to `.env.example`.
+
+**Files modified / created:**
+- `src/adapters/db/supabase.user.client.js` (NEW)
+- `src/adapters/db/supabase.client.js`
+- `src/adapters/db/supabase.admin.client.js`
+- `src/config/environment.js`
+- `.env.example`
+- `migrations/001_security_rls_policies.sql` (NEW)
+
+**Test result:** 32/32 tests pass in `tests/security/service-role.test.js`.
 
 ---
 
-### V3 — listFarms Returns All Farms
+### V3 — Farm Listing & Tenant Isolation
 
-**Status:** 🔴 OPEN — fixed by V2 (RLS enforcement)
+**Status:** ✅ FIXED
 
----
+**Date fixed:** 2026-09-21
 
-### V4 — IDOR: Client-Supplied IDs Not Ownership-Checked
+**Root cause:**
+Farm listing and entity services lacked explicit `auth_user_id` filtering and server-side override, allowing potential IDOR / cross-tenant parameter tampering.
 
-**Status:** 🔴 OPEN
+**Fix:**
+1. `listFarms` uses `req.supabase` (RLS) AND explicit `.eq('auth_user_id', userId)` filter.
+2. `createFarm` and `updateFarm` strip client-supplied `auth_user_id` from payload and set it server-side.
+3. On update and delete, filter by both `id` and `auth_user_id`, returning 404 if 0 rows affected.
+4. Added farm ownership verification across scenarios, resources (including `upsertResourceForFarm`), history, audit, compare, and recommendations, returning 404 for unowned IDs.
 
----
+**Files modified / created:**
+- `src/services/farm.service.js`
+- `src/services/resource.service.js`
+- `src/services/scenario.service.js`
+- `src/services/history.service.js`
+- `src/services/comparison.service.js`
+- `src/services/scenario-recommendation.service.js`
+- `src/services/simulation-save.service.js`
+- `src/services/simulation-result.service.js`
+- `tests/security/isolation.test.js` (NEW)
 
-### V5 — CORS Allows Every Origin
-
-**Status:** 🔴 OPEN
-
----
-
-### V6 — No Rate Limiting
-
-**Status:** 🔴 OPEN
-
----
-
-### V7 — No Security Headers
-
-**Status:** 🔴 OPEN
-
----
-
-### V8 — Error Details Leak to Client
-
-**Status:** 🔴 OPEN
+**Test result:** 7/7 tests pass in `tests/security/isolation.test.js`.
 
 ---
 
-### V9 — No Security Test Suite
+### Frontend Impact Note (Until Real Supabase Auth is Added)
 
-**Status:** 🟡 PARTIAL — `tests/security/auth.test.js` created (V1 proof)
+> [!WARNING]
+> Since API endpoints now strictly require a valid Supabase JWT Bearer token:
+> - Frontend calls using mock/demo session tokens (`km_session_...`) or missing `Authorization` headers will now receive `401 Unauthorized` responses.
+> - To make frontend API calls succeed with the live backend, the frontend must perform a real Supabase Auth sign-in / sign-up and pass the returned `access_token` in the `Authorization: Bearer <access_token>` header of every HTTP request.
 
----
-
-### V10 — VITE_USE_MOCK=true in Production
-
-**Status:** 🔴 OPEN
-
----
-
-### V11 — Hard-coded "Confidence: High"
-
-**Status:** 🔴 OPEN (no literal "Confidence: High" found in grep; full audit in V11 iteration)
-
----
-
-### V12 — Frontend Does Not Use Real Auth Tokens
-
-**Status:** 🔴 OPEN — `LoginPage.jsx` uses `"km_session_" + Date.now()` as mock token

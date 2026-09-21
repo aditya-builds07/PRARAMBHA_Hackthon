@@ -25,15 +25,18 @@ vi.mock('../../src/adapters/db/supabase.client.js', () => {
     // expired or wrong-secret tokens
     return { data: { user: null }, error: { message: 'invalid JWT' } };
   });
-  return {
-    getSupabaseClient: () => ({
-      auth: { getUser: mockGetUser },
-      from: () => ({
-        select: () => ({
-          eq: () => ({ maybeSingle: async () => ({ data: null, error: null }) }),
-        }),
+  const clientFactory = () => ({
+    auth: { getUser: mockGetUser },
+    from: () => ({
+      select: () => ({
+        eq: () => ({ maybeSingle: async () => ({ data: null, error: null }) }),
       }),
     }),
+  });
+  return {
+    getSupabaseClient: clientFactory,
+    getUserScopedClient: clientFactory,
+    createUserClient: clientFactory,
   };
 });
 

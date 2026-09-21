@@ -1,5 +1,12 @@
-import { getSupabaseClient } from "../adapters/db/supabase.client.js";
+import { getUserScopedClient } from "../adapters/db/supabase.client.js";
 import { calculateAttribution } from '../simulation/attribution.engine.js';
+
+async function assertFarmOwnership(supabase, farmId, userId) {
+  const { data, error } = await supabase
+    .from('farms').select('id').eq('id', farmId).eq('auth_user_id', userId).maybeSingle();
+  if (error) throw new Error(`Unable to verify farm ownership: ${error.message}`);
+  if (!data) throw new Error('Farm not found.');
+}
 
 const METRICS = [
   ["profit", "profit_inr"],
@@ -35,13 +42,18 @@ function toScenarioInput(scenario) {
   };
 }
 
-import { assertFarmOwnership } from "./authorization.service.js";
+export async function compareScenarios(supabaseParam, farmId, scenarioIds, userIdParam) {
+  const supabase = (typeof supabaseParam === 'object' && supabaseParam !== null && typeof supabaseParam.from === 'function')
+    ? supabaseParam
+    : getUserScopedClient();
+  const userId = (typeof supabaseParam === 'object' && supabaseParam !== null && typeof supabaseParam.from === 'function')
+    ? userIdParam
+    : (typeof scenarioIds === 'string' ? scenarioIds : userIdParam);
 
-export async function compareScenarios(farmId, scenarioIds, userId) {
   if (userId) {
-    await assertFarmOwnership(farmId, userId);
+    await assertFarmOwnership(supabase, farmId, userId);
   }
-  const supabase = getSupabaseClient();
+
   let scenariosQuery = supabase
     .from("scenarios")
     .select("*")
@@ -78,8 +90,6 @@ export async function compareScenarios(farmId, scenarioIds, userId) {
   }));
 
   const baseline = compared.find((scenario) => scenario.isBaseline) ?? compared[0];
-  // Keep attribution in Member 1's domain engine; this service only connects
-  // persisted scenarios and results to the API contract used by the Why panel.
   const attributions = compared
     .filter((scenario) => scenario.id !== baseline.id)
     .map((alternative) => ({
