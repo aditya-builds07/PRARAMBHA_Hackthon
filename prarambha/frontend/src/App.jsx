@@ -48,20 +48,12 @@ function AppContent() {
   useEffect(() => {
     let active = true;
 
-    try {
-      const stored = localStorage.getItem("user_session");
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setSession(parsed);
-        if (parsed?.access_token) setAuthToken(parsed.access_token);
-      }
-    } catch {}
-
     if (!supabase) {
       setAuthReady(true);
       return undefined;
     }
 
+    // Always verify with Supabase — localStorage is only a rendering hint
     supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
       if (data.session) {
@@ -70,22 +62,41 @@ function AppContent() {
         try {
           localStorage.setItem("user_session", JSON.stringify(data.session));
         } catch {}
-      }
-      setAuthReady(true);
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      if (nextSession) {
-        setSession(nextSession);
-        setAuthToken(nextSession?.access_token ?? null);
-        try {
-          localStorage.setItem("user_session", JSON.stringify(nextSession));
-        } catch {}
       } else {
+        // No active Supabase session — clear any stale localStorage
         setSession(null);
         setAuthToken(null);
         try {
           localStorage.removeItem("user_session");
+        } catch {}
+      }
+      setAuthReady(true);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((event, nextSession) => {
+      if (!active) return;
+      if (
+        event === "SIGNED_IN" ||
+        event === "TOKEN_REFRESHED" ||
+        event === "USER_UPDATED" ||
+        event === "EMAIL_CONFIRMED"
+      ) {
+        if (nextSession) {
+          setSession(nextSession);
+          setAuthToken(nextSession?.access_token ?? null);
+          try {
+            localStorage.setItem("user_session", JSON.stringify(nextSession));
+          } catch {}
+        }
+      } else if (event === "SIGNED_OUT") {
+        setSession(null);
+        setAuthToken(null);
+        try {
+          localStorage.removeItem("user_session");
+          localStorage.removeItem("user_name");
+          localStorage.removeItem("user_id");
+          localStorage.removeItem("user_email");
+          localStorage.removeItem("supabase_token");
         } catch {}
       }
     });

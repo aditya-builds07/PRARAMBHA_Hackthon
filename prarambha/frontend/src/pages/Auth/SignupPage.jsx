@@ -98,29 +98,35 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
 
       if (signUpError) throw signUpError;
 
-      if (onLoginSuccess && data.user) {
+      // Only log in immediately if Supabase returned a live session.
+      // When email confirmation is enabled, data.session will be null —
+      // do NOT call onLoginSuccess in that case; the user must confirm first.
+      if (data.session && onLoginSuccess) {
         onLoginSuccess({
           id: data.user.id,
           name: profile.full_name,
           email: cleanEmail,
-          token: data.session?.access_token,
+          token: data.session.access_token,
         });
       }
 
-      setSuccessMsg(
-        data.session
-          ? `Welcome to KrishiMitra, ${cleanName}! Opening simulator...`
-          : `Account registered successfully! Please check your email to confirm, then sign in.`
-      );
+      if (data.session) {
+        setSuccessMsg(`Welcome to KrishiMitra, ${cleanName}! Your account is ready. Opening simulator...`);
+      } else {
+        setSuccessMsg(
+          `✅ Registration successful! A confirmation email has been sent to ${cleanEmail}. Please check your inbox (and spam folder) and click the link to activate your account before signing in.`
+        );
+      }
 
       setTimeout(() => {
         setLoading(false);
-        if (onNavigate && data.session) {
+        if (data.session && onNavigate) {
           onNavigate("dashboard");
-        } else if (onNavigate && !data.session) {
+        } else if (!data.session && onNavigate) {
+          // Always redirect to login after registration if confirmation is needed
           onNavigate("login");
         }
-      }, 1000);
+      }, 2500);
     } catch (err) {
       setError(err.message || "Failed to register account. Please check your details and try again.");
       setLoading(false);
