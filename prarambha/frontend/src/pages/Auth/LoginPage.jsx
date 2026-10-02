@@ -13,6 +13,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
   const [linkEmail, setLinkEmail]         = useState("");
   const [linkSent, setLinkSent]           = useState(false);
   const [linkCountdown, setLinkCountdown] = useState(0);
+  const [linkOtpCode, setLinkOtpCode]     = useState("");
 
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState(null);
@@ -146,6 +147,54 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
     } catch (err) {
       setError(err.message || "Failed to send sign-in link. Please check your email.");
     } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── Email Magic Link: Manual OTP Code Verification ──────────
+  const handleLinkOtpVerify = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const cleanCode = linkOtpCode.replace(/\D/g, "").trim();
+    if (!cleanCode || cleanCode.length !== 6) {
+      setError("Please enter the 6-digit verification code from your email.");
+      return;
+    }
+    setError(null);
+    setLoading(true);
+
+    try {
+      let verifyRes = await requireSupabase().auth.verifyOtp({
+        email: linkEmail.trim(),
+        token: cleanCode,
+        type: "email",
+      });
+
+      if (verifyRes.error) {
+        verifyRes = await requireSupabase().auth.verifyOtp({
+          email: linkEmail.trim(),
+          token: cleanCode,
+          type: "magiclink",
+        });
+      }
+
+      if (verifyRes.error) throw verifyRes.error;
+      if (!verifyRes.data?.session) {
+        throw new Error("Code verified, but session could not be established. Please try signing in.");
+      }
+
+      if (onLoginSuccess) {
+        onLoginSuccess({
+          id:    verifyRes.data.session.user.id,
+          name:  verifyRes.data.session.user.user_metadata?.full_name || verifyRes.data.session.user.email,
+          email: verifyRes.data.session.user.email,
+          token: verifyRes.data.session.access_token,
+        });
+      }
+      setSuccessMsg("Welcome! Opening simulator...");
+      setTimeout(() => { setLoading(false); if (onNavigate) onNavigate("dashboard"); }, 500);
+    } catch (err) {
+      console.error("[Login] OTP verify error:", err);
+      setError(err.message || "Invalid or expired verification code. Please check your email.");
       setLoading(false);
     }
   };
@@ -373,15 +422,50 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
                 </div>
               </div>
 
-              {/* Action Buttons */}
+              {/* OPTION 1: 6-Digit Code (Fastest if email opened on mobile) */}
+              <form onSubmit={handleLinkOtpVerify} className="p-4 bg-gradient-to-b from-[#003824] to-[#002719] border border-emerald-500/40 rounded-2xl space-y-3">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-emerald-300">
+                      Enter 6-Digit Code from Email
+                    </label>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                      Fastest
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    value={linkOtpCode}
+                    onChange={(e) => setLinkOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder="123456"
+                    className="w-full text-center text-2xl font-black tracking-[0.4em] py-2.5 px-3 rounded-xl border-2 border-[#164A34] bg-[#001E13] focus:border-emerald-400 text-white placeholder-slate-600 outline-none transition-all"
+                  />
+                  <p className="text-[10px] text-slate-400 text-center">
+                    Enter the code if you opened the email on your phone.
+                  </p>
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading || linkOtpCode.replace(/\D/g, "").length !== 6}
+                  className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <span className="material-symbols-outlined text-sm">verified_user</span>
+                  <span>Verify Code &amp; Sign In</span>
+                </button>
+              </form>
+
+              {/* OPTION 2: Auto-detect Link Click on this PC */}
               <button
                 type="button"
                 onClick={handleCheckLoginStatus}
                 disabled={loading}
-                className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-[#164A34] text-slate-300 hover:text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 <span className="material-symbols-outlined text-base">sync</span>
-                <span>Already Clicked? Check Status</span>
+                <span>Already Clicked Link on this PC? Check Status</span>
               </button>
 
               {linkEmail.toLowerCase().includes("@gmail.com") && (
@@ -392,7 +476,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
                   className="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-[#164A34] hover:border-emerald-500/40 text-emerald-200 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-base text-red-400">mail</span>
-                  <span>Open Gmail Inbox ↗</span>
+                  <span>Open Gmail on this PC ↗</span>
                 </a>
               )}
 

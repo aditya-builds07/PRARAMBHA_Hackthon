@@ -28,6 +28,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [pendingPassword, setPendingPassword] = useState("");
   const [pendingProfile, setPendingProfile]   = useState(null);
   const [linkCountdown, setLinkCountdown]     = useState(0);
+  const [otpCode, setOtpCode]                 = useState("");
 
   // ── UI state ────────────────────────────────────────────────
   const [loading, setLoading]       = useState(false);
@@ -231,7 +232,57 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     }
   };
 
-  // ── Step 2: Manual "Check Activation Status" Button ───────────
+  // ── Step 2A: Manual OTP Code Verification (for mobile users or manual code) ──
+  const handleOtpVerify = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const cleanCode = otpCode.replace(/\D/g, "").trim();
+    if (!cleanCode || cleanCode.length !== 6) {
+      setError("Please enter the 6-digit verification code from your email.");
+      return;
+    }
+    setError(null);
+    setLoading(true);
+
+    try {
+      // 1. Try type 'email' (standard for signInWithOtp)
+      let verifyRes = await requireSupabase().auth.verifyOtp({
+        email: pendingEmail,
+        token: cleanCode,
+        type: "email",
+      });
+
+      // 2. Fallback to 'signup'
+      if (verifyRes.error) {
+        verifyRes = await requireSupabase().auth.verifyOtp({
+          email: pendingEmail,
+          token: cleanCode,
+          type: "signup",
+        });
+      }
+
+      // 3. Fallback to 'magiclink'
+      if (verifyRes.error) {
+        verifyRes = await requireSupabase().auth.verifyOtp({
+          email: pendingEmail,
+          token: cleanCode,
+          type: "magiclink",
+        });
+      }
+
+      if (verifyRes.error) throw verifyRes.error;
+      if (!verifyRes.data?.session) {
+        throw new Error("Verification successful, but session could not be established. Please try signing in.");
+      }
+
+      await completeSessionVerification(verifyRes.data.session);
+    } catch (err) {
+      console.error("[Signup] OTP verify error:", err);
+      setError(err.message || "Invalid or expired verification code. Please check your email and try again.");
+      setLoading(false);
+    }
+  };
+
+  // ── Step 2B: Manual "Check Activation Status" Button ───────────
   const handleCheckEmailLinkStatus = async () => {
     setLoading(true);
     setError(null);
@@ -347,54 +398,89 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                 </div>
               )}
 
-              {/* Instructions Card */}
-              <div className="p-5 bg-gradient-to-b from-[#003824] to-[#002719] border border-emerald-500/40 rounded-2xl space-y-4 shadow-xl">
-                <div className="space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 font-extrabold text-xs shrink-0 mt-0.5">
-                      1
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">Open Your Email</h4>
-                      <p className="text-xs text-slate-300 leading-relaxed mt-0.5">
-                        Look for the email from <strong>KrishiMitra</strong> in your inbox or spam folder.
-                      </p>
-                    </div>
-                  </div>
+              {/* Mobile Phone Notice Banner */}
+              <div className="p-3.5 bg-amber-950/60 border border-amber-600/50 rounded-2xl text-amber-200 text-xs leading-relaxed flex items-start gap-2.5">
+                <span className="material-symbols-outlined text-lg shrink-0 text-amber-400 mt-0.5">phone_iphone</span>
+                <div>
+                  <strong className="text-amber-300 font-bold block mb-0.5">Checking email on your mobile phone?</strong>
+                  The &ldquo;Sign In&rdquo; email button links to <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono text-[11px]">localhost:5173</code>, which only runs on this computer. 
+                  To activate immediately, <strong>enter the 6-digit code below</strong>, or open Gmail on this computer.
+                </div>
+              </div>
 
-                  <div className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 font-extrabold text-xs shrink-0 mt-0.5">
-                      2
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">Click &ldquo;Sign In&rdquo;</h4>
-                      <p className="text-xs text-slate-300 leading-relaxed mt-0.5">
-                        Click the green <strong>&ldquo;Sign In&rdquo;</strong> button in your email. No codes to type or copy!
-                      </p>
-                    </div>
+              {/* OPTION 1: Enter 6-Digit Code (Works from mobile or anywhere) */}
+              <form onSubmit={handleOtpVerify} className="p-5 bg-gradient-to-b from-[#003824] to-[#002719] border border-emerald-500/40 rounded-2xl space-y-4 shadow-xl">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="otp-input" className="block text-xs font-bold text-emerald-300">
+                      Enter 6-Digit Verification Code
+                    </label>
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                      Fastest for Mobile
+                    </span>
                   </div>
+                  <input
+                    id="otp-input"
+                    type="text"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder="123456"
+                    className="w-full text-center text-3xl font-black tracking-[0.4em] py-3 px-4 rounded-xl border-2 border-[#164A34] bg-[#001E13] focus:border-emerald-400 text-white placeholder-slate-600 outline-none transition-all"
+                  />
+                  <p className="text-[11px] text-slate-400 text-center">
+                    Look for the 6-digit number in the KrishiMitra email.
+                  </p>
+                </div>
 
-                  <div className="flex items-start gap-3">
-                    <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 font-extrabold text-xs shrink-0 mt-0.5">
-                      3
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">Instant Auto-Activation</h4>
-                      <p className="text-xs text-slate-300 leading-relaxed mt-0.5">
-                        As soon as the link is clicked, this screen automatically confirms your account and launches your dashboard.
-                      </p>
-                    </div>
+                <button
+                  type="submit"
+                  id="submit-otp-code-btn"
+                  disabled={loading || otpCode.replace(/\D/g, "").length !== 6}
+                  className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {loading ? (
+                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying Code...</span></>
+                  ) : (
+                    <><span className="material-symbols-outlined text-base">verified_user</span><span>Verify Code &amp; Start Simulator</span></>
+                  )}
+                </button>
+              </form>
+
+              {/* DIVIDER */}
+              <div className="relative flex py-1 items-center">
+                <div className="flex-grow border-t border-[#164A34]"></div>
+                <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  OR CLICK LINK IN GMAIL (ON THIS PC)
+                </span>
+                <div className="flex-grow border-t border-[#164A34]"></div>
+              </div>
+
+              {/* OPTION 2: Auto-detecting Link Click (When clicked on this PC) */}
+              <div className="p-4 bg-[#002216] border border-[#164A34] rounded-2xl space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-lg">touch_app</span>
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                      Already clicked &ldquo;Sign In&rdquo; on this computer?
+                    </h4>
+                    <p className="text-xs text-slate-300 leading-relaxed mt-0.5">
+                      If you opened Gmail and clicked the green button in this browser, click below:
+                    </p>
                   </div>
                 </div>
 
-                {/* Live listening radar status */}
-                <div className="pt-3 border-t border-[#164A34] flex flex-col sm:flex-row items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 text-xs text-emerald-300 font-semibold">
-                    <span className="relative flex h-3 w-3">
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#164A34]">
+                  <div className="flex items-center gap-2 text-xs text-emerald-300 font-medium">
+                    <span className="relative flex h-2.5 w-2.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
-                    <span>Waiting for email link click...</span>
+                    <span>Listening for link click...</span>
                   </div>
                   <button
                     type="button"
@@ -417,7 +503,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                   className="w-full py-3 bg-white/5 hover:bg-white/10 border border-[#164A34] hover:border-emerald-500/40 text-emerald-200 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-base text-red-400">mail</span>
-                  <span>Open Gmail Inbox ↗</span>
+                  <span>Open Gmail on this PC ↗</span>
                 </a>
               )}
 

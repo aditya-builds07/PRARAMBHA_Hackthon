@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { supabase } from "../../services/supabase.js";
+import { Sprout, ArrowRight, Play, X, ShieldCheck, LogIn, UserPlus } from "lucide-react";
 
 
 /**
@@ -86,7 +87,7 @@ export default function LaunchPage({ onNavigate = null }) {
             className="flex items-center gap-3 select-none cursor-pointer group"
           >
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-[24px] text-slate-950">psychiatry</span>
+              <Sprout className="w-5 h-5 text-slate-950" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -164,7 +165,7 @@ export default function LaunchPage({ onNavigate = null }) {
               id="hero-primary-cta"
             >
               <span>Launch Simulator</span>
-              <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+              <ArrowRight className="w-5 h-5 text-slate-950" />
             </button>
           </div>
         </div>
@@ -172,7 +173,7 @@ export default function LaunchPage({ onNavigate = null }) {
         {/* Autoplay Blocked Fallback Badge */}
         {autoplayBlocked && (
           <div className="absolute top-8 left-1/2 -translate-x-1/2 z-30 bg-emerald-500/90 text-slate-950 font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-xl animate-bounce">
-            <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+            <Play className="w-4 h-4 fill-current" />
             <button onClick={handleStartVideo} className="underline">
               Tap to start video experience
             </button>
@@ -196,13 +197,13 @@ export default function LaunchPage({ onNavigate = null }) {
               onClick={() => setShowAuthModal(false)}
               className="absolute top-5 right-5 p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer"
             >
-              <span className="material-symbols-outlined text-[20px]">close</span>
+              <X className="w-5 h-5" />
             </button>
 
             {/* Modal Header */}
             <div className="text-center space-y-2 pt-2">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 mb-1">
-                <span className="material-symbols-outlined text-[26px]">verified_user</span>
+                <ShieldCheck className="w-6 h-6" />
               </div>
               <h2 className="text-2xl font-black tracking-tight text-white">
                 Sign In or Register
@@ -225,7 +226,7 @@ export default function LaunchPage({ onNavigate = null }) {
               >
                 <div className="space-y-2">
                   <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform">
-                    <span className="material-symbols-outlined text-[20px]">login</span>
+                    <LogIn className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-white group-hover:text-emerald-300 transition-colors">
@@ -239,7 +240,7 @@ export default function LaunchPage({ onNavigate = null }) {
 
                 <div className="mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-xs font-bold text-emerald-400">
                   <span>Sign In</span>
-                  <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
 
@@ -254,7 +255,7 @@ export default function LaunchPage({ onNavigate = null }) {
               >
                 <div className="space-y-2">
                   <div className="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center text-teal-400 group-hover:scale-105 transition-transform">
-                    <span className="material-symbols-outlined text-[20px]">person_add</span>
+                    <UserPlus className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-white group-hover:text-teal-300 transition-colors">
@@ -268,7 +269,7 @@ export default function LaunchPage({ onNavigate = null }) {
 
                 <div className="mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-xs font-bold text-teal-400">
                   <span>Register Free</span>
-                  <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
