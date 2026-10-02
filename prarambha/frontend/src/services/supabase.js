@@ -1,10 +1,27 @@
 import { createClient } from "@supabase/supabase-js"
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+const DEFAULT_SUPABASE_URL = "https://ltzpntlwnqkuzoybtwdg.supabase.co"
+const DEFAULT_SUPABASE_KEY = "sb_publishable_eK0B2yFF3boJGIUTf_Epxw_3o1pnOA_"
+
+const getEnv = (key, fallback = "") => {
+  try {
+    if (typeof import.meta !== "undefined" && import.meta.env && import.meta.env[key]) {
+      return import.meta.env[key]
+    }
+  } catch {}
+  try {
+    if (typeof process !== "undefined" && process.env && process.env[key]) {
+      return process.env[key]
+    }
+  } catch {}
+  return fallback
+}
+
+const supabaseUrl = getEnv("VITE_SUPABASE_URL", DEFAULT_SUPABASE_URL)
+const supabaseKey = getEnv("VITE_SUPABASE_PUBLISHABLE_KEY", DEFAULT_SUPABASE_KEY) || getEnv("VITE_SUPABASE_ANON_KEY", DEFAULT_SUPABASE_KEY)
 
 export function getAuthRedirectUrl() {
-  const configuredUrl = import.meta.env.VITE_APP_URL?.trim()
+  const configuredUrl = getEnv("VITE_APP_URL", "")
   if (configuredUrl) return `${configuredUrl.replace(/\/$/, "")}/login`
   if (typeof window !== "undefined") return `${window.location.origin}/login`
   return undefined

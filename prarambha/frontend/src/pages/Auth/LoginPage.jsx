@@ -70,6 +70,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
     }
   };
 
+
   return (
     <div className="min-h-screen bg-[#001E13] text-slate-100 flex flex-col justify-between font-sans selection:bg-emerald-500 selection:text-white relative overflow-hidden">
       {/* Ambient background glows */}
@@ -244,6 +245,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
                 </>
               )}
             </button>
+
           </form>
 
             {/* Register Account Link */}

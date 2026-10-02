@@ -25,7 +25,10 @@ export const IRRIGATION_COST_PER_ACRE = {
  */
 export function calculateIrrigationCost(areaAcres, irrigationType = 'flood') {
   const area = Math.max(0, Number(areaAcres) || 0);
-  const costPerAcre = IRRIGATION_COST_PER_ACRE[irrigationType?.toLowerCase()?.trim()] ?? 0;
+  const rawType = typeof irrigationType === 'object' && irrigationType !== null
+    ? (irrigationType.type || 'flood')
+    : (typeof irrigationType === 'string' ? irrigationType : 'flood');
+  const costPerAcre = IRRIGATION_COST_PER_ACRE[rawType.toLowerCase().trim()] ?? 0;
   return area * costPerAcre;
 }
 
@@ -126,7 +129,10 @@ export function calculateEconomics(input, customCropParams = null) {
 
   const areaAcres = Math.max(0, Number(input?.areaAcres) || 0);
   const multiplier = Math.max(0, Number(input?.inputCostMultiplier !== undefined ? input?.inputCostMultiplier : 1.0) || 0);
-  const irrigation = input?.irrigation || 'flood';
+  const rawIrrigation = input?.irrigation || 'flood';
+  const irrigation = typeof rawIrrigation === 'object' && rawIrrigation !== null
+    ? (rawIrrigation.type || 'flood')
+    : (typeof rawIrrigation === 'string' ? rawIrrigation : 'flood');
 
   const totalYield = input?.totalYield !== undefined
     ? Math.max(0, Number(input.totalYield) || 0)

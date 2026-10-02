@@ -5,7 +5,7 @@
  * Pattern: Real fetch to backend endpoints with robust in-memory mock fallback.
  */
 
-const API_BASE_URL = "/api";
+import { api } from "./api.js";
 
 export const MOCK_HISTORY_SCENARIOS = [
   {
@@ -226,30 +226,17 @@ export function renameScenario(targetOrList, newNameOrId, maybeNewName) {
  * Internal API call for scenario deletion.
  */
 async function deleteScenarioApi(id) {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/scenarios/${id}`, {
-      method: "DELETE",
-      signal: controller.signal,
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      localHistoryStore = localHistoryStore.filter((sc) => sc.id !== id);
-      return { success: true, id };
-    }
-    throw new Error(`Failed to delete scenario with status: ${res.status}`);
-  } catch (_err) {
-    clearTimeout(timeoutId);
+  if (import.meta?.env?.VITE_USE_MOCK === "true") {
     localHistoryStore = localHistoryStore.filter((sc) => sc.id !== id);
     return { success: true, id };
   }
+
+  const { error } = await api.delete(`/api/scenarios/${encodeURIComponent(id)}`);
+  if (!error) {
+    localHistoryStore = localHistoryStore.filter((sc) => sc.id !== id);
+    return { success: true, id };
+  }
+  return { success: false, error };
 }
 
 /**
@@ -269,37 +256,35 @@ export function deleteScenario(targetOrList, maybeId) {
 /**
  * Async API method to fetch history.
  */
-export async function getScenarioHistory() {
-  if (import.meta.env.VITE_USE_MOCK === "true") {
+export async function getScenarioHistory(farmId = null) {
+  if (import.meta?.env?.VITE_USE_MOCK === "true") {
     return JSON.parse(JSON.stringify(localHistoryStore));
   }
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 3000);
-
   try {
-    const res = await fetch(`${API_BASE_URL}/scenarios/history`, {
-      signal: controller.signal,
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        return data;
-      }
-      if (data?.scenarios && Array.isArray(data.scenarios)) {
-        return data.scenarios;
-      }
+    const query = farmId ? `?farmId=${encodeURIComponent(farmId)}` : "";
+    const { data, error } = await api.get(`/api/history${query}`);
+    if (error || !data) {
+      return [];
     }
-    return JSON.parse(JSON.stringify(localHistoryStore));
+    const list = Array.isArray(data) ? data : (data?.scenarios || []);
+    return list.map((item) => ({
+      id: item.id,
+      farmId: item.farm_id,
+      name: item.name,
+      crop: item.crop_code,
+      area: Number(item.area_acres),
+      profit: item.latestResult?.profit_inr ?? 0,
+      risk: item.latestResult?.risk_level ?? "Low",
+      modelVersion: item.latestResult?.model_version ?? "2.0.0",
+      decisionScore: item.latestResult?.decision_score ?? null,
+      createdAt: item.created_at,
+      updatedAt: item.updated_at,
+      timestamp: item.updated_at || item.created_at,
+      isBaseline: item.is_baseline,
+    }));
   } catch (_err) {
-    clearTimeout(timeoutId);
-    return JSON.parse(JSON.stringify(localHistoryStore));
+    return [];
   }
 }
 

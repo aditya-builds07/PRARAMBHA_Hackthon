@@ -3,6 +3,7 @@
  * Fetches rule-based recommendations from the backend simulation engine,
  * with deterministic mock fallback when the endpoint is unavailable.
  */
+import { api } from "./api.js";
 
 export const MOCK_RECOMMENDATIONS = [
   {
@@ -60,36 +61,23 @@ const SCENARIO_RECOMMENDATIONS_MAP = {
  * @returns {Promise<Array<Object>>}
  */
 export async function getRecommendations(scenarioId, { timeoutMs = 3000 } = {}) {
-  if (import.meta.env.VITE_USE_MOCK === "true") {
+  if (import.meta?.env?.VITE_USE_MOCK === "true") {
     return SCENARIO_RECOMMENDATIONS_MAP[scenarioId] || MOCK_RECOMMENDATIONS;
   }
 
   const endpoint = `/api/scenarios/${encodeURIComponent(scenarioId)}/recommendations`;
 
   try {
-    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-    const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
-
-    const response = await fetch(endpoint, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      signal: controller?.signal,
-    });
-
-    if (timeoutId) clearTimeout(timeoutId);
-
-    if (response.ok) {
-      const json = await response.json();
-      const list = json?.data || json?.recommendations || json;
+    const { data, error } = await api.get(endpoint);
+    if (!error && data) {
+      const list = data?.recommendations || data?.data || data;
       if (Array.isArray(list) && list.length > 0) {
         return list;
       }
     }
-  } catch {
-    // Graceful fallback to mock data when backend endpoint is not yet accessible
+  } catch (_err) {
+    // Return mock fallback on network failure
   }
 
-  // Fallback to scenario-specific mock recommendations or general mock list
-  const fallback = SCENARIO_RECOMMENDATIONS_MAP[scenarioId] || MOCK_RECOMMENDATIONS;
-  return fallback;
+  return SCENARIO_RECOMMENDATIONS_MAP[scenarioId] || MOCK_RECOMMENDATIONS;
 }

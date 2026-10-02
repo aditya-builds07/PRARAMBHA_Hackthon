@@ -22,6 +22,19 @@ export async function getFarms(request, response, next) {
   }
 }
 
+export async function getFarm(request, response, next) {
+  try {
+    const id = farmId(request.params.id);
+    const farm = await getFarmById(request.supabaseClient, id, request.user.id);
+    if (!farm) return sendError(response, 404, 'NOT_FOUND', 'Farm not found.');
+    sendSuccess(response, 200, farm);
+  } catch (error) {
+    if (error.message === 'Farm not found.') return sendError(response, 404, 'NOT_FOUND', error.message);
+    if (error.message.includes('required')) return sendError(response, 400, 'VALIDATION_ERROR', error.message);
+    next(error);
+  }
+}
+
 export async function postFarm(request, response, next) {
   try {
     const farm = validateFarmInput(request.body);

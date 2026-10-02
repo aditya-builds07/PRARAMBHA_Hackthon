@@ -25,14 +25,26 @@ vi.mock('../../src/adapters/db/supabase.client.js', () => {
     // expired or wrong-secret tokens
     return { data: { user: null }, error: { message: 'invalid JWT' } };
   });
-  const clientFactory = () => ({
-    auth: { getUser: mockGetUser },
-    from: () => ({
-      select: () => ({
-        eq: () => ({ maybeSingle: async () => ({ data: null, error: null }) }),
-      }),
-    }),
-  });
+  const clientFactory = () => {
+    const chainable = () => {
+      const obj = {
+        select: vi.fn(() => obj),
+        insert: vi.fn(() => obj),
+        update: vi.fn(() => obj),
+        delete: vi.fn(() => obj),
+        eq: vi.fn(() => obj),
+        order: vi.fn(() => obj),
+        single: vi.fn(async () => ({ data: { id: '00000000-0000-0000-0000-000000000001' }, error: null })),
+        maybeSingle: vi.fn(async () => ({ data: { id: '00000000-0000-0000-0000-000000000001' }, error: null })),
+        then: (resolve) => resolve({ data: [], error: null }),
+      };
+      return obj;
+    };
+    return {
+      auth: { getUser: mockGetUser },
+      from: vi.fn(() => chainable()),
+    };
+  };
   return {
     getSupabaseClient: clientFactory,
     getUserScopedClient: clientFactory,
@@ -56,6 +68,7 @@ const PROTECTED_ROUTES = [
   // Farms
   { method: 'get',    path: '/api/farms' },
   { method: 'post',   path: '/api/farms' },
+  { method: 'get',    path: '/api/farms/00000000-0000-0000-0000-000000000001' },
   { method: 'put',    path: '/api/farms/00000000-0000-0000-0000-000000000001' },
   { method: 'delete', path: '/api/farms/00000000-0000-0000-0000-000000000001' },
 

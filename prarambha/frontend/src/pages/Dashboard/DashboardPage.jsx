@@ -42,11 +42,11 @@ export default function DashboardPage({ onNavigate = null }) {
     ? (localStorage.getItem("user_name") || localStorage.getItem("farmer_id") || "Farmer")
     : "Farmer";
   const currentFarmerId = typeof window !== "undefined"
-    ? (localStorage.getItem("farmer_id") || localStorage.getItem("user_id") || "MH-PUN-042")
-    : "MH-PUN-042";
+    ? (localStorage.getItem("farmer_id") || localStorage.getItem("user_id") || "Farmer")
+    : "Farmer";
   const currentDistrict = typeof window !== "undefined"
-    ? (localStorage.getItem("farmer_district") || "Sangli")
-    : "Sangli";
+    ? (localStorage.getItem("farmer_district") || "Warnanagar")
+    : "Warnanagar";
   const currentLand = typeof window !== "undefined"
     ? (localStorage.getItem("farmer_land_acres") || "5.0")
     : "5.0";

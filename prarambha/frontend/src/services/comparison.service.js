@@ -43,7 +43,7 @@ export function formatNumber(val, decimals = 1) {
  * Extract flat metric values for a scenario
  */
 export function extractScenarioMetrics(scenario) {
-  const r = scenario.results || {};
+  const r = scenario.results || scenario.result || {};
   return {
     yieldTotal: r.yield?.total ?? 0,
     yieldPerAcre: r.yield?.perAcre ?? 0,
@@ -51,10 +51,10 @@ export function extractScenarioMetrics(scenario) {
     revenue: r.economics?.revenue ?? 0,
     profit: r.economics?.profit ?? 0,
     roi: r.economics?.roi ?? 0,
-    waterDrawn: r.water?.drawnM3 ?? 0,
-    waterProductivity: r.water?.productivity ?? 0,
-    riskOverall: r.risk?.overall ?? 0,
-    decisionScore: r.decisionScore ?? 0,
+    waterDrawn: r.water?.drawnM3 ?? r.water?.waterDrawnM3 ?? 0,
+    waterProductivity: r.water?.productivity ?? r.water?.waterProductivityKgPerM3 ?? 0,
+    riskOverall: r.risk?.overall ?? r.risk?.overallRisk ?? 0,
+    decisionScore: r.decisionScore?.total ?? r.decisionScore ?? 0,
   };
 }
 

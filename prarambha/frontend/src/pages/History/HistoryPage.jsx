@@ -1,89 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
 import ExpandableCard from "../../components/common/ExpandableCard";
 import { CustomSelect } from "../../components/common/CustomSelect";
 
+import { formatCurrency } from "../../services/comparison.service.js";
+import { getScenarioHistory } from "../../services/history.service.js";
+import { useAppStore } from "../../state/store.js";
+
 const SEASON_OPTIONS = [
-  { value: "all", label: "All Available Cycles (2023 - 2025)", icon: "date_range" },
-  { value: "rabi-2425", label: "Rabi 2024-25 (Wheat Precision • Active)", icon: "grain" },
-  { value: "kharif-2025", label: "Kharif 2025 (Cotton & Tur • Harvested)", icon: "spa" },
-  { value: "rabi-2324", label: "Rabi 2023-24 (Desi Gram • Audited)", icon: "eco" },
-  { value: "kharif-2024", label: "Kharif 2024 (Soybean • Baseline)", icon: "nutrition" },
+  { value: "all", label: "All Available Cycles (2024 - 2027)", icon: "date_range" },
+  { value: "rabi-2425", label: "Rabi Season (Active / Planned)", icon: "grain" },
+  { value: "kharif-2025", label: "Kharif Season (Monsoon)", icon: "spa" },
 ];
 
 export default function HistoryPage({ onNavigate = null }) {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const activeFarmId = useAppStore((s) => s.activeFarmId);
 
   const [selectedSeason, setSelectedSeason] = useState("all");
+  const [liveRecords, setLiveRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const historyRecords = [
-    {
-      id: "rec-2025-rabi",
-      season: "rabi-2425",
-      title: "Rabi 2024-25 • Drip Wheat Precision",
-      crop: "Sonalika HD-2967 Wheat",
-      acres: "8.5 Acres",
-      status: "Active Sowing (Nov 02)",
-      statusClass: "bg-[#EBF3ED] text-[#164A34] border-[#D0DEC0]",
-      predictedProfit: "₹1,84,500",
-      realizedProfit: "Pending Harvest",
-      waterUsed: "3,450 m³",
-      yieldRate: "21.2 Q / ac",
-      fidelity: "96.2%",
-      uid: "MH-HNG-2025-901",
-    },
-    {
-      id: "rec-2025-kharif",
-      season: "kharif-2025",
-      title: "Kharif 2025 • Hybrid Bt Cotton & Tur",
-      crop: "Bt Cotton + Tur Intercrop",
-      acres: "8.5 Acres",
-      status: "APMC Mandi Audited",
-      statusClass: "bg-[#EBF3ED] text-[#164A34] border-[#D0DEC0]",
-      predictedProfit: "₹1,62,000",
-      realizedProfit: "₹1,58,400",
-      waterUsed: "5,100 m³",
-      yieldRate: "14.8 Q / ac",
-      fidelity: "97.7%",
-      uid: "MH-HNG-2025-412",
-    },
-    {
-      id: "rec-2024-rabi",
-      season: "rabi-2324",
-      title: "Rabi 2023-24 • Desi Gram / Chickpea",
-      crop: "Vijay Gram (Chickpea)",
-      acres: "8.5 Acres",
-      status: "PMFBY Settled",
-      statusClass: "bg-[#FAF9F5] text-[#596A61] border-[#D9D6C7]",
-      predictedProfit: "₹1,12,000",
-      realizedProfit: "₹1,14,200",
-      waterUsed: "2,800 m³",
-      yieldRate: "9.4 Q / ac",
-      fidelity: "98.0%",
-      uid: "MH-HNG-2024-884",
-    },
-    {
-      id: "rec-2024-kharif",
-      season: "kharif-2024",
-      title: "Kharif 2024 • Soybean Rainfed Baseline",
-      crop: "JS-335 Soybean (Flood)",
-      acres: "8.5 Acres",
-      status: "Baseline Record",
-      statusClass: "bg-[#FAF9F5] text-[#596A61] border-[#D9D6C7]",
-      predictedProfit: "₹95,000",
-      realizedProfit: "₹88,000",
-      waterUsed: "4,650 m³",
-      yieldRate: "8.2 Q / ac",
-      fidelity: "92.6%",
-      uid: "MH-HNG-2024-102",
-    },
-  ];
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    getScenarioHistory(activeFarmId)
+      .then((data) => {
+        if (!active) return;
+        setLiveRecords(Array.isArray(data) ? data : []);
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!active) return;
+        setLiveRecords([]);
+        setLoading(false);
+      });
+    return () => { active = false; };
+  }, [activeFarmId]);
+
+  const displayRecords = liveRecords.map((r) => ({
+    id: r.id,
+    farmId: r.farmId || activeFarmId,
+    season: "rabi-2425",
+    title: r.name,
+    crop: r.crop || "Crop",
+    acres: `${r.area || 5} Acres`,
+    status: r.isBaseline ? "Baseline Plan" : "Simulated Scenario",
+    statusClass: r.isBaseline ? "bg-[#FAF9F5] text-[#596A61] border-[#D9D6C7]" : "bg-[#EBF3ED] text-[#164A34] border-[#D0DEC0]",
+    predictedProfit: formatCurrency(r.profit),
+    realizedProfit: "Pending Harvest",
+    waterUsed: "Optimized",
+    yieldRate: "Simulated",
+    fidelity: r.decisionScore ? `${Math.round(r.decisionScore)}%` : "95.0%",
+    uid: r.id ? r.id.slice(0, 18) : "MH-PUN-2026",
+  }));
 
   const filteredRecords = selectedSeason === "all"
-    ? historyRecords
-    : historyRecords.filter((r) => r.season === selectedSeason);
+    ? displayRecords
+    : displayRecords.filter((r) => r.season === selectedSeason);
 
   const currentUserName = typeof window !== "undefined"
     ? (localStorage.getItem("user_name") || "Your")
@@ -128,6 +104,28 @@ export default function HistoryPage({ onNavigate = null }) {
 
       {/* History Records via ExpandableCard */}
       <div className="space-y-4">
+        {loading && (
+          <div className="bg-white/80 rounded-3xl border border-[#D0DEC0] p-12 text-center max-w-lg mx-auto">
+            <span className="material-symbols-outlined text-3xl text-[#164A34] animate-spin block mx-auto mb-2">refresh</span>
+            <p className="text-xs text-[#596A61] font-bold">Loading scenario history...</p>
+          </div>
+        )}
+
+        {!loading && filteredRecords.length === 0 && (
+          <div className="bg-white/80 rounded-3xl border border-[#D0DEC0] p-12 text-center max-w-lg mx-auto space-y-3">
+            <span className="material-symbols-outlined text-4xl text-[#3D8B5A] block mx-auto">history_toggle_off</span>
+            <h3 className="font-bold text-base text-[#164A34]">No Saved Plans Found</h3>
+            <p className="text-xs text-[#596A61]">Run a simulation in Scenario Builder and save your plan to build a decision history.</p>
+            <button
+              type="button"
+              onClick={() => (onNavigate ? onNavigate("builder") : navigate("/scenarios"))}
+              className="px-5 py-2.5 bg-[#164A34] hover:bg-[#196C3E] text-white text-xs font-bold rounded-xl transition-all shadow-sm cursor-pointer"
+            >
+              Go to Scenario Builder
+            </button>
+          </div>
+        )}
+
         {filteredRecords.map((item) => (
           <ExpandableCard
             key={item.id}
@@ -136,7 +134,11 @@ export default function HistoryPage({ onNavigate = null }) {
             actionButton={
               <button
                 type="button"
-                onClick={() => (onNavigate ? onNavigate("report") : navigate("/report"))}
+                onClick={() =>
+                  onNavigate
+                    ? onNavigate("report", { scenarioId: item.id, farmId: item.farmId })
+                    : navigate(`/scenarios/${item.farmId}/${item.id}/report`)
+                }
                 className="px-3.5 py-1.5 bg-[#EBF3ED] hover:bg-[#D0DEC0] text-[#164A34] text-xs font-bold rounded-xl border border-[#3D8B5A]/30 transition-colors cursor-pointer"
               >
                 View Dossier

@@ -8,7 +8,7 @@
 
 import { formatCurrency, formatNumber, getRiskLevelInfo } from "./comparison.service.js";
 
-const API_BASE_URL = "/api";
+import { api } from "./api.js";
 
 export const MOCK_REPORT_DATA = {
   farm: {
@@ -108,7 +108,7 @@ export const MOCK_REPORT_DATA = {
  * @returns {Promise<Object>} Aggregated report document
  */
 export async function getReport(scenarioId = "sc-001") {
-  if (import.meta.env.VITE_USE_MOCK === "true") {
+  if (import.meta?.env?.VITE_USE_MOCK === "true") {
     return {
       ...MOCK_REPORT_DATA,
       scenario: {
@@ -118,24 +118,11 @@ export async function getReport(scenarioId = "sc-001") {
     };
   }
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 3000);
-
   try {
-    const res = await fetch(`${API_BASE_URL}/reports/${scenarioId}`, {
-      signal: controller.signal,
-      headers: {
-        Accept: "application/json",
-      },
-    });
+    const { data, error } = await api.get(`/api/reports/${encodeURIComponent(scenarioId)}`);
 
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data && typeof data === "object") {
-        return data;
-      }
+    if (!error && data && typeof data === "object") {
+      return data;
     }
     // Mock fallback with requested scenario id
     return {
@@ -146,7 +133,6 @@ export async function getReport(scenarioId = "sc-001") {
       },
     };
   } catch (_err) {
-    clearTimeout(timeoutId);
     return {
       ...MOCK_REPORT_DATA,
       scenario: {

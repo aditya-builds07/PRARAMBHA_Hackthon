@@ -185,7 +185,7 @@ export default function ScenarioBuilderPage({ farmId, onNavigate }) {
   if (!activeFarm) {
     return (
       <div className="max-w-2xl mx-auto text-center py-16">
-        <Sprout className="w-12 h-12 text-[#164A34] mx-auto mb-4" />
+        <span className="material-symbols-outlined text-5xl text-[#164A34] mx-auto mb-4 block">psychiatry</span>
         <h2 className="text-xl font-bold mb-2">No Active Farm Selected</h2>
         <p className="text-[#596A61] mb-6">Select or create a farm to begin scenario simulation.</p>
         <button 

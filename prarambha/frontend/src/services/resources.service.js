@@ -3,6 +3,7 @@
  * Compares required vs available resources for simulated scenarios,
  * with deterministic mock fallback when backend endpoint is unavailable.
  */
+import { api } from "./api.js";
 
 /**
  * Calculate the deficit gap for a resource (required - available).
@@ -164,7 +165,7 @@ export const MOCK_RESOURCE_DATA = [
  * }>}
  */
 export async function getResourceReadiness(farmId = "farm-001", scenarioId = "sc-001", { timeoutMs = 3000 } = {}) {
-  if (import.meta.env.VITE_USE_MOCK === "true") {
+  if (import.meta?.env?.VITE_USE_MOCK === "true") {
     const resources = MOCK_RESOURCE_DATA.map((item) => ({
       ...item,
       gap: calculateGap(item.required, item.available),
@@ -180,20 +181,10 @@ export async function getResourceReadiness(farmId = "farm-001", scenarioId = "sc
   const endpoint = `/api/farms/${encodeURIComponent(farmId)}/resources/readiness?scenarioId=${encodeURIComponent(scenarioId)}`;
 
   try {
-    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-    const timeoutId = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+    const { data, error } = await api.get(endpoint);
 
-    const response = await fetch(endpoint, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      signal: controller?.signal,
-    });
-
-    if (timeoutId) clearTimeout(timeoutId);
-
-    if (response.ok) {
-      const json = await response.json();
-      const rawResources = json?.data?.resources || json?.resources || json?.data;
+    if (!error && data) {
+      const rawResources = data?.resources || data?.data?.resources || data?.data;
       if (Array.isArray(rawResources) && rawResources.length > 0) {
         const normalized = rawResources.map((item) => {
           const req = Number(item.required) || 0;
@@ -215,11 +206,11 @@ export async function getResourceReadiness(farmId = "farm-001", scenarioId = "sc
           farmId,
           scenarioId,
           resources: normalized,
-          feasibility: calculateFeasibility(normalized),
+          feasibility: data?.feasibility || calculateFeasibility(normalized),
         };
       }
     }
-  } catch {
+  } catch (_err) {
     // Fallback to local mock data
   }
 

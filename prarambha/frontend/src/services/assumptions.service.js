@@ -5,7 +5,7 @@
  * Pattern: Real fetch to GET /api/assumptions with robust mock fallback.
  */
 
-const API_BASE_URL = "/api";
+import { api } from "./api.js";
 
 export const MOCK_ASSUMPTIONS_DATA = {
   modelVersion: "v2.1.0-deterministic",
@@ -121,32 +121,19 @@ export async function getActiveAssumptions() {
  * @returns {Promise<Object>} Assumptions dataset
  */
 export async function getAssumptions() {
-  if (import.meta.env?.VITE_USE_MOCK === "true") {
+  const useMock = (typeof import.meta !== "undefined" && import.meta.env?.VITE_USE_MOCK === "true") || (typeof process !== "undefined" && process.env?.VITE_USE_MOCK === "true");
+  if (useMock) {
     return MOCK_ASSUMPTIONS_DATA;
   }
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 3000);
-
   try {
-    const res = await fetch(`${API_BASE_URL}/assumptions`, {
-      signal: controller.signal,
-      headers: {
-        Accept: "application/json",
-      },
-    });
+    const { data, error } = await api.get("/api/assumptions");
 
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data && typeof data === "object") {
-        return data;
-      }
+    if (!error && data && typeof data === "object") {
+      return data;
     }
     return MOCK_ASSUMPTIONS_DATA;
   } catch (_err) {
-    clearTimeout(timeoutId);
     return MOCK_ASSUMPTIONS_DATA;
   }
 }

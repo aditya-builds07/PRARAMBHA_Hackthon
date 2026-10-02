@@ -1,6 +1,6 @@
-﻿import { api } from "./api.js"
+import { api } from "./api.js"
 
-const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true"
+const USE_MOCK = import.meta?.env?.VITE_USE_MOCK === "true"
 
 // ─── Mock result matching the ENGINE OUTPUT CONTRACT exactly ───────────────
 const MOCK_RESULT = {

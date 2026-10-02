@@ -57,7 +57,11 @@ export function validateScenarioInput(input) {
     planting_type: plantingType,
     delay_days: delayDays,
     input_cost_multiplier: numberInRange(input.inputCostMultiplier, "inputCostMultiplier", 0.5, 3),
-    irrigation: requiredString(input.irrigation, "irrigation", ALLOWED_IRRIGATION),
+    irrigation: requiredString(
+      typeof input.irrigation === "object" && input.irrigation !== null ? input.irrigation.type : input.irrigation,
+      "irrigation",
+      ALLOWED_IRRIGATION
+    ),
     priority_profile: requiredString(input.priorityProfile, "priorityProfile", ALLOWED_PROFILES),
   };
 }

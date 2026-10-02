@@ -46,8 +46,15 @@ function AppContent() {
   const pathname = location.pathname;
 
   useEffect(() => {
+    let active = true;
+
     try {
-      localStorage.removeItem("supabase_token");
+      const stored = localStorage.getItem("user_session");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setSession(parsed);
+        if (parsed?.access_token) setAuthToken(parsed.access_token);
+      }
     } catch {}
 
     if (!supabase) {
@@ -55,22 +62,37 @@ function AppContent() {
       return undefined;
     }
 
-    let active = true;
     supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
-      setSession(data.session ?? null);
-      setAuthToken(data.session?.access_token ?? null);
+      if (data.session) {
+        setSession(data.session);
+        setAuthToken(data.session?.access_token ?? null);
+        try {
+          localStorage.setItem("user_session", JSON.stringify(data.session));
+        } catch {}
+      }
       setAuthReady(true);
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession ?? null);
-      setAuthToken(nextSession?.access_token ?? null);
+      if (nextSession) {
+        setSession(nextSession);
+        setAuthToken(nextSession?.access_token ?? null);
+        try {
+          localStorage.setItem("user_session", JSON.stringify(nextSession));
+        } catch {}
+      } else {
+        setSession(null);
+        setAuthToken(null);
+        try {
+          localStorage.removeItem("user_session");
+        } catch {}
+      }
     });
 
     return () => {
       active = false;
-      listener.subscription.unsubscribe();
+      listener?.subscription?.unsubscribe?.();
     };
   }, []);
 
@@ -183,11 +205,40 @@ function AppContent() {
     }
   };
 
+  // Centralized login success handler
+  const handleLoginSuccess = (userData) => {
+    const sessionObj = {
+      access_token: userData.token,
+      user: {
+        id: userData.id,
+        email: userData.email,
+        user_metadata: {
+          full_name: userData.name,
+          farmer_id: userData.farmer_id || userData.id,
+        },
+      },
+    };
+    setSession(sessionObj);
+    setAuthToken(userData.token);
+    try {
+      localStorage.setItem("user_session", JSON.stringify(sessionObj));
+      localStorage.setItem("user_name", userData.name || "Farmer");
+      localStorage.setItem("user_id", userData.id);
+      if (userData.email) localStorage.setItem("user_email", userData.email);
+      if (userData.token) localStorage.setItem("supabase_token", userData.token);
+    } catch {}
+    navigate("/dashboard");
+  };
+
   // Centralized logout handler
   const handleLogout = async () => {
-    if (supabase) await supabase.auth.signOut();
+    if (supabase) {
+      try { await supabase.auth.signOut(); } catch {}
+    }
+    setSession(null);
     setAuthToken(null);
     try {
+      localStorage.removeItem("user_session");
       localStorage.removeItem("farmer_id");
       localStorage.removeItem("user_id");
       localStorage.removeItem("user_name");
@@ -203,16 +254,16 @@ function AppContent() {
     return <LaunchPage onNavigate={handleNavigate} />;
   }
   if (currentPage === "login") {
-    return <LoginPage onNavigate={handleNavigate} />;
+    return <LoginPage onNavigate={handleNavigate} onLoginSuccess={handleLoginSuccess} />;
   }
   if (currentPage === "signup") {
-    return <SignupPage onNavigate={handleNavigate} />;
+    return <SignupPage onNavigate={handleNavigate} onLoginSuccess={handleLoginSuccess} />;
   }
   if (currentPage === "forgot-password") {
     return <ForgotPasswordPage onNavigate={handleNavigate} />;
   }
   if (authReady && !isMockMode && !session) {
-    return <LoginPage onNavigate={handleNavigate} />;
+    return <LoginPage onNavigate={handleNavigate} onLoginSuccess={handleLoginSuccess} />;
   }
 
   // Navigation Items for AppShell Sidebar — Direct Web App Modules

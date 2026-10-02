@@ -38,7 +38,7 @@ export function validateFarmInput(input) {
     region: optionalText(input.region, "region"),
     crop_cycle: optionalText(input.cropCycle ?? input.crop_cycle, "cropCycle"),
     water_profile: optionalText(input.waterProfile ?? input.water_profile, "waterProfile"),
-    available_water_m3: optionalNonNegativeNumber(input.availableWaterM3 ?? input.waterM3 ?? input.available_water_m3, "availableWaterM3"),
+    available_water_m3: optionalNonNegativeNumber(input.availableWaterM3 ?? input.waterM3 ?? input.available_water_m3 ?? input.water_m3, "availableWaterM3"),
     budget_inr: optionalNonNegativeNumber(input.budgetInr ?? input.budget_inr, "budgetInr"),
   };
 }
