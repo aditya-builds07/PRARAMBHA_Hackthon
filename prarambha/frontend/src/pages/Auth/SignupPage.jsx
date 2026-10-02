@@ -1,14 +1,32 @@
 import React, { useState } from "react";
 import { getAuthRedirectUrl, requireSupabase } from "../../services/supabase.js";
 
+const INDIAN_STATES = [
+  "Maharashtra",
+  "Karnataka",
+  "Gujarat",
+  "Madhya Pradesh",
+  "Punjab",
+  "Haryana",
+  "Rajasthan",
+  "Uttar Pradesh",
+  "Andhra Pradesh",
+  "Telangana",
+  "Tamil Nadu",
+  "Bihar",
+  "West Bengal",
+  "Other",
+];
+
 export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [fullName, setFullName] = useState("");
-  const [farmerId, setFarmerId] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [village, setVillage] = useState("");
+  const [taluka, setTaluka] = useState("");
   const [district, setDistrict] = useState("");
-  const [landAcres, setLandAcres] = useState("");
+  const [state, setState] = useState("Maharashtra");
+  const country = "India";
+  const [landAcres, setLandAcres] = useState("5.0");
   const [preferredLang, setPreferredLang] = useState("mr");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -17,30 +35,31 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [error, setError] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
-  // Generate unique Farmer ID
-  const generateNewId = () => {
-    const randomNum = Math.floor(100 + Math.random() * 900);
-    const prefix = district.trim() ? district.trim().slice(0, 3).toUpperCase() : "MH";
-    const newId = `MH-${prefix}-${randomNum}`;
-    setFarmerId(newId);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccessMsg(null);
 
-    if (!fullName.trim() || !farmerId.trim() || !password.trim()) {
-      setError("Please fill in Full Name, Farmer ID, and Password.");
+    const cleanName = fullName.trim();
+    const cleanEmail = email.trim();
+    const cleanPassword = password.trim();
+
+    if (!cleanName || !cleanEmail || !cleanPassword) {
+      setError("Please fill in Full Name, Email Address, and Password.");
       return;
     }
 
-    if (password.length < 6) {
+    if (!/\S+@\S+\.\S+/.test(cleanEmail)) {
+      setError("Please enter a valid email address (e.g. farmer@example.com).");
+      return;
+    }
+
+    if (cleanPassword.length < 6) {
       setError("Password must be at least 6 characters.");
       return;
     }
 
-    if (password !== confirmPassword) {
+    if (cleanPassword !== confirmPassword.trim()) {
       setError("Passwords do not match. Please re-enter your password.");
       return;
     }
@@ -48,54 +67,62 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     setLoading(true);
 
     try {
+      // Auto-generate backend reference ID without requiring farmer manual input
+      const stateCode = (state || "MH").replace(/[^a-zA-Z]/g, "").slice(0, 2).toUpperCase() || "MH";
+      const distCode = (district.trim() || "AGR").replace(/[^a-zA-Z]/g, "").slice(0, 3).toUpperCase() || "AGR";
+      const randomSuffix = Math.floor(100 + Math.random() * 900);
+      const autoFarmerId = `${stateCode}-${distCode}-${randomSuffix}`;
+
       const profile = {
-        farmer_id: farmerId.trim().toUpperCase(),
-        full_name: fullName.trim(),
+        farmer_id: autoFarmerId,
+        full_name: cleanName,
         phone: phone.trim(),
-        village: village.trim(),
+        village: taluka.trim(),
+        taluka: taluka.trim(),
         district: district.trim(),
+        state: state.trim() || "Maharashtra",
+        country: country,
         total_land_acres: parseFloat(landAcres) || 5.0,
         preferred_language: preferredLang,
         role: "farmer",
       };
-      // If email is blank, generate a unique placeholder to avoid Supabase
-      // email rate-limits on shared domains. The placeholder is derived from
-      // the unique Farmer ID so no two accounts collide.
-      const effectiveEmail = email.trim() ||
-        `${farmerId.trim().toLowerCase().replace(/[^a-z0-9]/g, "")}@farmer.prarambha.local`;
-      const { data, error } = await requireSupabase().auth.signUp({
-        email: effectiveEmail,
-        password: password.trim(),
+
+      const { data, error: signUpError } = await requireSupabase().auth.signUp({
+        email: cleanEmail,
+        password: cleanPassword,
         options: {
           data: profile,
           emailRedirectTo: getAuthRedirectUrl(),
         },
       });
-      if (error) throw error;
 
-      const assignedId = profile.farmer_id;
+      if (signUpError) throw signUpError;
 
-      if (onLoginSuccess) {
+      if (onLoginSuccess && data.user) {
         onLoginSuccess({
-          id: data.user?.id,
+          id: data.user.id,
           name: profile.full_name,
-          email: email.trim(),
+          email: cleanEmail,
           token: data.session?.access_token,
         });
       }
 
-      setSuccessMsg(data.session
-        ? `Account created! Assigned Farmer ID: ${assignedId}. Opening simulator...`
-        : `Account created for ${assignedId}. Check your email to confirm the account, then sign in.`);
+      setSuccessMsg(
+        data.session
+          ? `Welcome to KrishiMitra, ${cleanName}! Opening simulator...`
+          : `Account registered successfully! Please check your email to confirm, then sign in.`
+      );
 
       setTimeout(() => {
         setLoading(false);
         if (onNavigate && data.session) {
           onNavigate("dashboard");
+        } else if (onNavigate && !data.session) {
+          onNavigate("login");
         }
-      }, 800);
+      }, 1000);
     } catch (err) {
-      setError(err.message || "Failed to register account. Please try again.");
+      setError(err.message || "Failed to register account. Please check your details and try again.");
       setLoading(false);
     }
   };
@@ -155,17 +182,17 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
 
       {/* Main Registration Form Container */}
       <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-8 sm:px-6">
-        <div className="w-full max-w-xl bg-[#002D1D]/90 backdrop-blur-xl rounded-3xl border border-[#164A34] shadow-2xl p-6 sm:p-8 space-y-6">
+        <div className="w-full max-w-2xl bg-[#002D1D]/90 backdrop-blur-xl rounded-3xl border border-[#164A34] shadow-2xl p-6 sm:p-8 space-y-6">
           {/* Header */}
           <div className="text-center space-y-2">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 mb-1">
               <span className="material-symbols-outlined text-[26px]">how_to_reg</span>
             </div>
             <h1 className="text-2xl font-black text-white tracking-tight">
-              Register Farmer Account
+              Create Your Farmer Account
             </h1>
             <p className="text-xs text-slate-300">
-              Create your permanent Farmer ID to store land profiles, scenario forecasts & water audits
+              Register with your email to simulate crop seasons, save farm profiles & predict risks
             </p>
           </div>
 
@@ -186,189 +213,227 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Full Name */}
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-emerald-300">
-                  Farmer Full Name *
-                </label>
-                <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
-                    person
-                  </span>
-                  <input
-                    type="text"
-                    required
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Shivaji Patil"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
-                  />
-                </div>
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* SECTION 1: Personal & Login Credentials */}
+            <div className="space-y-3">
+              <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block border-b border-[#164A34] pb-1">
+                1. Account & Login Details
+              </span>
 
-              {/* Farmer ID with Auto-generator */}
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Full Name */}
+                <div className="space-y-1">
                   <label className="block text-xs font-bold text-emerald-300">
-                    Farmer ID *
+                    Full Name *
                   </label>
-                  <button
-                    type="button"
-                    onClick={generateNewId}
-                    className="text-[10px] text-emerald-400 hover:text-emerald-300 underline cursor-pointer"
-                  >
-                    Generate New
-                  </button>
-                </div>
-                <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
-                    badge
-                  </span>
-                  <input
-                    type="text"
-                    required
-                    value={farmerId}
-                    onChange={(e) => setFarmerId(e.target.value.toUpperCase())}
-                    placeholder="MH-PUN-099"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-mono font-bold text-emerald-300 placeholder-slate-500 outline-none transition-all uppercase"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Phone */}
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-emerald-300">
-                  Mobile / WhatsApp
-                </label>
-                <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
-                    call
-                  </span>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+91 98221 44520"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-emerald-300">
-                  Email Address (Optional)
-                </label>
-                <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
-                    mail
-                  </span>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="farmer@krishimitra.in"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {/* Village */}
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-emerald-300">
-                  Village / Taluka
-                </label>
-                <input
-                  type="text"
-                  value={village}
-                  onChange={(e) => setVillage(e.target.value)}
-                  placeholder="Baramati"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
-                />
-              </div>
-
-              {/* District */}
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-emerald-300">
-                  District
-                </label>
-                <input
-                  type="text"
-                  value={district}
-                  onChange={(e) => setDistrict(e.target.value)}
-                  placeholder="Pune"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
-                />
-              </div>
-
-              {/* Land Acres */}
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-emerald-300">
-                  Land Size (Acres)
-                </label>
-                <input
-                  type="number"
-                  step="0.5"
-                  value={landAcres}
-                  onChange={(e) => setLandAcres(e.target.value)}
-                  placeholder="10.0"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
-                />
-              </div>
-            </div>
-
-            {/* Password & Confirm Password */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-emerald-300">
-                  Password *
-                </label>
-                <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
-                    lock
-                  </span>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="At least 6 characters"
-                    className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 text-slate-400 hover:text-white cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">
-                      {showPassword ? "visibility_off" : "visibility"}
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
+                      person
                     </span>
-                  </button>
+                    <input
+                      type="text"
+                      required
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="e.g. Shivaji Patil"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Email Address */}
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-emerald-300">
+                    Email Address (Login ID) *
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
+                      mail
+                    </span>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="farmer@example.com"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="block text-xs font-bold text-emerald-300">
-                  Confirm Password *
-                </label>
-                <div className="relative flex items-center">
-                  <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
-                    lock_reset
-                  </span>
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Repeat password"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
-                  />
+              {/* Password & Confirm Password */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-emerald-300">
+                    Password *
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
+                      lock
+                    </span>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Minimum 6 characters"
+                      className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 text-slate-400 hover:text-white cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">
+                        {showPassword ? "visibility_off" : "visibility"}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-emerald-300">
+                    Confirm Password *
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
+                      lock_reset
+                    </span>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Re-enter password"
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 2: Location & Farm Profile */}
+            <div className="space-y-3 pt-2">
+              <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block border-b border-[#164A34] pb-1">
+                2. Location & Farm Profile
+              </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* Taluka / Village */}
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-emerald-300">
+                    Taluka / Village
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3 text-slate-400 text-[16px] pointer-events-none">
+                      location_on
+                    </span>
+                    <input
+                      type="text"
+                      value={taluka}
+                      onChange={(e) => setTaluka(e.target.value)}
+                      placeholder="e.g. Warnanagar"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* District */}
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-emerald-300">
+                    District
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3 text-slate-400 text-[16px] pointer-events-none">
+                      map
+                    </span>
+                    <input
+                      type="text"
+                      value={district}
+                      onChange={(e) => setDistrict(e.target.value)}
+                      placeholder="e.g. Kolhapur"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* State */}
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-emerald-300">
+                    State
+                  </label>
+                  <select
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white outline-none transition-all cursor-pointer"
+                  >
+                    {INDIAN_STATES.map((st) => (
+                      <option key={st} value={st} className="bg-[#002216] text-white">
+                        {st}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* Country */}
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-emerald-300">
+                    Country
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3 text-emerald-400 text-[16px] pointer-events-none">
+                      flag
+                    </span>
+                    <input
+                      type="text"
+                      readOnly
+                      value="India 🇮🇳"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#164A34] bg-[#001A10] text-xs font-bold text-emerald-300 outline-none cursor-default"
+                    />
+                  </div>
+                </div>
+
+                {/* Total Land Acres */}
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-emerald-300">
+                    Total Land (Acres)
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3 text-slate-400 text-[16px] pointer-events-none">
+                      agriculture
+                    </span>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="0.5"
+                      value={landAcres}
+                      onChange={(e) => setLandAcres(e.target.value)}
+                      placeholder="5.0"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Mobile / WhatsApp (Optional) */}
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-emerald-300">
+                    Phone (Optional)
+                  </label>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3 text-slate-400 text-[16px] pointer-events-none">
+                      call
+                    </span>
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+91 98221 44520"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -378,12 +443,12 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
               type="submit"
               id="submit-register-btn"
               disabled={loading}
-              className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/35 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-3"
+              className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/35 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-4"
             >
               {loading ? (
                 <>
                   <span className="material-symbols-outlined text-base animate-spin">refresh</span>
-                  <span>Registering Farmer Account...</span>
+                  <span>Creating Your Account...</span>
                 </>
               ) : (
                 <>
@@ -397,13 +462,13 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
           {/* Sign In Link */}
           <div className="pt-3 flex items-center justify-center text-xs border-t border-[#164A34]">
             <span className="text-slate-300">
-              Already have a Farmer ID?{" "}
+              Already have an account?{" "}
               <button
                 type="button"
                 onClick={() => onNavigate && onNavigate("login")}
                 className="font-bold text-emerald-400 hover:text-emerald-300 underline cursor-pointer ml-1"
               >
-                Sign In with ID & Password
+                Sign In with Email & Password
               </button>
             </span>
           </div>
@@ -412,7 +477,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
 
       {/* Footer */}
       <footer className="relative z-10 py-4 px-4 text-center text-xs text-slate-400">
-        KrishiMitra • Deterministic Decision Engine v2.0 • Offline Native
+        KrishiMitra • Deterministic Decision Engine v2.0 • Made for Indian Farmers 🇮🇳
       </footer>
     </div>
   );

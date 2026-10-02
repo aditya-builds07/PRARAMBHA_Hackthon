@@ -119,13 +119,13 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
           {/* Header */}
           <div className="text-center space-y-2">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 mb-1">
-              <span className="material-symbols-outlined text-[26px]">badge</span>
+              <span className="material-symbols-outlined text-[26px]">login</span>
             </div>
             <h1 className="text-2xl font-black text-white tracking-tight">
-              Sign In to Your Account
+              Sign In to KrishiMitra
             </h1>
-              <p className="text-xs text-slate-300">
-              Enter your registered email and password
+            <p className="text-xs text-slate-300">
+              Enter your registered email and password to access your dashboard
             </p>
           </div>
 
@@ -147,27 +147,27 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* ID Input */}
+            {/* Email Input */}
             <div className="space-y-1.5">
               <label htmlFor="login-id" className="block text-xs font-bold text-emerald-300">
-                  Registered Email
+                Email Address
               </label>
               <div className="relative flex items-center">
                 <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">
-                  badge
+                  mail
                 </span>
                 <input
                   id="login-id"
-                  type="text"
+                  type="email"
                   required
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
-                  placeholder="farmer@krishimitra.in"
+                  placeholder="farmer@example.com"
                   className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
                 />
               </div>
               <p className="text-[10px] text-slate-400">
-                Use the email address associated with your Supabase account.
+                Enter your registered email address.
               </p>
             </div>
 
@@ -246,16 +246,16 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
             </button>
           </form>
 
-            {/* Register Farm Account Link */}
+            {/* Register Account Link */}
             <div className="pt-3 border-t border-[#164A34] text-center">
               <p className="text-xs text-slate-300">
-                Don't have a Farmer ID yet?{" "}
+                Don't have an account yet?{" "}
                 <button
                   type="button"
                   onClick={() => onNavigate && onNavigate("signup")}
                   className="font-bold text-emerald-400 hover:text-emerald-300 underline cursor-pointer ml-1"
                 >
-                  Register Farm Account
+                  Register New Account
                 </button>
               </p>
             </div>
