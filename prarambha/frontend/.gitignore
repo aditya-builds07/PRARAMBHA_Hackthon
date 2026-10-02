@@ -1,6 +1,7 @@
-﻿# --- build outputs ---
+# --- build outputs & cache ---
 dist/
 dist-ssr/
+.vite/
 
 # --- env files (never commit secrets) ---
 .env
