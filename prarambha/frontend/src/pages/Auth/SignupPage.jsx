@@ -153,28 +153,32 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                   v2.0
                 </span>
               </div>
-              <span className="text-[11px] text-emerald-300/70 block">
+              {/* Issue 2 Fix: increased from text-[11px] to text-xs (12px) */}
+              <span className="text-xs text-emerald-300/80 block">
                 Agri Scenario & Decision Simulator
               </span>
             </div>
           </button>
 
-          <div className="flex items-center gap-2">
+          {/* Issue 8 Fix: increased gap from gap-2 (8px) to gap-4 sm:gap-5 (16-20px) */}
+          <div className="flex items-center gap-4 sm:gap-5">
+            {/* Issue 1 Fix: unified top-nav button styling */}
             <button
               type="button"
               onClick={() => onNavigate && onNavigate("login")}
-              className="flex items-center gap-1.5 text-xs text-emerald-300 hover:text-white bg-white/5 hover:bg-white/10 border border-emerald-500/30 px-3.5 py-2 rounded-xl transition-all cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-semibold text-emerald-200 hover:text-white bg-white/5 hover:bg-white/10 border border-[#164A34] hover:border-emerald-500/40 px-3.5 py-2 rounded-xl transition-all cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">login</span>
               <span>Sign In</span>
             </button>
+            {/* Issue 1 & 4 Fix: unified button style + changed label from 'Launch' to 'Back to Home' matching arrow_back */}
             <button
               type="button"
               onClick={() => onNavigate && onNavigate("launch")}
-              className="flex items-center gap-1.5 text-xs text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 px-3.5 py-2 rounded-xl transition-all cursor-pointer"
+              className="flex items-center gap-1.5 text-xs font-semibold text-emerald-200 hover:text-white bg-white/5 hover:bg-white/10 border border-[#164A34] hover:border-emerald-500/40 px-3.5 py-2 rounded-xl transition-all cursor-pointer"
             >
               <span className="material-symbols-outlined text-sm">arrow_back</span>
-              <span className="hidden sm:inline">Launch</span>
+              <span>Back to Home</span>
             </button>
           </div>
         </div>
@@ -216,7 +220,8 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* SECTION 1: Personal & Login Credentials */}
             <div className="space-y-3">
-              <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block border-b border-[#164A34] pb-1">
+              {/* Issue 3 Fix: removed all-caps uppercase, used title case */}
+              <span className="text-xs font-bold text-emerald-400 block border-b border-[#164A34] pb-1">
                 1. Account & Login Details
               </span>
 
@@ -280,12 +285,14 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                       placeholder="Minimum 6 characters"
                       className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all"
                     />
+                    {/* Issue 7 Fix: Increased hit area, added hover bg, and added aria-label */}
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3.5 text-slate-400 hover:text-white cursor-pointer"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[18px]">
+                      <span className="material-symbols-outlined text-[20px]">
                         {showPassword ? "visibility_off" : "visibility"}
                       </span>
                     </button>
@@ -315,11 +322,13 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
 
             {/* SECTION 2: Location & Farm Profile */}
             <div className="space-y-3 pt-2">
-              <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block border-b border-[#164A34] pb-1">
+              {/* Issue 3 Fix: removed all-caps uppercase, used title case */}
+              <span className="text-xs font-bold text-emerald-400 block border-b border-[#164A34] pb-1">
                 2. Location & Farm Profile
               </span>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Issue 5 Fix: Replaced cramped 3-column layout with consistent 2-column layout */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Taluka / Village */}
                 <div className="space-y-1">
                   <label className="block text-xs font-bold text-emerald-300">
@@ -375,24 +384,29 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                     ))}
                   </select>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* Country */}
+                {/* Issue 6 Fix: Standardized Country with lock signifier, Fixed badge, and aria-readonly */}
                 <div className="space-y-1">
-                  <label className="block text-xs font-bold text-emerald-300">
-                    Country
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-emerald-300">
+                      Country
+                    </label>
+                    <span className="text-[10px] text-emerald-400/80 font-medium">Default</span>
+                  </div>
                   <div className="relative flex items-center">
                     <span className="material-symbols-outlined absolute left-3 text-emerald-400 text-[16px] pointer-events-none">
-                      flag
+                      public
                     </span>
                     <input
                       type="text"
                       readOnly
-                      value="India 🇮🇳"
-                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#164A34] bg-[#001A10] text-xs font-bold text-emerald-300 outline-none cursor-default"
+                      aria-readonly="true"
+                      value="India"
+                      className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-[#164A34] bg-[#001A10] text-xs font-medium text-emerald-200 outline-none cursor-not-allowed select-none"
                     />
+                    <span className="material-symbols-outlined absolute right-3 text-slate-500 text-[16px] pointer-events-none" aria-hidden="true">
+                      lock
+                    </span>
                   </div>
                 </div>
 
