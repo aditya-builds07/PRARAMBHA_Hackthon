@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
+import { supabase } from "../../services/supabase.js";
+
 
 /**
  * =========================================================================
@@ -53,17 +55,19 @@ export default function LaunchPage({ onNavigate = null }) {
     }
   };
 
-  // Launch Simulator click handler — prompts for Sign In or Registration if not authenticated
-  const handleLaunchClick = () => {
-    const activeFarmerId = typeof window !== "undefined"
-      ? (localStorage.getItem("farmer_id") || localStorage.getItem("user_id"))
-      : null;
+  // Launch Simulator — check Supabase session instead of localStorage
+  const handleLaunchClick = async () => {
+    let isAuthenticated = false;
+    try {
+      if (supabase) {
+        const { data } = await supabase.auth.getSession();
+        isAuthenticated = !!data.session;
+      }
+    } catch {}
 
-    if (activeFarmerId) {
-      // Already authenticated, enter web application
+    if (isAuthenticated) {
       navigateTo("dashboard");
     } else {
-      // Not yet authenticated, ask for Sign In or Registration
       setShowAuthModal(true);
     }
   };

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useCurrentUser } from "../../hooks/useCurrentUser.js";
+
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
 import ExpandableCard from "../../components/common/ExpandableCard";
@@ -61,9 +63,9 @@ export default function HistoryPage({ onNavigate = null }) {
     ? displayRecords
     : displayRecords.filter((r) => r.season === selectedSeason);
 
-  const currentUserName = typeof window !== "undefined"
-    ? (localStorage.getItem("user_name") || "Your")
-    : "Your";
+  // Read from Supabase session — no localStorage
+  const { fullName: currentUserName } = useCurrentUser();
+
 
   return (
     <div className="w-full space-y-6 animate-fadeIn pb-12">

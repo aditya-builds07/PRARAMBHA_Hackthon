@@ -3,7 +3,7 @@ import { useLanguage } from "../../i18n/LanguageContext";
 import { getScenarioHistory } from "../../services/history.service";
 import { computeDashboardKpis } from "../../components/dashboard/kpiCalculator";
 import { formatCurrency } from "../../services/comparison.service";
-
+import { useCurrentUser } from "../../hooks/useCurrentUser.js";
 
 /**
  * DashboardPage — PRARAMBHA 2.0 Visual Restoration
@@ -37,20 +37,9 @@ export default function DashboardPage({ onNavigate = null }) {
 
   const kpis = computeDashboardKpis(scenarios);
 
-  // Dynamic logged in / registered farmer details
-  const currentUserName = typeof window !== "undefined"
-    ? (localStorage.getItem("user_name") || localStorage.getItem("farmer_id") || "Farmer")
-    : "Farmer";
-  const currentFarmerId = typeof window !== "undefined"
-    ? (localStorage.getItem("farmer_id") || localStorage.getItem("user_id") || "Farmer")
-    : "Farmer";
-  const currentDistrict = typeof window !== "undefined"
-    ? (localStorage.getItem("farmer_district") || "Warnanagar")
-    : "Warnanagar";
-  const currentLand = typeof window !== "undefined"
-    ? (localStorage.getItem("farmer_land_acres") || "5.0")
-    : "5.0";
-  const firstName = currentUserName.split(" ")[0] || currentUserName;
+  // Read user identity from Supabase session — no localStorage
+  const { fullName: currentUserName, farmerId: currentFarmerId, district: currentDistrict, landAcres: currentLand, firstName } = useCurrentUser();
+  const displayDistrict = currentDistrict || "Warnanagar";
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -73,7 +62,7 @@ export default function DashboardPage({ onNavigate = null }) {
           </h1>
           <p className="text-xs text-emerald-100/80 mt-1 flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px] text-[#D9902F]">wb_sunny</span>
-            <span>{currentDistrict} Region • Weather: 28°C • Moderate Humidity • Optimal Sowing Window</span>
+            <span>{displayDistrict} Region • Weather: 28°C • Moderate Humidity • Optimal Sowing Window</span>
           </p>
         </div>
 

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useCurrentUser } from "../../hooks/useCurrentUser.js";
+
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "../../i18n/LanguageContext";
 import { getResourceReadiness } from "../../services/resources.service";
@@ -29,9 +31,9 @@ export default function ResourceCheckPage({
       });
   }, [farmId, scenarioId]);
 
-  const currentUserName = typeof window !== "undefined"
-    ? (localStorage.getItem("user_name") || "Your")
-    : "Your";
+  // Read from Supabase session — no localStorage
+  const { fullName: currentUserName } = useCurrentUser();
+
 
   return (
     <div className="w-full space-y-6 animate-fadeIn pb-12">
