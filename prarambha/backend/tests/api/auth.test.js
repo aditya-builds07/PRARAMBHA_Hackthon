@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import request from "supertest";
 import { createApp } from "../../src/app.js";
-import { verifyOtp } from "../../src/services/otp.service.js";
 
 describe("Authentication & OTP Verification Endpoints", () => {
   const app = createApp();
@@ -15,7 +14,7 @@ describe("Authentication & OTP Verification Endpoints", () => {
     expect(res.body.success).toBe(false);
   });
 
-  it("POST /api/auth/send-otp successfully generates OTP code for valid email", async () => {
+  it("POST /api/auth/send-otp dispatches OTP without exposing the code in the response", async () => {
     const testEmail = "farmer.verify.test@example.com";
     const res = await request(app)
       .post("/api/auth/send-otp")
@@ -23,17 +22,13 @@ describe("Authentication & OTP Verification Endpoints", () => {
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
-    expect(res.body.devOtp).toBeDefined();
-    expect(res.body.devOtp.length).toBe(6);
-
-    // Verify OTP service directly
-    const directVerify = verifyOtp({ email: testEmail, otp: res.body.devOtp });
-    expect(directVerify.valid).toBe(true);
+    // Security check: OTP code must NEVER be exposed in response body
+    expect(res.body.devOtp).toBeUndefined();
+    expect(res.body.otp).toBeUndefined();
   });
 
   it("POST /api/auth/verify-and-register rejects invalid OTP", async () => {
     const testEmail = "farmer.verify.test2@example.com";
-    // First generate OTP
     await request(app)
       .post("/api/auth/send-otp")
       .send({ email: testEmail, fullName: "Test Farmer" });

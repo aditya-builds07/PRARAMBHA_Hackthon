@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { requireSupabase } from "../../services/supabase.js";
-import { api } from "../../services/api.js";
 
 const INDIAN_STATES = [
   "Maharashtra", "Karnataka", "Gujarat", "Madhya Pradesh", "Punjab",
@@ -24,13 +23,12 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [showPassword, setShowPassword]   = useState(false);
 
   // ── OTP step ────────────────────────────────────────────────
-  const [step, setStep]                     = useState("form"); // 'form' | 'otp-verify'
-  const [otpCode, setOtpCode]               = useState("");
-  const [pendingEmail, setPendingEmail]     = useState("");
+  const [step, setStep]                       = useState("form"); // 'form' | 'otp-verify'
+  const [otpCode, setOtpCode]                 = useState("");
+  const [pendingEmail, setPendingEmail]       = useState("");
   const [pendingPassword, setPendingPassword] = useState("");
-  const [pendingProfile, setPendingProfile] = useState(null);
-  const [devOtpCode, setDevOtpCode]         = useState(null);
-  const [otpCountdown, setOtpCountdown]     = useState(0);
+  const [pendingProfile, setPendingProfile]   = useState(null);
+  const [otpCountdown, setOtpCountdown]       = useState(0);
 
   // ── UI state ────────────────────────────────────────────────
   const [loading, setLoading]       = useState(false);
@@ -64,7 +62,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     };
   };
 
-  // ── Step 1: Submit Form -> Send Verification OTP ────────────
+  // ── Step 1: Submit Form -> Send Verification OTP via Supabase ────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -96,34 +94,41 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     const profile = buildProfile(cleanName);
 
     try {
-      // Dispatch 6-digit OTP code to the user's email
-      const { data, error: sendErr } = await api.post("/api/auth/send-otp", {
+      // Send 6-digit OTP code directly to user's Gmail inbox via Supabase Auth
+      const { error: otpError } = await requireSupabase().auth.signInWithOtp({
         email: cleanEmail,
-        fullName: cleanName,
+        options: {
+          shouldCreateUser: true,
+          data: profile,
+        },
       });
 
-      if (sendErr) {
-        throw new Error(sendErr);
+      if (otpError) {
+        if (otpError.message?.toLowerCase().includes("rate limit")) {
+          throw new Error("Email send rate limit reached. Please wait 60 seconds before trying again.");
+        }
+        throw otpError;
       }
 
       setPendingEmail(cleanEmail);
       setPendingPassword(pw);
       setPendingProfile(profile);
-      setDevOtpCode(data?.devOtp || null);
-      setOtpCountdown(30);
+      setOtpCountdown(60);
       setOtpCode("");
       setStep("otp-verify");
       setLoading(false);
+      setSuccessMsg(`We sent a 6-digit verification code to ${cleanEmail}. Please check your inbox and spam folder.`);
     } catch (err) {
       setError(err.message || "Failed to send verification code. Please check your email.");
       setLoading(false);
     }
   };
 
-  // ── Step 2: Verify OTP & Activate Account ────────────────────
+  // ── Step 2: Verify OTP with Supabase & Set User Password ────────────
   const handleOtpVerify = async (e) => {
     e.preventDefault();
     setError(null);
+    setSuccessMsg(null);
     const code = otpCode.trim();
 
     if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
@@ -133,33 +138,35 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
 
     setLoading(true);
     try {
-      // 1. Verify OTP and complete account registration on backend
-      const { data: regData, error: regErr } = await api.post("/api/auth/verify-and-register", {
+      // 1. Verify 6-digit OTP token directly with Supabase Auth
+      const { data: verifyData, error: verifyError } = await requireSupabase().auth.verifyOtp({
         email: pendingEmail,
-        otp: code,
-        password: pendingPassword,
-        profile: pendingProfile,
+        token: code,
+        type: "email",
       });
 
-      if (regErr) {
-        throw new Error(regErr);
+      if (verifyError) throw verifyError;
+      if (!verifyData?.session) throw new Error("Verification successful, but session could not be established. Please try again.");
+
+      // 2. Set user's chosen password & profile metadata on their authenticated account
+      const { error: updateError } = await requireSupabase().auth.updateUser({
+        password: pendingPassword,
+        data: {
+          ...(pendingProfile || {}),
+          email_verified: true,
+        },
+      });
+
+      if (updateError) {
+        console.warn("[Signup] updateUser password notice:", updateError.message);
       }
-
-      // 2. Sign in with validated credentials to get authentic Supabase session
-      const { data: authData, error: authErr } = await requireSupabase().auth.signInWithPassword({
-        email: pendingEmail,
-        password: pendingPassword,
-      });
-
-      if (authErr) throw authErr;
-      if (!authData.session) throw new Error("Verification successful, but session could not be established.");
 
       if (onLoginSuccess) {
         onLoginSuccess({
-          id:    authData.user.id,
+          id:    verifyData.user.id,
           name:  pendingProfile?.full_name || fullName.trim(),
-          email: authData.user.email,
-          token: authData.session.access_token,
+          email: verifyData.user.email,
+          token: verifyData.session.access_token,
         });
       }
 
@@ -169,7 +176,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
         if (onNavigate) onNavigate("dashboard");
       }, 1200);
     } catch (err) {
-      setError(err.message || "Invalid or expired verification code. Please try again.");
+      setError(err.message || "Invalid or expired verification code. Please check your email and try again.");
       setLoading(false);
     }
   };
@@ -178,18 +185,20 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const handleResendOtp = async () => {
     if (otpCountdown > 0) return;
     setError(null);
-    setOtpCountdown(30);
+    setOtpCountdown(60);
     try {
-      const { data, error: resendErr } = await api.post("/api/auth/send-otp", {
+      const { error: resendErr } = await requireSupabase().auth.signInWithOtp({
         email: pendingEmail,
-        fullName: pendingProfile?.full_name || fullName.trim(),
+        options: {
+          shouldCreateUser: true,
+          data: pendingProfile,
+        },
       });
-      if (resendErr) throw new Error(resendErr);
-      if (data?.devOtp) setDevOtpCode(data.devOtp);
-      setSuccessMsg(`New verification code sent to ${pendingEmail}`);
-      setTimeout(() => setSuccessMsg(null), 4000);
+      if (resendErr) throw resendErr;
+      setSuccessMsg(`New verification code sent to ${pendingEmail}. Check your inbox and spam folder.`);
+      setTimeout(() => setSuccessMsg(null), 5000);
     } catch (err) {
-      setError(err.message || "Failed to resend verification code.");
+      setError(err.message || "Failed to resend verification code. Please wait a moment.");
     }
   };
 
@@ -251,22 +260,6 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                 </p>
               </div>
 
-              {devOtpCode && (
-                <div className="p-3 bg-emerald-950/60 border border-emerald-500/40 rounded-xl flex items-center justify-between text-xs text-emerald-200">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-emerald-400 text-sm">key</span>
-                    <span>Verification Code: <strong className="font-mono text-emerald-300 tracking-wider text-sm">{devOtpCode}</strong></span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setOtpCode(devOtpCode)}
-                    className="px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 rounded-lg text-[11px] font-bold transition-all cursor-pointer"
-                  >
-                    Auto Fill
-                  </button>
-                </div>
-              )}
-
               {error && (
                 <div className="p-3.5 bg-rose-950/70 border border-rose-700/60 text-rose-200 text-xs font-semibold rounded-2xl flex items-center gap-2.5">
                   <span className="material-symbols-outlined text-base shrink-0 text-rose-400">error</span>
@@ -300,7 +293,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                     className="w-full text-center text-3xl font-black tracking-[0.6em] py-4 px-4 rounded-2xl border-2 border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-white placeholder-slate-600 outline-none transition-all"
                   />
                   <p className="text-[10px] text-slate-400 text-center">
-                    Check your inbox (and spam folder). Code expires in 10 minutes.
+                    Check your inbox and spam folder. Code expires in 10 minutes.
                   </p>
                 </div>
 
@@ -308,7 +301,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                 <button type="submit" id="submit-otp-verify-btn" disabled={loading || otpCode.length !== 6}
                   className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
                   {loading ? (
-                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying &amp; Registering...</span></>
+                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying Code...</span></>
                   ) : (
                     <><span className="material-symbols-outlined text-base">verified_user</span><span>Verify Code &amp; Start Simulator</span></>
                   )}

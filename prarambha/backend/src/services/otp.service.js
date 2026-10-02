@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { getAdminClient } from "../adapters/db/supabase.admin.client.js";
+import { createClient } from "@supabase/supabase-js";
 
 /**
  * In-memory OTP storage for registration verification
@@ -30,6 +30,12 @@ function createTransporter() {
   });
 }
 
+function getSupabaseClient() {
+  const url = process.env.SUPABASE_URL || "https://ltzpntlwnqkuzoybtwdg.supabase.co";
+  const key = process.env.SUPABASE_ANON_KEY || "sb_publishable_eK0B2yFF3boJGIUTf_Epxw_3o1pnOA_";
+  return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+}
+
 /**
  * Sends a 6-digit registration verification OTP to the user's email
  * @param {{ email: string, fullName?: string }} param0
@@ -50,10 +56,7 @@ export async function sendRegistrationOtp({ email, fullName = "Farmer" }) {
     fullName: fullName.trim(),
   });
 
-  const isDev = process.env.NODE_ENV !== "production";
   const transporter = createTransporter();
-
-  console.log(`[KrishiMitra Auth] Registration verification OTP for ${cleanEmail}: ${otp}`);
 
   if (transporter) {
     try {
@@ -90,23 +93,29 @@ export async function sendRegistrationOtp({ email, fullName = "Farmer" }) {
       return {
         success: true,
         message: `Verification code sent to ${cleanEmail}`,
-        devOtp: isDev ? otp : undefined,
       };
     } catch (mailError) {
-      console.warn(`[KrishiMitra Auth] Failed to send email via SMTP (${mailError.message}). Falling back to dev OTP delivery.`);
-      return {
-        success: true,
-        message: `Verification code generated. (SMTP rate-limit or delivery notice: ${mailError.message})`,
-        devOtp: otp,
-      };
+      console.warn(`[KrishiMitra Auth] Failed to send email via SMTP (${mailError.message}).`);
     }
   }
 
-  // If no SMTP configured, return devOtp so user is not blocked
+  // Also send via Supabase auth OTP if SMTP is not active
+  try {
+    const supabase = getSupabaseClient();
+    await supabase.auth.signInWithOtp({
+      email: cleanEmail,
+      options: {
+        shouldCreateUser: true,
+        data: { full_name: fullName.trim() },
+      },
+    });
+  } catch (supaErr) {
+    console.warn(`[KrishiMitra Auth] Supabase OTP notice: ${supaErr.message}`);
+  }
+
   return {
     success: true,
-    message: `Verification code generated for ${cleanEmail}. (Check console or code below)`,
-    devOtp: otp,
+    message: `Verification code dispatched to ${cleanEmail}`,
   };
 }
 
@@ -147,28 +156,14 @@ export function verifyOtp({ email, otp }) {
 }
 
 /**
- * Registers or updates a verified farmer profile in Supabase Auth via admin client.
- * NOTE on RLS bypass: This operation provisions a new auth.users account before the user has a JWT session.
- * Only the service-role client possesses auth.admin permissions to create pre-confirmed users.
+ * Registers a verified farmer profile in Supabase Auth using the standard registered client.
  *
  * @param {{ email: string, password: string, profile: object }} param0
  */
 export async function registerVerifiedFarmer({ email, password, profile }) {
   const cleanEmail = email.trim().toLowerCase();
   const cleanPassword = password.trim();
-  const admin = getAdminClient();
-
-  let existingUser = null;
-  try {
-    const { data: listData, error: listError } = await admin.auth.admin.listUsers();
-    if (!listError && listData?.users) {
-      existingUser = listData.users.find(
-        (u) => u.email?.toLowerCase() === cleanEmail
-      );
-    }
-  } catch (checkErr) {
-    console.warn("[Auth Service] User lookup check notice:", checkErr.message);
-  }
+  const supabase = getSupabaseClient();
 
   const metadata = {
     ...(profile || {}),
@@ -177,26 +172,25 @@ export async function registerVerifiedFarmer({ email, password, profile }) {
     role: "farmer",
   };
 
-  if (existingUser) {
-    const { error: updateError } = await admin.auth.admin.updateUserById(
-      existingUser.id,
-      {
-        password: cleanPassword,
-        email_confirm: true,
-        user_metadata: metadata,
-      }
-    );
-    if (updateError) throw updateError;
-    return { id: existingUser.id, email: cleanEmail, updated: true };
-  } else {
-    const { data: newUser, error: createError } = await admin.auth.admin.createUser({
+  // Attempt signup
+  const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+    email: cleanEmail,
+    password: cleanPassword,
+    options: {
+      data: metadata,
+    },
+  });
+
+  // If user is already registered, authenticate them
+  if (signUpError && signUpError.message?.toLowerCase().includes("already registered")) {
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email: cleanEmail,
       password: cleanPassword,
-      email_confirm: true,
-      user_metadata: metadata,
     });
-    if (createError) throw createError;
-    return { id: newUser?.user?.id, email: cleanEmail, created: true };
+    if (signInError) throw signInError;
+    return { id: signInData.user?.id, email: cleanEmail, updated: true };
   }
-}
 
+  if (signUpError) throw signUpError;
+  return { id: signUpData?.user?.id, email: cleanEmail, created: true };
+}
