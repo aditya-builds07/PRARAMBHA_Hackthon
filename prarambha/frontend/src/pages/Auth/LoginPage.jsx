@@ -2,18 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { requireSupabase } from "../../services/supabase.js";
 
 export default function LoginPage({ onNavigate, onLoginSuccess }) {
-  const [loginMethod, setLoginMethod]     = useState("password"); // 'password' | 'otp'
+  const [loginMethod, setLoginMethod]     = useState("password"); // 'password' | 'link'
 
   // Password login
   const [userId, setUserId]               = useState("");
   const [password, setPassword]           = useState("");
   const [showPassword, setShowPassword]   = useState(false);
 
-  // OTP login
-  const [otpEmail, setOtpEmail]           = useState("");
-  const [otpStep, setOtpStep]             = useState("email"); // 'email' | 'verify'
-  const [otpCode, setOtpCode]             = useState("");
-  const [otpCountdown, setOtpCountdown]   = useState(0);
+  // Email Magic Link login
+  const [linkEmail, setLinkEmail]         = useState("");
+  const [linkSent, setLinkSent]           = useState(false);
+  const [linkCountdown, setLinkCountdown] = useState(0);
 
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState(null);
@@ -21,12 +20,12 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
 
   const verifiedRef = useRef(false);
 
-  // OTP resend countdown
+  // Link resend countdown
   useEffect(() => {
-    if (otpCountdown <= 0) return;
-    const t = setTimeout(() => setOtpCountdown((c) => c - 1), 1000);
+    if (linkCountdown <= 0) return;
+    const t = setTimeout(() => setLinkCountdown((c) => c - 1), 1000);
     return () => clearTimeout(t);
-  }, [otpCountdown]);
+  }, [linkCountdown]);
 
   // Auto-detect login link click
   useEffect(() => {
@@ -54,7 +53,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
 
     client.auth.getSession().then(({ data }) => {
       const isOtpReturn = typeof window !== "undefined" && window.location.search.includes("otp=true");
-      if (data?.session && (isOtpReturn || (loginMethod === "otp" && otpStep === "verify"))) {
+      if (data?.session && (isOtpReturn || (loginMethod === "link" && linkSent))) {
         handleSession(data.session);
       }
     });
@@ -69,7 +68,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
       mounted = false;
       listener?.subscription?.unsubscribe?.();
     };
-  }, [loginMethod, otpStep]);
+  }, [loginMethod, linkSent]);
 
   // ── Password Login ──────────────────────────────────────────
   const handlePasswordSubmit = async (e) => {
@@ -118,11 +117,11 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
     }
   };
 
-  // ── OTP: Send Code ──────────────────────────────────────────
-  const handleOtpSend = async (e) => {
+  // ── Email Magic Link: Send ──────────────────────────────────
+  const handleMagicLinkSend = async (e) => {
     e.preventDefault();
     setError(null);
-    const cleanEmail = otpEmail.trim();
+    const cleanEmail = linkEmail.trim();
     if (!cleanEmail || !/\S+@\S+\.\S+/.test(cleanEmail)) {
       setError("Please enter a valid email address.");
       return;
@@ -141,71 +140,66 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
         },
       });
       if (otpError) throw otpError;
-      setOtpStep("verify");
-      setOtpCountdown(60);
-      setOtpCode("");
+      setLinkSent(true);
+      setLinkCountdown(60);
+      setSuccessMsg(`Sign-in link sent to ${cleanEmail}. Click the link in your email to sign in!`);
     } catch (err) {
-      setError(err.message || "Failed to send OTP. Please check your email.");
+      setError(err.message || "Failed to send sign-in link. Please check your email.");
     } finally {
       setLoading(false);
     }
   };
 
-  // ── OTP: Verify Code ────────────────────────────────────────
-  const handleOtpVerify = async (e) => {
-    e.preventDefault();
-    setError(null);
-    const code = otpCode.trim();
-    if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
-      setError("Please enter the 6-digit numeric OTP from your email.");
-      return;
-    }
+  // ── Email Magic Link: Check Status ──────────────────────────
+  const handleCheckLoginStatus = async () => {
     setLoading(true);
+    setError(null);
     try {
-      const { data, error: verifyError } = await requireSupabase().auth.verifyOtp({
-        email: otpEmail.trim(),
-        token: code,
-        type: "email",
-      });
-      if (verifyError) throw verifyError;
-      if (!data.session) throw new Error("OTP verified but no session returned. Please try again.");
-
-      if (onLoginSuccess) {
-        onLoginSuccess({
-          id:    data.user.id,
-          name:  data.user.user_metadata?.full_name || data.user.email,
-          email: data.user.email,
-          token: data.session.access_token,
-        });
+      const { data, error: sessionErr } = await requireSupabase().auth.getSession();
+      if (sessionErr) throw sessionErr;
+      if (data?.session?.user) {
+        if (onLoginSuccess) {
+          onLoginSuccess({
+            id:    data.session.user.id,
+            name:  data.session.user.user_metadata?.full_name || data.session.user.email,
+            email: data.session.user.email,
+            token: data.session.access_token,
+          });
+        }
+        setSuccessMsg("Welcome! Opening simulator...");
+        setTimeout(() => { setLoading(false); if (onNavigate) onNavigate("dashboard"); }, 500);
+      } else {
+        setError("Sign-in link not clicked yet. Please click the link in your email.");
       }
-      setSuccessMsg(`Welcome, ${data.user.user_metadata?.full_name || data.user.email}! Opening simulator...`);
-      setTimeout(() => { setLoading(false); if (onNavigate) onNavigate("dashboard"); }, 600);
     } catch (err) {
-      setError(err.message || "Invalid or expired OTP. Please try again.");
+      setError(err.message || "Could not check sign-in status. Please try clicking the link in your email.");
+    } finally {
       setLoading(false);
     }
   };
 
-  // ── OTP: Resend ─────────────────────────────────────────────
-  const handleOtpResend = async () => {
-    if (otpCountdown > 0) return;
+  // ── Email Magic Link: Resend ────────────────────────────────
+  const handleMagicLinkResend = async () => {
+    if (linkCountdown > 0) return;
     setError(null);
-    setOtpCountdown(60);
+    setLinkCountdown(60);
     try {
       const emailRedirectTo = typeof window !== "undefined"
         ? `${window.location.origin}/login?otp=true`
         : undefined;
 
       const { error: resendError } = await requireSupabase().auth.signInWithOtp({
-        email: otpEmail.trim(),
+        email: linkEmail.trim(),
         options: {
           shouldCreateUser: false,
           emailRedirectTo,
         },
       });
       if (resendError) throw resendError;
+      setSuccessMsg(`New sign-in link sent to ${linkEmail.trim()}. Check your inbox and spam.`);
+      setTimeout(() => setSuccessMsg(null), 5000);
     } catch (err) {
-      setError(err.message || "Failed to resend OTP.");
+      setError(err.message || "Failed to resend sign-in link.");
     }
   };
 
@@ -262,14 +256,14 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
               <span className="material-symbols-outlined text-sm">lock</span>
               <span>Password</span>
             </button>
-            <button type="button" onClick={() => { setLoginMethod("otp"); setOtpStep("email"); setError(null); setSuccessMsg(null); }}
+            <button type="button" onClick={() => { setLoginMethod("link"); setError(null); setSuccessMsg(null); }}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                loginMethod === "otp"
+                loginMethod === "link"
                   ? "bg-emerald-500 text-slate-950 shadow-md"
                   : "text-slate-400 hover:text-emerald-300"
               }`}>
-              <span className="material-symbols-outlined text-sm">phonelink_lock</span>
-              <span>OTP Code</span>
+              <span className="material-symbols-outlined text-sm">mark_email_read</span>
+              <span>Email Sign-In Link</span>
             </button>
           </div>
 
@@ -331,76 +325,88 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
             </form>
           )}
 
-          {/* ══ OTP LOGIN ══ */}
-          {loginMethod === "otp" && otpStep === "email" && (
-            <form onSubmit={handleOtpSend} className="space-y-4">
+          {/* ══ EMAIL SIGN-IN LINK LOGIN ══ */}
+          {loginMethod === "link" && !linkSent && (
+            <form onSubmit={handleMagicLinkSend} className="space-y-4">
               <div className="space-y-1.5">
-                <label htmlFor="otp-login-email" className="block text-xs font-bold text-emerald-300">Registered Email Address</label>
+                <label htmlFor="link-login-email" className="block text-xs font-bold text-emerald-300">Registered Email Address</label>
                 <div className="relative flex items-center">
                   <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">mail</span>
-                  <input id="otp-login-email" type="email" required value={otpEmail} onChange={(e) => setOtpEmail(e.target.value)}
+                  <input id="link-login-email" type="email" required value={linkEmail} onChange={(e) => setLinkEmail(e.target.value)}
                     placeholder="farmer@example.com"
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all" />
                 </div>
-                <p className="text-[10px] text-slate-400">A 6-digit OTP will be sent to this email.</p>
+                <p className="text-[10px] text-slate-400">We will send an instant sign-in link to this email address.</p>
               </div>
 
-              <button type="submit" id="submit-otp-send-btn" disabled={loading}
+              <button type="submit" id="submit-magic-link-btn" disabled={loading}
                 className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
                 {loading ? (
-                  <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Sending OTP...</span></>
+                  <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Sending Sign-In Link...</span></>
                 ) : (
-                  <><span>Send OTP Code</span><span className="material-symbols-outlined text-base">send</span></>
+                  <><span>Send Sign-In Link</span><span className="material-symbols-outlined text-base">send</span></>
                 )}
               </button>
             </form>
           )}
 
-          {loginMethod === "otp" && otpStep === "verify" && (
+          {loginMethod === "link" && linkSent && (
             <div className="space-y-4">
-              <div className="p-3.5 bg-emerald-950/50 border border-emerald-500/30 rounded-xl space-y-2 text-center">
+              <div className="p-4 bg-gradient-to-b from-[#003824] to-[#002719] border border-emerald-500/40 rounded-2xl space-y-3 text-center">
+                <div className="w-12 h-12 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                  <span className="material-symbols-outlined text-[28px] animate-pulse">mark_email_read</span>
+                </div>
+                <h3 className="text-base font-bold text-white">Check Your Email</h3>
                 <p className="text-xs text-slate-300">
-                  Verification sent to <strong className="text-emerald-300">{otpEmail}</strong>
+                  We sent a sign-in link to <strong className="text-emerald-300">{linkEmail}</strong>
                 </p>
-                <p className="text-[11px] text-emerald-300/90 font-medium">
-                  👉 You can either click the <strong>&ldquo;Sign In&rdquo; link</strong> in your email OR enter the 6-digit code below.
+                <p className="text-[11px] text-slate-400">
+                  Click the <strong>&ldquo;Sign In&rdquo;</strong> button in that email. You will be logged in automatically!
                 </p>
+
+                <div className="pt-2 flex items-center justify-center gap-2 text-xs text-emerald-300 font-medium">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                  </span>
+                  <span>Waiting for you to click the link...</span>
+                </div>
               </div>
 
-              <form onSubmit={handleOtpVerify} className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="otp-login-code" className="block text-xs font-bold text-emerald-300 text-center">
-                    6-Digit OTP Code (if shown in email)
-                  </label>
-                  <input id="otp-login-code" type="text" inputMode="numeric" pattern="\d{6}" maxLength={6}
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                    placeholder="000000"
-                    className="w-full text-center text-3xl font-black tracking-[0.6em] py-3.5 px-4 rounded-2xl border-2 border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-white placeholder-slate-600 outline-none transition-all" />
-                  <p className="text-[10px] text-slate-400 text-center">Check inbox and spam folder. Code / link expires in 10 minutes.</p>
-                </div>
+              {/* Action Buttons */}
+              <button
+                type="button"
+                onClick={handleCheckLoginStatus}
+                disabled={loading}
+                className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined text-base">sync</span>
+                <span>Already Clicked? Check Status</span>
+              </button>
 
-                <button type="submit" id="submit-otp-verify-btn" disabled={loading || otpCode.length !== 6}
-                  className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                  {loading ? (
-                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying...</span></>
-                  ) : (
-                    <><span className="material-symbols-outlined text-base">verified_user</span><span>Verify Code &amp; Sign In</span></>
-                  )}
+              {linkEmail.toLowerCase().includes("@gmail.com") && (
+                <a
+                  href="https://mail.google.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 bg-white/5 hover:bg-white/10 border border-[#164A34] hover:border-emerald-500/40 text-emerald-200 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-base text-red-400">mail</span>
+                  <span>Open Gmail Inbox ↗</span>
+                </a>
+              )}
+
+              <div className="flex items-center justify-between pt-1">
+                <button type="button" onClick={() => { setLinkSent(false); setError(null); }}
+                  className="text-xs font-semibold text-slate-400 hover:text-emerald-300 flex items-center gap-1 cursor-pointer">
+                  <span className="material-symbols-outlined text-sm">arrow_back</span><span>Change Email</span>
                 </button>
-
-                <div className="flex items-center justify-between pt-1">
-                  <button type="button" onClick={() => { setOtpStep("email"); setError(null); }}
-                    className="text-xs font-semibold text-slate-400 hover:text-emerald-300 flex items-center gap-1 cursor-pointer">
-                    <span className="material-symbols-outlined text-sm">arrow_back</span><span>Change Email</span>
-                  </button>
-                  <button type="button" onClick={handleOtpResend} disabled={otpCountdown > 0}
-                    className="text-xs font-semibold text-emerald-400 hover:text-emerald-200 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer">
-                    <span className="material-symbols-outlined text-sm">send</span>
-                    <span>{otpCountdown > 0 ? `Resend in ${otpCountdown}s` : "Resend Link / Code"}</span>
-                  </button>
-                </div>
-              </form>
+                <button type="button" onClick={handleMagicLinkResend} disabled={linkCountdown > 0}
+                  className="text-xs font-semibold text-emerald-400 hover:text-emerald-200 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer">
+                  <span className="material-symbols-outlined text-sm">send</span>
+                  <span>{linkCountdown > 0 ? `Resend in ${linkCountdown}s` : "Resend Sign-In Link"}</span>
+                </button>
+              </div>
             </div>
           )}
 
