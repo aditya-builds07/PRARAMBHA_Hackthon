@@ -53,22 +53,15 @@ function AppContent() {
       return undefined;
     }
 
-    // Always verify with Supabase — localStorage is only a rendering hint
+    // Supabase is the single source of truth — no custom localStorage
     supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
       if (data.session) {
         setSession(data.session);
         setAuthToken(data.session?.access_token ?? null);
-        try {
-          localStorage.setItem("user_session", JSON.stringify(data.session));
-        } catch {}
       } else {
-        // No active Supabase session — clear any stale localStorage
         setSession(null);
         setAuthToken(null);
-        try {
-          localStorage.removeItem("user_session");
-        } catch {}
       }
       setAuthReady(true);
     });
@@ -84,20 +77,10 @@ function AppContent() {
         if (nextSession) {
           setSession(nextSession);
           setAuthToken(nextSession?.access_token ?? null);
-          try {
-            localStorage.setItem("user_session", JSON.stringify(nextSession));
-          } catch {}
         }
       } else if (event === "SIGNED_OUT") {
         setSession(null);
         setAuthToken(null);
-        try {
-          localStorage.removeItem("user_session");
-          localStorage.removeItem("user_name");
-          localStorage.removeItem("user_id");
-          localStorage.removeItem("user_email");
-          localStorage.removeItem("supabase_token");
-        } catch {}
       }
     });
 
@@ -216,7 +199,7 @@ function AppContent() {
     }
   };
 
-  // Centralized login success handler
+  // Centralized login success handler — no custom localStorage, Supabase owns session
   const handleLoginSuccess = (userData) => {
     const sessionObj = {
       access_token: userData.token,
@@ -231,13 +214,6 @@ function AppContent() {
     };
     setSession(sessionObj);
     setAuthToken(userData.token);
-    try {
-      localStorage.setItem("user_session", JSON.stringify(sessionObj));
-      localStorage.setItem("user_name", userData.name || "Farmer");
-      localStorage.setItem("user_id", userData.id);
-      if (userData.email) localStorage.setItem("user_email", userData.email);
-      if (userData.token) localStorage.setItem("supabase_token", userData.token);
-    } catch {}
     navigate("/dashboard");
   };
 
@@ -248,15 +224,6 @@ function AppContent() {
     }
     setSession(null);
     setAuthToken(null);
-    try {
-      localStorage.removeItem("user_session");
-      localStorage.removeItem("farmer_id");
-      localStorage.removeItem("user_id");
-      localStorage.removeItem("user_name");
-      localStorage.removeItem("user_email");
-      localStorage.removeItem("supabase_token");
-      sessionStorage.removeItem("sb-access-token");
-    } catch {}
     navigate("/");
   };
 
