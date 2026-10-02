@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { requireSupabase } from "../../services/supabase.js";
 
 export default function LoginPage({ onNavigate, onLoginSuccess }) {
@@ -19,12 +19,57 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
   const [error, setError]       = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
+  const verifiedRef = useRef(false);
+
   // OTP resend countdown
   useEffect(() => {
     if (otpCountdown <= 0) return;
     const t = setTimeout(() => setOtpCountdown((c) => c - 1), 1000);
     return () => clearTimeout(t);
   }, [otpCountdown]);
+
+  // Auto-detect login link click
+  useEffect(() => {
+    let mounted = true;
+    const client = requireSupabase();
+    if (!client) return;
+
+    const handleSession = (session) => {
+      if (!mounted || !session?.user || verifiedRef.current) return;
+      verifiedRef.current = true;
+      if (onLoginSuccess) {
+        onLoginSuccess({
+          id:    session.user.id,
+          name:  session.user.user_metadata?.full_name || session.user.email,
+          email: session.user.email,
+          token: session.access_token,
+        });
+      }
+      setSuccessMsg(`Welcome, ${session.user.user_metadata?.full_name || session.user.email}! Opening simulator...`);
+      setTimeout(() => {
+        setLoading(false);
+        if (onNavigate) onNavigate("dashboard");
+      }, 600);
+    };
+
+    client.auth.getSession().then(({ data }) => {
+      const isOtpReturn = typeof window !== "undefined" && window.location.search.includes("otp=true");
+      if (data?.session && (isOtpReturn || (loginMethod === "otp" && otpStep === "verify"))) {
+        handleSession(data.session);
+      }
+    });
+
+    const { data: listener } = client.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session?.user) {
+        handleSession(session);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      listener?.subscription?.unsubscribe?.();
+    };
+  }, [loginMethod, otpStep]);
 
   // ── Password Login ──────────────────────────────────────────
   const handlePasswordSubmit = async (e) => {
@@ -84,9 +129,16 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
     }
     setLoading(true);
     try {
+      const emailRedirectTo = typeof window !== "undefined"
+        ? `${window.location.origin}/login?otp=true`
+        : undefined;
+
       const { error: otpError } = await requireSupabase().auth.signInWithOtp({
         email: cleanEmail,
-        options: { shouldCreateUser: false },
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo,
+        },
       });
       if (otpError) throw otpError;
       setOtpStep("verify");
@@ -140,9 +192,16 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
     setError(null);
     setOtpCountdown(60);
     try {
+      const emailRedirectTo = typeof window !== "undefined"
+        ? `${window.location.origin}/login?otp=true`
+        : undefined;
+
       const { error: resendError } = await requireSupabase().auth.signInWithOtp({
         email: otpEmail.trim(),
-        options: { shouldCreateUser: false },
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo,
+        },
       });
       if (resendError) throw resendError;
     } catch (err) {
@@ -298,41 +357,51 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
           )}
 
           {loginMethod === "otp" && otpStep === "verify" && (
-            <form onSubmit={handleOtpVerify} className="space-y-4">
-              <div className="space-y-2">
-                <p className="text-xs text-slate-300 text-center">
-                  OTP sent to <strong className="text-emerald-300">{otpEmail}</strong>
+            <div className="space-y-4">
+              <div className="p-3.5 bg-emerald-950/50 border border-emerald-500/30 rounded-xl space-y-2 text-center">
+                <p className="text-xs text-slate-300">
+                  Verification sent to <strong className="text-emerald-300">{otpEmail}</strong>
                 </p>
-                <label htmlFor="otp-login-code" className="block text-xs font-bold text-emerald-300 text-center">6-Digit OTP Code</label>
-                <input id="otp-login-code" type="text" inputMode="numeric" pattern="\d{6}" maxLength={6}
-                  required autoFocus value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                  placeholder="000000"
-                  className="w-full text-center text-3xl font-black tracking-[0.6em] py-4 px-4 rounded-2xl border-2 border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-white placeholder-slate-600 outline-none transition-all" />
-                <p className="text-[10px] text-slate-400 text-center">Check inbox and spam. Code expires in 10 minutes.</p>
+                <p className="text-[11px] text-emerald-300/90 font-medium">
+                  👉 You can either click the <strong>&ldquo;Sign In&rdquo; link</strong> in your email OR enter the 6-digit code below.
+                </p>
               </div>
 
-              <button type="submit" id="submit-otp-verify-btn" disabled={loading || otpCode.length !== 6}
-                className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
-                {loading ? (
-                  <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying OTP...</span></>
-                ) : (
-                  <><span className="material-symbols-outlined text-base">verified_user</span><span>Verify &amp; Sign In</span></>
-                )}
-              </button>
+              <form onSubmit={handleOtpVerify} className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="otp-login-code" className="block text-xs font-bold text-emerald-300 text-center">
+                    6-Digit OTP Code (if shown in email)
+                  </label>
+                  <input id="otp-login-code" type="text" inputMode="numeric" pattern="\d{6}" maxLength={6}
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                    placeholder="000000"
+                    className="w-full text-center text-3xl font-black tracking-[0.6em] py-3.5 px-4 rounded-2xl border-2 border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-white placeholder-slate-600 outline-none transition-all" />
+                  <p className="text-[10px] text-slate-400 text-center">Check inbox and spam folder. Code / link expires in 10 minutes.</p>
+                </div>
 
-              <div className="flex items-center justify-between pt-1">
-                <button type="button" onClick={() => { setOtpStep("email"); setError(null); }}
-                  className="text-xs font-semibold text-slate-400 hover:text-emerald-300 flex items-center gap-1 cursor-pointer">
-                  <span className="material-symbols-outlined text-sm">arrow_back</span><span>Change Email</span>
+                <button type="submit" id="submit-otp-verify-btn" disabled={loading || otpCode.length !== 6}
+                  className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+                  {loading ? (
+                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying...</span></>
+                  ) : (
+                    <><span className="material-symbols-outlined text-base">verified_user</span><span>Verify Code &amp; Sign In</span></>
+                  )}
                 </button>
-                <button type="button" onClick={handleOtpResend} disabled={otpCountdown > 0}
-                  className="text-xs font-semibold text-emerald-400 hover:text-emerald-200 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer">
-                  <span className="material-symbols-outlined text-sm">send</span>
-                  <span>{otpCountdown > 0 ? `Resend in ${otpCountdown}s` : "Resend OTP"}</span>
-                </button>
-              </div>
-            </form>
+
+                <div className="flex items-center justify-between pt-1">
+                  <button type="button" onClick={() => { setOtpStep("email"); setError(null); }}
+                    className="text-xs font-semibold text-slate-400 hover:text-emerald-300 flex items-center gap-1 cursor-pointer">
+                    <span className="material-symbols-outlined text-sm">arrow_back</span><span>Change Email</span>
+                  </button>
+                  <button type="button" onClick={handleOtpResend} disabled={otpCountdown > 0}
+                    className="text-xs font-semibold text-emerald-400 hover:text-emerald-200 disabled:text-slate-500 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer">
+                    <span className="material-symbols-outlined text-sm">send</span>
+                    <span>{otpCountdown > 0 ? `Resend in ${otpCountdown}s` : "Resend Link / Code"}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
           )}
 
           {/* Register link */}

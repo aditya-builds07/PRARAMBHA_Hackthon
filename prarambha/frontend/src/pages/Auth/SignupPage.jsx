@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { requireSupabase } from "../../services/supabase.js";
 
 const INDIAN_STATES = [
@@ -22,7 +22,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword]   = useState(false);
 
-  // ── OTP step ────────────────────────────────────────────────
+  // ── OTP & Magic Link step ───────────────────────────────────
   const [step, setStep]                       = useState("form"); // 'form' | 'otp-verify'
   const [otpCode, setOtpCode]                 = useState("");
   const [pendingEmail, setPendingEmail]       = useState("");
@@ -34,6 +34,8 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [loading, setLoading]       = useState(false);
   const [error, setError]           = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
+
+  const verifiedRef = useRef(false);
 
   // OTP resend countdown timer
   useEffect(() => {
@@ -62,7 +64,98 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     };
   };
 
-  // ── Step 1: Submit Form -> Send Verification OTP via Supabase ────────
+  // ── Finalize session and set user password ───────────────────
+  const completeSessionVerification = async (currentSession) => {
+    if (!currentSession?.user || verifiedRef.current) return;
+    verifiedRef.current = true;
+    setLoading(true);
+
+    let savedAuth = null;
+    try {
+      const raw = sessionStorage.getItem("krishimitra_pending_signup");
+      if (raw) savedAuth = JSON.parse(raw);
+    } catch {}
+
+    const pwToSet = pendingPassword || savedAuth?.password;
+    const profileToSet = pendingProfile || savedAuth?.profile;
+
+    try {
+      if (pwToSet) {
+        const { error: updateError } = await requireSupabase().auth.updateUser({
+          password: pwToSet,
+          data: {
+            ...(profileToSet || {}),
+            email_verified: true,
+          },
+        });
+        if (updateError) {
+          console.warn("[Signup] updateUser password note:", updateError.message);
+        }
+      }
+
+      try {
+        sessionStorage.removeItem("krishimitra_pending_signup");
+      } catch {}
+
+      if (onLoginSuccess) {
+        onLoginSuccess({
+          id:    currentSession.user.id,
+          name:  profileToSet?.full_name || currentSession.user.user_metadata?.full_name || fullName.trim() || currentSession.user.email,
+          email: currentSession.user.email,
+          token: currentSession.access_token,
+        });
+      }
+
+      setSuccessMsg("🎉 Email verified via sign-in link! Account activated successfully. Opening dashboard...");
+      setTimeout(() => {
+        setLoading(false);
+        if (onNavigate) onNavigate("dashboard");
+      }, 1000);
+    } catch (err) {
+      console.error("[Signup] Error finalizing session verification:", err);
+      setError(err.message || "Failed to finalize account setup. Please try signing in.");
+      setLoading(false);
+      verifiedRef.current = false;
+    }
+  };
+
+  // ── Listen for Magic Link clicks & session changes ───────────
+  useEffect(() => {
+    let mounted = true;
+    const supabaseClient = requireSupabase();
+    if (!supabaseClient) return;
+
+    // Check if session already established upon landing (e.g. from confirmation link redirect)
+    supabaseClient.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      const session = data?.session;
+      const isRedirected = typeof window !== "undefined" && (
+        window.location.search.includes("verified=true") ||
+        window.location.hash.includes("access_token")
+      );
+      if (session?.user && (isRedirected || step === "otp-verify")) {
+        completeSessionVerification(session);
+      }
+    });
+
+    // Real-time listener: triggers if user clicks the link in another or same browser tab
+    const { data: listener } = supabaseClient.auth.onAuthStateChange(async (event, nextSession) => {
+      if (!mounted) return;
+      if (
+        (event === "SIGNED_IN" || event === "EMAIL_CONFIRMED" || event === "USER_UPDATED") &&
+        nextSession?.user
+      ) {
+        await completeSessionVerification(nextSession);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      listener?.subscription?.unsubscribe?.();
+    };
+  }, [pendingPassword, pendingProfile, step]);
+
+  // ── Step 1: Submit Form -> Send Verification Link / OTP via Supabase ────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -94,12 +187,28 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     const profile = buildProfile(cleanName);
 
     try {
-      // Send 6-digit OTP code directly to user's Gmail inbox via Supabase Auth
+      const emailRedirectTo = typeof window !== "undefined"
+        ? `${window.location.origin}/signup?verified=true`
+        : undefined;
+
+      // Save credentials in session storage for link click resumption
+      if (typeof window !== "undefined") {
+        try {
+          sessionStorage.setItem("krishimitra_pending_signup", JSON.stringify({
+            email: cleanEmail,
+            password: pw,
+            profile,
+          }));
+        } catch {}
+      }
+
+      // Send verification link / OTP directly to user's Gmail inbox via Supabase Auth
       const { error: otpError } = await requireSupabase().auth.signInWithOtp({
         email: cleanEmail,
         options: {
           shouldCreateUser: true,
           data: profile,
+          emailRedirectTo,
         },
       });
 
@@ -117,14 +226,14 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
       setOtpCode("");
       setStep("otp-verify");
       setLoading(false);
-      setSuccessMsg(`We sent a 6-digit verification code to ${cleanEmail}. Please check your inbox and spam folder.`);
+      setSuccessMsg(`We sent a verification email to ${cleanEmail}. Click the sign-in link in your email to verify instantly, or enter the code below.`);
     } catch (err) {
-      setError(err.message || "Failed to send verification code. Please check your email.");
+      setError(err.message || "Failed to send verification email. Please check your email.");
       setLoading(false);
     }
   };
 
-  // ── Step 2: Verify OTP with Supabase & Set User Password ────────────
+  // ── Step 2A: Manual OTP Code Verification ────────────────────
   const handleOtpVerify = async (e) => {
     e.preventDefault();
     setError(null);
@@ -148,57 +257,56 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
       if (verifyError) throw verifyError;
       if (!verifyData?.session) throw new Error("Verification successful, but session could not be established. Please try again.");
 
-      // 2. Set user's chosen password & profile metadata on their authenticated account
-      const { error: updateError } = await requireSupabase().auth.updateUser({
-        password: pendingPassword,
-        data: {
-          ...(pendingProfile || {}),
-          email_verified: true,
-        },
-      });
-
-      if (updateError) {
-        console.warn("[Signup] updateUser password notice:", updateError.message);
-      }
-
-      if (onLoginSuccess) {
-        onLoginSuccess({
-          id:    verifyData.user.id,
-          name:  pendingProfile?.full_name || fullName.trim(),
-          email: verifyData.user.email,
-          token: verifyData.session.access_token,
-        });
-      }
-
-      setSuccessMsg("✅ Email authenticated and account verified! Opening simulator...");
-      setTimeout(() => {
-        setLoading(false);
-        if (onNavigate) onNavigate("dashboard");
-      }, 1200);
+      // 2. Finalize session setup with password and profile
+      await completeSessionVerification(verifyData.session);
     } catch (err) {
       setError(err.message || "Invalid or expired verification code. Please check your email and try again.");
       setLoading(false);
     }
   };
 
-  // ── Resend OTP ───────────────────────────────────────────────
+  // ── Step 2B: Manual "Check Link Verification" Button ──────────
+  const handleCheckEmailLinkStatus = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error: sessionErr } = await requireSupabase().auth.getSession();
+      if (sessionErr) throw sessionErr;
+      if (data?.session?.user) {
+        await completeSessionVerification(data.session);
+      } else {
+        setError("Sign-in link not detected yet. Please open your email and click the 'Sign In' link to verify.");
+      }
+    } catch (err) {
+      setError(err.message || "Could not check verification status. Please click the link in your email.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── Resend Verification Email / OTP ──────────────────────────
   const handleResendOtp = async () => {
     if (otpCountdown > 0) return;
     setError(null);
     setOtpCountdown(60);
     try {
+      const emailRedirectTo = typeof window !== "undefined"
+        ? `${window.location.origin}/signup?verified=true`
+        : undefined;
+
       const { error: resendErr } = await requireSupabase().auth.signInWithOtp({
         email: pendingEmail,
         options: {
           shouldCreateUser: true,
           data: pendingProfile,
+          emailRedirectTo,
         },
       });
       if (resendErr) throw resendErr;
-      setSuccessMsg(`New verification code sent to ${pendingEmail}. Check your inbox and spam folder.`);
+      setSuccessMsg(`New verification email sent to ${pendingEmail}. Check your inbox and spam folder.`);
       setTimeout(() => setSuccessMsg(null), 5000);
     } catch (err) {
-      setError(err.message || "Failed to resend verification code. Please wait a moment.");
+      setError(err.message || "Failed to resend verification email. Please wait a moment.");
     }
   };
 
@@ -246,17 +354,17 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
       <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-2xl bg-[#002D1D]/90 backdrop-blur-xl rounded-3xl border border-[#164A34] shadow-2xl p-6 sm:p-8 space-y-6">
 
-          {/* ── STEP 2: OTP AUTHENTICATION & VERIFICATION ── */}
+          {/* ── STEP 2: EMAIL VERIFICATION & AUTHENTICATION ── */}
           {step === "otp-verify" ? (
             <>
               <div className="text-center space-y-2">
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 mb-1">
-                  <span className="material-symbols-outlined text-[30px]">phonelink_lock</span>
+                  <span className="material-symbols-outlined text-[30px]">mail</span>
                 </div>
                 <h1 className="text-2xl font-black text-white tracking-tight">Verify Your Account</h1>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  We sent a 6-digit authentication code to<br />
-                  <span className="font-bold text-emerald-300">{pendingEmail}</span>
+                  We sent an email verification &amp; sign-in link to<br />
+                  <span className="font-bold text-emerald-300 text-sm">{pendingEmail}</span>
                 </p>
               </div>
 
@@ -273,11 +381,57 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                 </div>
               )}
 
-              <form onSubmit={handleOtpVerify} className="space-y-5">
-                {/* OTP Input */}
+              {/* PRIMARY ACTION: Click Sign-In Link in Email */}
+              <div className="p-4 bg-emerald-950/50 border border-emerald-500/30 rounded-2xl space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-lg">touch_app</span>
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-xs font-extrabold text-white uppercase tracking-wider">
+                      Option 1 (Fastest): Click Link in Your Email
+                    </h3>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Check your Gmail inbox for the email from <strong>KrishiMitra</strong> and click the <strong>&ldquo;Sign In&rdquo; / &ldquo;Log In&rdquo;</strong> button.
+                      This page will automatically detect the click and complete your registration!
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-emerald-800/40">
+                  <div className="flex items-center gap-2 text-xs text-emerald-300/90 font-medium">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span>Waiting for email link click...</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCheckEmailLinkStatus}
+                    disabled={loading}
+                    className="w-full sm:w-auto px-3.5 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                  >
+                    <span className="material-symbols-outlined text-sm">sync</span>
+                    <span>Already Clicked? Check Status</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* DIVIDER */}
+              <div className="relative flex py-1 items-center">
+                <div className="flex-grow border-t border-[#164A34]"></div>
+                <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  OR ENTER 6-DIGIT CODE
+                </span>
+                <div className="flex-grow border-t border-[#164A34]"></div>
+              </div>
+
+              {/* OPTION 2: 6-Digit Code */}
+              <form onSubmit={handleOtpVerify} className="space-y-4">
                 <div className="space-y-2">
                   <label htmlFor="otp-input" className="block text-xs font-bold text-emerald-300 text-center">
-                    6-Digit Verification Code
+                    Option 2: 6-Digit Verification Code (if shown in your email)
                   </label>
                   <input
                     id="otp-input"
@@ -285,23 +439,25 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                     inputMode="numeric"
                     pattern="\d{6}"
                     maxLength={6}
-                    required
-                    autoFocus
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
                     placeholder="000000"
-                    className="w-full text-center text-3xl font-black tracking-[0.6em] py-4 px-4 rounded-2xl border-2 border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-white placeholder-slate-600 outline-none transition-all"
+                    className="w-full text-center text-3xl font-black tracking-[0.6em] py-3.5 px-4 rounded-2xl border-2 border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-white placeholder-slate-600 outline-none transition-all"
                   />
                   <p className="text-[10px] text-slate-400 text-center">
-                    Check your inbox and spam folder. Code expires in 10 minutes.
+                    If your email contains a 6-digit code, enter it above and click verify.
                   </p>
                 </div>
 
                 {/* Verify Button */}
-                <button type="submit" id="submit-otp-verify-btn" disabled={loading || otpCode.length !== 6}
-                  className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+                <button
+                  type="submit"
+                  id="submit-otp-verify-btn"
+                  disabled={loading || otpCode.length !== 6}
+                  className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
                   {loading ? (
-                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying Code...</span></>
+                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying...</span></>
                   ) : (
                     <><span className="material-symbols-outlined text-base">verified_user</span><span>Verify Code &amp; Start Simulator</span></>
                   )}
@@ -309,15 +465,27 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
 
                 {/* Resend + Back */}
                 <div className="flex items-center justify-between pt-1">
-                  <button type="button" onClick={() => { setStep("form"); setError(null); setSuccessMsg(null); }}
-                    className="text-xs font-semibold text-slate-400 hover:text-emerald-300 flex items-center gap-1 transition-colors cursor-pointer">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setStep("form");
+                      setError(null);
+                      setSuccessMsg(null);
+                      try { sessionStorage.removeItem("krishimitra_pending_signup"); } catch {}
+                    }}
+                    className="text-xs font-semibold text-slate-400 hover:text-emerald-300 flex items-center gap-1 transition-colors cursor-pointer"
+                  >
                     <span className="material-symbols-outlined text-sm">arrow_back</span>
                     <span>Change Details</span>
                   </button>
-                  <button type="button" onClick={handleResendOtp} disabled={otpCountdown > 0}
-                    className="text-xs font-semibold text-emerald-400 hover:text-emerald-200 disabled:text-slate-500 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={otpCountdown > 0}
+                    className="text-xs font-semibold text-emerald-400 hover:text-emerald-200 disabled:text-slate-500 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1"
+                  >
                     <span className="material-symbols-outlined text-sm">send</span>
-                    <span>{otpCountdown > 0 ? `Resend in ${otpCountdown}s` : "Resend Code"}</span>
+                    <span>{otpCountdown > 0 ? `Resend in ${otpCountdown}s` : "Resend Email Link"}</span>
                   </button>
                 </div>
               </form>
