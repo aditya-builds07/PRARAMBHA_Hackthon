@@ -15,6 +15,7 @@ import { reportRouter } from "./routes/reports.routes.js";
 import { healthRouter } from "./routes/health.routes.js";
 import { weatherRouter } from "./routes/weather.routes.js";
 import { auditRouter } from "./routes/audit.routes.js";
+import authRouter from "./routes/auth.routes.js";
 import { requireAuthenticatedUser } from "./middleware/authentication.middleware.js";
 import { sendError } from './utils/response.js';
 import { getAllowedCorsOrigins } from './config/environment.js';
@@ -54,6 +55,9 @@ export function createApp(options = {}) {
   // Public health check routes (supports both /health and /api/health for Render/cloud providers)
   app.get("/health", (_request, response) => response.status(200).json({ status: "ok", success: true }));
   app.use("/api", healthRouter);
+
+  // Authentication & OTP verification endpoints (exempt from strict rate limits)
+  app.use("/api/auth", authRouter);
 
   // Mount simulateRouter with its own dedicated rate limiter & auth guards
   app.use("/api", simulateRouter);

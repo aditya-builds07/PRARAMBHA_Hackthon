@@ -10,6 +10,7 @@ export const apiLimiter = rateLimit({
   max: 200,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.path.startsWith("/auth") || req.baseUrl?.includes("/auth") || req.originalUrl?.includes("/api/auth"),
   handler: (_request, response) => {
     sendError(
       response,

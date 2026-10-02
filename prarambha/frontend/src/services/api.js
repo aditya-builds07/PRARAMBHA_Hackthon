@@ -47,7 +47,7 @@ async function request(path, options = {}) {
 
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
-      const message = body?.error?.message ?? body?.message ?? `HTTP ${res.status}`;
+      const message = body?.error?.message ?? (typeof body?.error === "string" ? body.error : null) ?? body?.message ?? `HTTP ${res.status}`;
       return { data: null, error: message };
     }
 

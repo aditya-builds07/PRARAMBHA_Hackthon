@@ -1,5 +1,6 @@
-﻿import React, { useState, useEffect } from "react";
-import { getAuthRedirectUrl, requireSupabase } from "../../services/supabase.js";
+import React, { useState, useEffect } from "react";
+import { requireSupabase } from "../../services/supabase.js";
+import { api } from "../../services/api.js";
 
 const INDIAN_STATES = [
   "Maharashtra", "Karnataka", "Gujarat", "Madhya Pradesh", "Punjab",
@@ -22,18 +23,18 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword]   = useState(false);
 
-  // ── Verification method ─────────────────────────────────────
-  const [verifyMethod, setVerifyMethod] = useState("email"); // 'email' | 'otp'
-
   // ── OTP step ────────────────────────────────────────────────
   const [step, setStep]                     = useState("form"); // 'form' | 'otp-verify'
   const [otpCode, setOtpCode]               = useState("");
   const [pendingEmail, setPendingEmail]     = useState("");
+  const [pendingPassword, setPendingPassword] = useState("");
+  const [pendingProfile, setPendingProfile] = useState(null);
+  const [devOtpCode, setDevOtpCode]         = useState(null);
   const [otpCountdown, setOtpCountdown]     = useState(0);
 
   // ── UI state ────────────────────────────────────────────────
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState(null);
+  const [loading, setLoading]       = useState(false);
+  const [error, setError]           = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
 
   // OTP resend countdown timer
@@ -63,7 +64,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     };
   };
 
-  // ── Step 1: Form submit ──────────────────────────────────────
+  // ── Step 1: Submit Form -> Send Verification OTP ────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -71,6 +72,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
 
     const cleanName  = fullName.trim();
     const cleanEmail = email.trim();
+    const pw         = password.trim();
 
     if (!cleanName || !cleanEmail) {
       setError("Please fill in Full Name and Email Address.");
@@ -81,109 +83,93 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
       return;
     }
 
-    // Password required only for Email Link mode
-    if (verifyMethod === "email") {
-      const pw = password.trim();
-      if (!pw || pw.length < 6) {
-        setError("Password must be at least 6 characters.");
-        return;
-      }
-      if (pw !== confirmPassword.trim()) {
-        setError("Passwords do not match. Please re-enter.");
-        return;
-      }
+    if (!pw || pw.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    if (pw !== confirmPassword.trim()) {
+      setError("Passwords do not match. Please re-enter.");
+      return;
     }
 
     setLoading(true);
     const profile = buildProfile(cleanName);
 
     try {
-      if (verifyMethod === "email") {
-        // ── Email confirmation link flow ──
-        const { data, error: signUpError } = await requireSupabase().auth.signUp({
-          email: cleanEmail,
-          password: password.trim(),
-          options: {
-            data: profile,
-            emailRedirectTo: getAuthRedirectUrl(),
-          },
-        });
-        if (signUpError) throw signUpError;
+      // Dispatch 6-digit OTP code to the user's email
+      const { data, error: sendErr } = await api.post("/api/auth/send-otp", {
+        email: cleanEmail,
+        fullName: cleanName,
+      });
 
-        // Only auto-login if Supabase returns a live session (email confirm disabled)
-        if (data.session && onLoginSuccess) {
-          onLoginSuccess({
-            id:    data.user.id,
-            name:  profile.full_name,
-            email: cleanEmail,
-            token: data.session.access_token,
-          });
-        }
-
-        if (data.session) {
-          setSuccessMsg(`Welcome to KrishiMitra, ${cleanName}! Opening simulator...`);
-          setTimeout(() => { setLoading(false); if (onNavigate) onNavigate("dashboard"); }, 2000);
-        } else {
-          setSuccessMsg(
-            `✅ Account created! A confirmation email was sent to ${cleanEmail}. ` +
-            `Please click the link in your inbox to activate your account, then sign in.`
-          );
-          setTimeout(() => { setLoading(false); if (onNavigate) onNavigate("login"); }, 3500);
-        }
-      } else {
-        // ── OTP (passwordless) flow ──
-        const { error: otpError } = await requireSupabase().auth.signInWithOtp({
-          email: cleanEmail,
-          options: {
-            shouldCreateUser: true,
-            data: profile,
-          },
-        });
-        if (otpError) throw otpError;
-
-        setPendingEmail(cleanEmail);
-        setOtpCountdown(60);
-        setOtpCode("");
-        setStep("otp-verify");
-        setLoading(false);
+      if (sendErr) {
+        throw new Error(sendErr);
       }
+
+      setPendingEmail(cleanEmail);
+      setPendingPassword(pw);
+      setPendingProfile(profile);
+      setDevOtpCode(data?.devOtp || null);
+      setOtpCountdown(30);
+      setOtpCode("");
+      setStep("otp-verify");
+      setLoading(false);
     } catch (err) {
-      setError(err.message || "Registration failed. Please check your details.");
+      setError(err.message || "Failed to send verification code. Please check your email.");
       setLoading(false);
     }
   };
 
-  // ── Step 2: Verify OTP ───────────────────────────────────────
+  // ── Step 2: Verify OTP & Activate Account ────────────────────
   const handleOtpVerify = async (e) => {
     e.preventDefault();
     setError(null);
     const code = otpCode.trim();
+
     if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
-      setError("Please enter the 6-digit numeric OTP from your email.");
+      setError("Please enter the 6-digit numeric verification code.");
       return;
     }
+
     setLoading(true);
     try {
-      const { data, error: verifyError } = await requireSupabase().auth.verifyOtp({
+      // 1. Verify OTP and complete account registration on backend
+      const { data: regData, error: regErr } = await api.post("/api/auth/verify-and-register", {
         email: pendingEmail,
-        token: code,
-        type:  "email",
+        otp: code,
+        password: pendingPassword,
+        profile: pendingProfile,
       });
-      if (verifyError) throw verifyError;
-      if (!data.session) throw new Error("OTP verified but no session returned. Please try again.");
+
+      if (regErr) {
+        throw new Error(regErr);
+      }
+
+      // 2. Sign in with validated credentials to get authentic Supabase session
+      const { data: authData, error: authErr } = await requireSupabase().auth.signInWithPassword({
+        email: pendingEmail,
+        password: pendingPassword,
+      });
+
+      if (authErr) throw authErr;
+      if (!authData.session) throw new Error("Verification successful, but session could not be established.");
 
       if (onLoginSuccess) {
         onLoginSuccess({
-          id:    data.user.id,
-          name:  data.user.user_metadata?.full_name || fullName.trim(),
-          email: data.user.email,
-          token: data.session.access_token,
+          id:    authData.user.id,
+          name:  pendingProfile?.full_name || fullName.trim(),
+          email: authData.user.email,
+          token: authData.session.access_token,
         });
       }
-      setSuccessMsg("✅ OTP verified! Welcome to KrishiMitra. Opening simulator...");
-      setTimeout(() => { setLoading(false); if (onNavigate) onNavigate("dashboard"); }, 1500);
+
+      setSuccessMsg("✅ Email authenticated and account verified! Opening simulator...");
+      setTimeout(() => {
+        setLoading(false);
+        if (onNavigate) onNavigate("dashboard");
+      }, 1200);
     } catch (err) {
-      setError(err.message || "Invalid or expired OTP. Please check your email and try again.");
+      setError(err.message || "Invalid or expired verification code. Please try again.");
       setLoading(false);
     }
   };
@@ -192,15 +178,18 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const handleResendOtp = async () => {
     if (otpCountdown > 0) return;
     setError(null);
-    setOtpCountdown(60);
+    setOtpCountdown(30);
     try {
-      const { error: resendError } = await requireSupabase().auth.signInWithOtp({
+      const { data, error: resendErr } = await api.post("/api/auth/send-otp", {
         email: pendingEmail,
-        options: { shouldCreateUser: false },
+        fullName: pendingProfile?.full_name || fullName.trim(),
       });
-      if (resendError) throw resendError;
+      if (resendErr) throw new Error(resendErr);
+      if (data?.devOtp) setDevOtpCode(data.devOtp);
+      setSuccessMsg(`New verification code sent to ${pendingEmail}`);
+      setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err) {
-      setError(err.message || "Failed to resend OTP.");
+      setError(err.message || "Failed to resend verification code.");
     }
   };
 
@@ -248,19 +237,35 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
       <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-2xl bg-[#002D1D]/90 backdrop-blur-xl rounded-3xl border border-[#164A34] shadow-2xl p-6 sm:p-8 space-y-6">
 
-          {/* ── OTP VERIFY STEP ── */}
+          {/* ── STEP 2: OTP AUTHENTICATION & VERIFICATION ── */}
           {step === "otp-verify" ? (
             <>
               <div className="text-center space-y-2">
                 <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 mb-1">
                   <span className="material-symbols-outlined text-[30px]">phonelink_lock</span>
                 </div>
-                <h1 className="text-2xl font-black text-white tracking-tight">Enter Your OTP</h1>
+                <h1 className="text-2xl font-black text-white tracking-tight">Verify Your Account</h1>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  We sent a 6-digit code to<br />
+                  We sent a 6-digit authentication code to<br />
                   <span className="font-bold text-emerald-300">{pendingEmail}</span>
                 </p>
               </div>
+
+              {devOtpCode && (
+                <div className="p-3 bg-emerald-950/60 border border-emerald-500/40 rounded-xl flex items-center justify-between text-xs text-emerald-200">
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-emerald-400 text-sm">key</span>
+                    <span>Verification Code: <strong className="font-mono text-emerald-300 tracking-wider text-sm">{devOtpCode}</strong></span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setOtpCode(devOtpCode)}
+                    className="px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 rounded-lg text-[11px] font-bold transition-all cursor-pointer"
+                  >
+                    Auto Fill
+                  </button>
+                </div>
+              )}
 
               {error && (
                 <div className="p-3.5 bg-rose-950/70 border border-rose-700/60 text-rose-200 text-xs font-semibold rounded-2xl flex items-center gap-2.5">
@@ -279,7 +284,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                 {/* OTP Input */}
                 <div className="space-y-2">
                   <label htmlFor="otp-input" className="block text-xs font-bold text-emerald-300 text-center">
-                    6-Digit OTP Code
+                    6-Digit Verification Code
                   </label>
                   <input
                     id="otp-input"
@@ -303,9 +308,9 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                 <button type="submit" id="submit-otp-verify-btn" disabled={loading || otpCode.length !== 6}
                   className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
                   {loading ? (
-                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying OTP...</span></>
+                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying &amp; Registering...</span></>
                   ) : (
-                    <><span className="material-symbols-outlined text-base">verified_user</span><span>Verify &amp; Sign In</span></>
+                    <><span className="material-symbols-outlined text-base">verified_user</span><span>Verify Code &amp; Start Simulator</span></>
                   )}
                 </button>
 
@@ -314,91 +319,25 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                   <button type="button" onClick={() => { setStep("form"); setError(null); setSuccessMsg(null); }}
                     className="text-xs font-semibold text-slate-400 hover:text-emerald-300 flex items-center gap-1 transition-colors cursor-pointer">
                     <span className="material-symbols-outlined text-sm">arrow_back</span>
-                    <span>Change Email</span>
+                    <span>Change Details</span>
                   </button>
                   <button type="button" onClick={handleResendOtp} disabled={otpCountdown > 0}
                     className="text-xs font-semibold text-emerald-400 hover:text-emerald-200 disabled:text-slate-500 disabled:cursor-not-allowed transition-colors cursor-pointer flex items-center gap-1">
                     <span className="material-symbols-outlined text-sm">send</span>
-                    <span>{otpCountdown > 0 ? `Resend in ${otpCountdown}s` : "Resend OTP"}</span>
+                    <span>{otpCountdown > 0 ? `Resend in ${otpCountdown}s` : "Resend Code"}</span>
                   </button>
                 </div>
               </form>
             </>
           ) : (
-            /* ── REGISTRATION FORM STEP ── */
+            /* ── STEP 1: REGISTRATION FORM ── */
             <>
               <div className="text-center space-y-2">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 mb-1">
                   <span className="material-symbols-outlined text-[26px]">how_to_reg</span>
                 </div>
                 <h1 className="text-2xl font-black text-white tracking-tight">Create Your Farmer Account</h1>
-                <p className="text-xs text-slate-300">Register to simulate crop seasons, save farm profiles &amp; predict risks</p>
-              </div>
-
-              {/* ── VERIFICATION METHOD SELECTOR ── */}
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-emerald-400 block">Choose Verification Method</span>
-                <div className="grid grid-cols-2 gap-3">
-                  {/* OTP Option */}
-                  <button
-                    type="button"
-                    onClick={() => setVerifyMethod("otp")}
-                    className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all cursor-pointer text-left ${
-                      verifyMethod === "otp"
-                        ? "border-emerald-400 bg-emerald-500/10 shadow-lg shadow-emerald-500/20"
-                        : "border-[#164A34] bg-[#002216] hover:border-emerald-600/60 hover:bg-emerald-900/10"
-                    }`}
-                  >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      verifyMethod === "otp" ? "bg-emerald-500/20" : "bg-[#164A34]"
-                    }`}>
-                      <span className={`material-symbols-outlined text-[22px] ${verifyMethod === "otp" ? "text-emerald-300" : "text-slate-400"}`}>
-                        phonelink_lock
-                      </span>
-                    </div>
-                    <div>
-                      <p className={`text-xs font-extrabold ${verifyMethod === "otp" ? "text-emerald-300" : "text-slate-300"}`}>
-                        OTP Code
-                      </p>
-                      <p className="text-[10px] text-slate-400 leading-tight">
-                        6-digit code sent to your email. No password needed.
-                      </p>
-                    </div>
-                    {verifyMethod === "otp" && (
-                      <span className="material-symbols-outlined text-emerald-400 text-base self-start">check_circle</span>
-                    )}
-                  </button>
-
-                  {/* Email Link Option */}
-                  <button
-                    type="button"
-                    onClick={() => setVerifyMethod("email")}
-                    className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all cursor-pointer text-left ${
-                      verifyMethod === "email"
-                        ? "border-emerald-400 bg-emerald-500/10 shadow-lg shadow-emerald-500/20"
-                        : "border-[#164A34] bg-[#002216] hover:border-emerald-600/60 hover:bg-emerald-900/10"
-                    }`}
-                  >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      verifyMethod === "email" ? "bg-emerald-500/20" : "bg-[#164A34]"
-                    }`}>
-                      <span className={`material-symbols-outlined text-[22px] ${verifyMethod === "email" ? "text-emerald-300" : "text-slate-400"}`}>
-                        mark_email_read
-                      </span>
-                    </div>
-                    <div>
-                      <p className={`text-xs font-extrabold ${verifyMethod === "email" ? "text-emerald-300" : "text-slate-300"}`}>
-                        Email Link
-                      </p>
-                      <p className="text-[10px] text-slate-400 leading-tight">
-                        Confirmation link sent to email. Set a password.
-                      </p>
-                    </div>
-                    {verifyMethod === "email" && (
-                      <span className="material-symbols-outlined text-emerald-400 text-base self-start">check_circle</span>
-                    )}
-                  </button>
-                </div>
+                <p className="text-xs text-slate-300">Enter your details below. You will receive an OTP code to verify your account.</p>
               </div>
 
               {/* Alerts */}
@@ -445,43 +384,36 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                     </div>
                   </div>
 
-                  {/* Password fields — only for email mode */}
-                  {verifyMethod === "email" && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <label className="block text-xs font-bold text-emerald-300">Password *</label>
-                        <div className="relative flex items-center">
-                          <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">lock</span>
-                          <input type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Minimum 6 characters"
-                            className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all" />
-                          <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Hide password" : "Show password"}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer">
-                            <span className="material-symbols-outlined text-[20px]">{showPassword ? "visibility_off" : "visibility"}</span>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="space-y-1">
-                        <label className="block text-xs font-bold text-emerald-300">Confirm Password *</label>
-                        <div className="relative flex items-center">
-                          <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">lock_reset</span>
-                          <input type={showPassword ? "text" : "password"} required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Re-enter password"
-                            className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all" />
-                        </div>
+                  {/* Password fields */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-xs font-bold text-emerald-300">Password *</label>
+                      <div className="relative flex items-center">
+                        <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">lock</span>
+                        <input type={showPassword ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Minimum 6 characters"
+                          className="w-full pl-10 pr-11 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all" />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Hide password" : "Show password"}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer">
+                          <span className="material-symbols-outlined text-[20px]">{showPassword ? "visibility_off" : "visibility"}</span>
+                        </button>
                       </div>
                     </div>
-                  )}
+                    <div className="space-y-1">
+                      <label className="block text-xs font-bold text-emerald-300">Confirm Password *</label>
+                      <div className="relative flex items-center">
+                        <span className="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px] pointer-events-none">lock_reset</span>
+                        <input type={showPassword ? "text" : "password"} required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                          placeholder="Re-enter password"
+                          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-[#164A34] bg-[#002216] focus:bg-[#002B1B] focus:border-emerald-400 text-xs font-medium text-white placeholder-slate-500 outline-none transition-all" />
+                      </div>
+                    </div>
+                  </div>
 
-                  {/* OTP mode hint */}
-                  {verifyMethod === "otp" && (
-                    <div className="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-900/20 border border-emerald-700/30">
-                      <span className="material-symbols-outlined text-emerald-400 text-base shrink-0 mt-0.5">info</span>
-                      <p className="text-[11px] text-emerald-200 leading-relaxed">
-                        <strong>Passwordless OTP:</strong> A 6-digit code will be sent to your email. No password required — you can always log in using an OTP code.
-                      </p>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/20 text-[11px] text-emerald-300">
+                    <span className="material-symbols-outlined text-sm text-emerald-400">verified</span>
+                    <span>An OTP verification code will be sent to your email to authenticate your account before login.</span>
+                  </div>
                 </div>
 
                 {/* SECTION 2: Location & Farm Profile */}
@@ -561,11 +493,9 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                 <button type="submit" id="submit-register-btn" disabled={loading}
                   className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/35 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2">
                   {loading ? (
-                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Creating Account...</span></>
-                  ) : verifyMethod === "otp" ? (
-                    <><span>Send OTP &amp; Continue</span><span className="material-symbols-outlined text-base">phonelink_lock</span></>
+                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Sending Verification Code...</span></>
                   ) : (
-                    <><span>Create Account &amp; Start Simulator</span><span className="material-symbols-outlined text-base">arrow_forward</span></>
+                    <><span>Verify Email &amp; Create Account</span><span className="material-symbols-outlined text-base">arrow_forward</span></>
                   )}
                 </button>
               </form>
