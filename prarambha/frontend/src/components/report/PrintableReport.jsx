@@ -19,7 +19,7 @@ function getRiskBadge(riskLevel, riskScore) {
     case "high":
       return {
         label: `High Risk (${riskScore ?? 0}/100)`,
-        iconName: "warning", this 
+        iconName: "warning",
         className: "bg-amber-50 text-amber-950 border-amber-300",
       };
     case "critical":
@@ -358,7 +358,7 @@ export default function PrintableReport({ reportData }) {
               <span
                 className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-2xs ${riskBadge.className}`}
               >
-                <span aria-hidden="true">{riskBadge.dot}</span>
+                <span aria-hidden="true">{riskBadge.iconName}</span>
                 <span>{riskBadge.label}</span>
               </span>
             </div>
@@ -421,7 +421,7 @@ export default function PrintableReport({ reportData }) {
                     <span
                       className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-2xs ${sevBadge.className}`}
                     >
-                      <span aria-hidden="true">{sevBadge.icon}</span>
+                      <span aria-hidden="true">{sevBadge.iconName}</span>
                       <span>{sevBadge.label}</span>
                     </span>
                   </div>
@@ -474,7 +474,7 @@ export default function PrintableReport({ reportData }) {
                         <span
                           className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-2xs ${statusBadge.className}`}
                         >
-                          <span aria-hidden="true">{statusBadge.icon}</span>
+                          <span aria-hidden="true">{statusBadge.iconName}</span>
                           <span>{statusBadge.label}</span>
                         </span>
                       </td>

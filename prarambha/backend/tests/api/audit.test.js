@@ -11,6 +11,7 @@
  * Requires Node 20.6+ for --env-file support, or set the env vars manually.
  */
 
+import "../../src/config/loadEnv.js";
 import { createClient } from "@supabase/supabase-js";
 import { writeAuditLog, writeAuditLogSafely } from "../../src/services/audit.service.js";
 

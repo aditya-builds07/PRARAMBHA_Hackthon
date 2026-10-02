@@ -27,7 +27,7 @@ export function validateFarmInput(input) {
     throw new Error(`name is required and must be ${MAX_NAME_LENGTH} characters or fewer.`);
   }
 
-  const areaAcres = Number(input.areaAcres);
+  const areaAcres = Number(input.areaAcres ?? input.area_acres);
   if (!Number.isFinite(areaAcres) || areaAcres <= 0 || areaAcres > 10000) {
     throw new Error("areaAcres must be a number greater than 0 and no more than 10000.");
   }
@@ -36,9 +36,9 @@ export function validateFarmInput(input) {
     name,
     area_acres: areaAcres,
     region: optionalText(input.region, "region"),
-    crop_cycle: optionalText(input.cropCycle, "cropCycle"),
-    water_profile: optionalText(input.waterProfile, "waterProfile"),
-    available_water_m3: optionalNonNegativeNumber(input.availableWaterM3, "availableWaterM3"),
-    budget_inr: optionalNonNegativeNumber(input.budgetInr, "budgetInr"),
+    crop_cycle: optionalText(input.cropCycle ?? input.crop_cycle, "cropCycle"),
+    water_profile: optionalText(input.waterProfile ?? input.water_profile, "waterProfile"),
+    available_water_m3: optionalNonNegativeNumber(input.availableWaterM3 ?? input.waterM3 ?? input.available_water_m3, "availableWaterM3"),
+    budget_inr: optionalNonNegativeNumber(input.budgetInr ?? input.budget_inr, "budgetInr"),
   };
 }

@@ -26,10 +26,24 @@ export default function LoginPage({ onNavigate, onLoginSuccess }) {
       const input = userId.trim();
       const enteredPassword = password.trim();
 
-      const { data, error } = await requireSupabase().auth.signInWithPassword({
-        email: input,
+      const effectiveEmail = input.includes("@")
+        ? input
+        : `${input.toLowerCase().replace(/[^a-z0-9]/g, "")}@farmer.prarambha.local`;
+
+      let { data, error } = await requireSupabase().auth.signInWithPassword({
+        email: effectiveEmail,
         password: enteredPassword,
       });
+      if (error && !input.includes("@")) {
+        const retry = await requireSupabase().auth.signInWithPassword({
+          email: input,
+          password: enteredPassword,
+        });
+        if (!retry.error) {
+          data = retry.data;
+          error = null;
+        }
+      }
       if (error) throw error;
       if (!data.user || !data.session) throw new Error("Sign-in did not return an active session.");
 
