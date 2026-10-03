@@ -29,6 +29,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
   const [pendingProfile, setPendingProfile]   = useState(null);
   const [linkCountdown, setLinkCountdown]     = useState(0);
   const [otpCode, setOtpCode]                 = useState("");
+  const [pastedLink, setPastedLink]           = useState("");
 
   // ── UI state ────────────────────────────────────────────────
   const [loading, setLoading]       = useState(false);
@@ -282,7 +283,73 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
     }
   };
 
-  // ── Step 2B: Manual "Check Activation Status" Button ───────────
+  // ── Step 2B: Activate via Pasted Link from Mobile / Email ────
+  const handleActivateWithPastedLink = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const raw = pastedLink.trim();
+    if (!raw) {
+      setError("Please paste the link from your activation email.");
+      return;
+    }
+    setError(null);
+    setLoading(true);
+
+    try {
+      if (raw.startsWith("http://") || raw.startsWith("https://")) {
+        // If link contains access_token in hash (#access_token=...)
+        if (raw.includes("access_token=")) {
+          const hashPart = raw.includes("#") ? raw.split("#")[1] : raw.split("?")[1] || "";
+          const params = new URLSearchParams(hashPart);
+          const accessToken = params.get("access_token");
+          const refreshToken = params.get("refresh_token");
+          if (accessToken) {
+            const { data, error: setSessionErr } = await requireSupabase().auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken || "",
+            });
+            if (setSessionErr) throw setSessionErr;
+            if (data?.session) {
+              await completeSessionVerification(data.session);
+              return;
+            }
+          }
+        }
+        // Direct browser navigation to verify URL on this computer
+        window.location.href = raw;
+        return;
+      }
+
+      // If it's a numeric 6-digit OTP code entered here
+      const cleanCode = raw.replace(/\D/g, "");
+      if (cleanCode.length === 6) {
+        let verifyRes = await requireSupabase().auth.verifyOtp({
+          email: pendingEmail,
+          token: cleanCode,
+          type: "email",
+        });
+        if (verifyRes.error) {
+          verifyRes = await requireSupabase().auth.verifyOtp({
+            email: pendingEmail,
+            token: cleanCode,
+            type: "signup",
+          });
+        }
+        if (verifyRes.error) throw verifyRes.error;
+        if (verifyRes.data?.session) {
+          await completeSessionVerification(verifyRes.data.session);
+          return;
+        }
+      }
+
+      throw new Error("Please paste a valid activation URL from your email.");
+    } catch (err) {
+      console.error("[Signup] Activate with pasted link error:", err);
+      setError(err.message || "Failed to activate with pasted link. Please try opening Gmail on this PC.");
+      setLoading(false);
+    }
+  };
+
+  // ── Step 2C: Manual "Check Activation Status" Button ───────────
   const handleCheckEmailLinkStatus = async () => {
     setLoading(true);
     setError(null);
@@ -398,90 +465,55 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                 </div>
               )}
 
-              {/* Mobile Phone Notice Banner */}
-              <div className="p-3.5 bg-amber-950/60 border border-amber-600/50 rounded-2xl text-amber-200 text-xs leading-relaxed flex items-start gap-2.5">
-                <span className="material-symbols-outlined text-lg shrink-0 text-amber-400 mt-0.5">phone_iphone</span>
-                <div>
-                  <strong className="text-amber-300 font-bold block mb-0.5">Checking email on your mobile phone?</strong>
-                  The &ldquo;Sign In&rdquo; email button links to <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono text-[11px]">localhost:5173</code>, which only runs on this computer. 
-                  To activate immediately, <strong>enter the 6-digit code below</strong>, or open Gmail on this computer.
+              {/* Mobile Guidance Banner */}
+              <div className="p-4 bg-amber-950/60 border border-amber-600/50 rounded-2xl text-amber-200 text-xs leading-relaxed space-y-1.5">
+                <div className="flex items-center gap-2 text-amber-300 font-bold">
+                  <span className="material-symbols-outlined text-base text-amber-400">info</span>
+                  <span>Why does the email contain a &ldquo;Sign In&rdquo; button instead of an OTP?</span>
                 </div>
+                <p className="text-amber-200/90 leading-normal">
+                  Supabase uses <strong>instant Magic Link authentication</strong>. Clicking the &ldquo;Sign In&rdquo; button in your email authenticates you without needing to remember or type codes.
+                </p>
+                <p className="text-[11px] text-amber-300 font-semibold pt-0.5">
+                  ⚠️ Note: Because <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono">localhost:5173</code> is running on this computer, the email button must be opened in this computer&rsquo;s browser, not on a separate mobile phone.
+                </p>
               </div>
 
-              {/* OPTION 1: Enter 6-Digit Code (Works from mobile or anywhere) */}
-              <form onSubmit={handleOtpVerify} className="p-5 bg-gradient-to-b from-[#003824] to-[#002719] border border-emerald-500/40 rounded-2xl space-y-4 shadow-xl">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label htmlFor="otp-input" className="block text-xs font-bold text-emerald-300">
-                      Enter 6-Digit Verification Code
-                    </label>
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                      Fastest for Mobile
-                    </span>
-                  </div>
-                  <input
-                    id="otp-input"
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    maxLength={6}
-                    value={otpCode}
-                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                    placeholder="123456"
-                    className="w-full text-center text-3xl font-black tracking-[0.4em] py-3 px-4 rounded-xl border-2 border-[#164A34] bg-[#001E13] focus:border-emerald-400 text-white placeholder-slate-600 outline-none transition-all"
-                  />
-                  <p className="text-[11px] text-slate-400 text-center">
-                    Look for the 6-digit number in the KrishiMitra email.
-                  </p>
-                </div>
-
-                <button
-                  type="submit"
-                  id="submit-otp-code-btn"
-                  disabled={loading || otpCode.replace(/\D/g, "").length !== 6}
-                  className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  {loading ? (
-                    <><span className="material-symbols-outlined text-base animate-spin">refresh</span><span>Verifying Code...</span></>
-                  ) : (
-                    <><span className="material-symbols-outlined text-base">verified_user</span><span>Verify Code &amp; Start Simulator</span></>
-                  )}
-                </button>
-              </form>
-
-              {/* DIVIDER */}
-              <div className="relative flex py-1 items-center">
-                <div className="flex-grow border-t border-[#164A34]"></div>
-                <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  OR CLICK LINK IN GMAIL (ON THIS PC)
-                </span>
-                <div className="flex-grow border-t border-[#164A34]"></div>
-              </div>
-
-              {/* OPTION 2: Auto-detecting Link Click (When clicked on this PC) */}
-              <div className="p-4 bg-[#002216] border border-[#164A34] rounded-2xl space-y-3">
+              {/* OPTION 1: Open Gmail on this PC (Instant Auto-Activation) */}
+              <div className="p-5 bg-gradient-to-b from-[#003824] to-[#002719] border border-emerald-500/40 rounded-2xl space-y-4 shadow-xl">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
-                    <span className="material-symbols-outlined text-lg">touch_app</span>
+                  <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-xl">open_in_browser</span>
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-white uppercase tracking-wider">
-                      Already clicked &ldquo;Sign In&rdquo; on this computer?
-                    </h4>
-                    <p className="text-xs text-slate-300 leading-relaxed mt-0.5">
-                      If you opened Gmail and clicked the green button in this browser, click below:
+                    <h3 className="text-sm font-bold text-white">
+                      Method 1: Click &ldquo;Sign In&rdquo; in Gmail on this PC
+                    </h3>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      Open your Gmail in a new tab on this computer, find the KrishiMitra email, and click the green <strong>&ldquo;Sign In&rdquo;</strong> button. This window will auto-detect it!
                     </p>
                   </div>
                 </div>
 
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#164A34]">
+                  <a
+                    href="https://mail.google.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto px-4 py-2.5 bg-white/10 hover:bg-white/15 border border-[#164A34] hover:border-emerald-500/40 text-emerald-200 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-base text-red-400">mail</span>
+                    <span>Open Gmail in New Tab ↗</span>
+                  </a>
+
                   <div className="flex items-center gap-2 text-xs text-emerald-300 font-medium">
                     <span className="relative flex h-2.5 w-2.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
-                    <span>Listening for link click...</span>
+                    <span>Waiting for click...</span>
                   </div>
+
                   <button
                     type="button"
                     onClick={handleCheckEmailLinkStatus}
@@ -494,18 +526,79 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                 </div>
               </div>
 
-              {/* Direct Gmail Shortcut */}
-              {pendingEmail.toLowerCase().includes("@gmail.com") && (
-                <a
-                  href="https://mail.google.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full py-3 bg-white/5 hover:bg-white/10 border border-[#164A34] hover:border-emerald-500/40 text-emerald-200 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+              {/* DIVIDER */}
+              <div className="relative flex py-1 items-center">
+                <div className="flex-grow border-t border-[#164A34]"></div>
+                <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  OR IF YOU ONLY HAVE EMAIL ON YOUR PHONE
+                </span>
+                <div className="flex-grow border-t border-[#164A34]"></div>
+              </div>
+
+              {/* OPTION 2: Paste Link from Phone */}
+              <form onSubmit={handleActivateWithPastedLink} className="p-4 bg-[#002216] border border-[#164A34] rounded-2xl space-y-3">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="pasted-link-input" className="block text-xs font-bold text-emerald-300">
+                      Method 2: Paste Link Copied from Phone
+                    </label>
+                    <span className="text-[10px] text-slate-400">Long-press &ldquo;Sign In&rdquo; button &rarr; Copy Link</span>
+                  </div>
+                  <div className="relative flex items-center">
+                    <span className="material-symbols-outlined absolute left-3 text-slate-400 text-[18px] pointer-events-none">link</span>
+                    <input
+                      id="pasted-link-input"
+                      type="text"
+                      value={pastedLink}
+                      onChange={(e) => setPastedLink(e.target.value)}
+                      placeholder="Paste the link URL or 6-digit code here..."
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-[#164A34] bg-[#00170E] focus:bg-[#002216] focus:border-emerald-400 text-xs text-white placeholder-slate-500 outline-none transition-all"
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-normal">
+                    In Gmail on your phone, press and hold the green <strong>&ldquo;Sign In&rdquo;</strong> button &rarr; choose <strong>&ldquo;Copy link URL&rdquo;</strong> &rarr; send it to your PC (e.g. WhatsApp Web) and paste it above.
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading || !pastedLink.trim()}
+                  className="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
-                  <span className="material-symbols-outlined text-base text-red-400">mail</span>
-                  <span>Open Gmail on this PC ↗</span>
-                </a>
-              )}
+                  <span className="material-symbols-outlined text-sm">verified</span>
+                  <span>Activate with Pasted Link</span>
+                </button>
+              </form>
+
+              {/* Optional 6-digit code fallback if present */}
+              <div className="pt-1">
+                <details className="text-xs text-slate-400 group">
+                  <summary className="cursor-pointer hover:text-emerald-300 font-semibold transition-colors flex items-center gap-1">
+                    <span className="material-symbols-outlined text-sm">expand_more</span>
+                    <span>Does your email show a 6-digit code instead? Enter code here</span>
+                  </summary>
+                  <form onSubmit={handleOtpVerify} className="mt-2.5 p-3 rounded-xl bg-[#001E13] border border-[#164A34] space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={6}
+                        value={otpCode}
+                        onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                        placeholder="123456"
+                        className="flex-1 text-center font-mono font-bold tracking-widest py-2 px-3 rounded-lg border border-[#164A34] bg-[#00170E] text-white outline-none"
+                      />
+                      <button
+                        type="submit"
+                        disabled={loading || otpCode.replace(/\D/g, "").length !== 6}
+                        className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg disabled:opacity-50 cursor-pointer"
+                      >
+                        Verify Code
+                      </button>
+                    </div>
+                  </form>
+                </details>
+              </div>
 
               {/* Resend & Change Details */}
               <div className="flex items-center justify-between pt-1">
