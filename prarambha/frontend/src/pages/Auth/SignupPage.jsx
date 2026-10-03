@@ -475,7 +475,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }) {
                   Supabase uses <strong>instant Magic Link authentication</strong>. Clicking the &ldquo;Sign In&rdquo; button in your email authenticates you without needing to remember or type codes.
                 </p>
                 <p className="text-[11px] text-amber-300 font-semibold pt-0.5">
-                  ⚠️ Note: Because <code className="bg-black/40 px-1 py-0.5 rounded text-amber-300 font-mono">localhost:5173</code> is running on this computer, the email button must be opened in this computer&rsquo;s browser, not on a separate mobile phone.
+                  ⚠️ Note: If you read the verification email on your mobile phone or a different device, use Method 2 below to copy and paste the sign-in link directly into this browser.
                 </p>
               </div>
 

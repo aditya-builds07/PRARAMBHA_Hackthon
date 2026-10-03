@@ -21,9 +21,12 @@ const supabaseUrl = getEnv("VITE_SUPABASE_URL", DEFAULT_SUPABASE_URL)
 const supabaseKey = getEnv("VITE_SUPABASE_PUBLISHABLE_KEY", DEFAULT_SUPABASE_KEY) || getEnv("VITE_SUPABASE_ANON_KEY", DEFAULT_SUPABASE_KEY)
 
 export function getAuthRedirectUrl() {
+  if (typeof window !== "undefined" && window.location?.origin && !window.location.origin.includes("localhost") && !window.location.origin.includes("127.0.0.1")) {
+    return `${window.location.origin}/login`
+  }
   const configuredUrl = getEnv("VITE_APP_URL", "")
   if (configuredUrl) return `${configuredUrl.replace(/\/$/, "")}/login`
-  if (typeof window !== "undefined") return `${window.location.origin}/login`
+  if (typeof window !== "undefined" && window.location?.origin) return `${window.location.origin}/login`
   return undefined
 }
 

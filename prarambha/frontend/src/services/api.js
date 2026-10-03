@@ -8,7 +8,32 @@
  */
 import { supabase } from "./supabase.js"
 
-const BASE_URL = import.meta?.env?.VITE_API_BASE_URL ?? "http://localhost:3001"
+/**
+ * Resolves the backend API base URL safely across environments:
+ * - If VITE_API_BASE_URL is a configured remote URL, use it.
+ * - In local development (localhost / 127.0.0.1 / DEV), use localhost:3001.
+ * - In production (e.g. Vercel deployment), always default to live Render backend.
+ */
+const getBaseUrl = () => {
+  const envUrl = import.meta?.env?.VITE_API_BASE_URL;
+  const isLocalhost =
+    (typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+       window.location.hostname === "127.0.0.1")) ||
+    import.meta?.env?.DEV;
+
+  if (envUrl && !envUrl.includes("localhost") && !envUrl.includes("127.0.0.1")) {
+    return envUrl.replace(/\/$/, "");
+  }
+
+  if (isLocalhost) {
+    return (envUrl || "http://localhost:3001").replace(/\/$/, "");
+  }
+
+  return "https://krishimitra-api-hfqt.onrender.com";
+};
+
+const BASE_URL = getBaseUrl();
 
 let memoryToken = null;
 
